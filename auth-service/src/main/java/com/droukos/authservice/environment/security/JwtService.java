@@ -1,6 +1,6 @@
 package com.droukos.authservice.environment.security;
 
-import com.droukos.authservice.model.user.Role;
+import com.droukos.authservice.model.user.RoleModel;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.util.DateUtils;
 import com.droukos.authservice.util.RedisUtil;
@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import static com.droukos.authservice.environment.constants.Platforms.ANDROID;
 import static com.droukos.authservice.environment.constants.Platforms.IOS;
+import static com.droukos.authservice.environment.security.HttpExceptionFactory.badRequest;
 import static com.droukos.authservice.environment.security.HttpExceptionFactory.unauthorized;
 
 @Service
@@ -139,6 +140,7 @@ public class JwtService {
                         .getFirst(HttpHeaders.AUTHORIZATION))
                 .replace(tokenPrefix, "")
                 .trim())
+            .onErrorResume(Exception.class, err -> Mono.error(unauthorized()))
         .flatMap(this::testToken);
   }
 
@@ -194,12 +196,13 @@ public class JwtService {
 
   private String tokenGenerator(
       UserRes user, Map<String, String> issueInfo, LocalDateTime validityDate) {
+
     return Jwts.builder()
         .setSubject(user.getUser())
         .claim(userIdClaim, user.getId())
         .claim(
             authoritiesKey,
-            user.getAllRoles().stream().map(Role::getCode).collect(Collectors.toList()))
+            user.getAllRoles().stream().map(RoleModel::getRole).collect(Collectors.toList()))
         .claim(identifier, issueInfo.get(identifier))
         .claim(userDeviceClaim, issueInfo.get(userDeviceClaim))
         .signWith(SignatureAlgorithm.HS256, signingKey)

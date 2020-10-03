@@ -4,11 +4,11 @@ import lombok.*;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
 @Data @ToString @Getter
-@AllArgsConstructor @NoArgsConstructor
+@RequiredArgsConstructor @NoArgsConstructor
 public class LoginRequest {
 
-    private String user;
-    private String pass;
+    @NonNull private String user;
+    @NonNull private String pass;
     private ServerRequest request;
 
 }

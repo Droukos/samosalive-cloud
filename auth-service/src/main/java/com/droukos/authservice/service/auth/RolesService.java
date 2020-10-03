@@ -2,7 +2,7 @@ package com.droukos.authservice.service.auth;
 
 import com.droukos.authservice.environment.security.JwtService;
 import com.droukos.authservice.environment.security.TokenService;
-import com.droukos.authservice.model.user.Role;
+import com.droukos.authservice.model.user.RoleModel;
 import com.droukos.authservice.model.user.UserRes;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -37,20 +37,20 @@ public class RolesService {
 
   public void setAllRolesFromDbToDto(UserRes user) {
     user.getUpdateRole()
-        .setRolesOnDb(user.getAllRoles().stream().map(Role::getCode).collect(Collectors.toList()));
+        .setRolesOnDb(user.getAllRoles().stream().map(RoleModel::getRole).collect(Collectors.toList()));
   }
 
   public void addNewRoleToUser(UserRes user) {
     user.getAllRoles()
         .add(
-            Role.build(
+            RoleModel.build(
                 user.getUpdateRole().getUpdatedRole(),
                 jwtService.getUsername(user.getServerRequest())));
   }
 
   public void removeSpecifiedRoleFromUser(UserRes user) {
     user.getAllRoles().stream()
-        .filter(role -> role.getCode().equals(user.getUpdateRole().getUpdatedRole()))
+        .filter(role -> role.getRole().equals(user.getUpdateRole().getUpdatedRole()))
         .findFirst()
         .ifPresent(role -> user.getAllRoles().remove(role));
   }

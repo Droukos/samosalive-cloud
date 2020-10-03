@@ -2,11 +2,20 @@ package com.droukos.authservice.util;
 
 import com.droukos.authservice.model.user.UserRes;
 
+import java.util.List;
+
 public class DeviceDetector {
   private DeviceDetector() {}
 
   public static void detectUserDeviceOs(UserRes userRes) {
-    String browserDetails = userRes.getServerRequest().headers().header("User-Agent").get(0);
+    List<String> userAgent = userRes.getServerRequest().headers().header("User-Agent");
+    
+    if (userAgent.isEmpty()) {
+      userRes.setUserDevice("web");
+      return;
+    }
+
+    String browserDetails = userAgent.get(0);
     String user = browserDetails.toLowerCase();
 
     String os;

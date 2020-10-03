@@ -47,6 +47,7 @@ public class AuthorizationProvider {
   }
 
   private Mono<SecurityDto> caseRunSecurity(SecurityDto securityDto) {
+
     return securityDto.getServiceInfo().runSecurity()
         ? new Authorization().run(securityDto)
         : Mono.just(securityDto);

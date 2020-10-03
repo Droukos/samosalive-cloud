@@ -2,6 +2,7 @@ package com.droukos.authservice.environment.security.authorization;
 
 import com.droukos.authservice.environment.dto.server.SecurityDto;
 import com.droukos.authservice.environment.interfaces.core_services.SecRunByInfo;
+import com.droukos.authservice.util.RolesUtil;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -12,6 +13,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.droukos.authservice.environment.security.HttpExceptionFactory.unauthorized;
@@ -29,12 +31,12 @@ public class Authorization {
       code -> code.split(BETWEEN.getEscapedCode());
 
   private final BiPredicate<List<String>, List<String>> lvl0AnyCheckNotValid =
-          (userRoles, allLvL0List) ->
+      (userRoles, allLvL0List) ->
           !userRoles.contains(ANY.getCode())
               && allLvL0List.stream()
                   .noneMatch(role -> splitBySplitter.apply(role)[1].equals(allLvL0.get(0)));
   private final BiPredicate<List<String>, List<String>> lvl1AnyCheckNotValid =
-          (userRoles, allLvL1List) ->
+      (userRoles, allLvL1List) ->
           userRoles.stream()
               .noneMatch(
                   role -> {
@@ -44,6 +46,7 @@ public class Authorization {
 
   private final Predicate<List<String>> isNotValidUser =
       userAllRoles -> {
+        userAllRoles = userAllRoles.stream().map(RolesUtil::roleCode).collect(Collectors.toList());
         if (!allLvL0.isEmpty() && !lvl0AnyCheckNotValid.test(userAllRoles, allLvL0)) return false;
         if (!allLvL1.isEmpty() && !lvl1AnyCheckNotValid.test(userAllRoles, allLvL1)) return false;
         return userAllRoles.stream().noneMatch(validRolesSet::contains);

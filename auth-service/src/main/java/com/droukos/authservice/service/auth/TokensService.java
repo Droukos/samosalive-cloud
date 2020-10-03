@@ -46,7 +46,8 @@ public class TokensService {
   }
 
   public Mono<UserRes> setNewAccessTokenIdToRedis(UserRes user) {
-    return tokenService.redisSetUserToken(user, user.getAccessToken()).then(Mono.just(user));
+    return tokenService.redisSetUserToken(user, user.getAccessToken())
+            .then(Mono.just(user));
   }
 
   public Mono<UserRes> saveUserTokenChangesOnDb(UserRes user) {
@@ -92,7 +93,6 @@ public class TokensService {
   }
 
   public Mono<ServerResponse> buildUserData(UserRes user) {
-
     return ok().body(fromValue(LoginResponse.build(user, user.getAccessToken())));
   }
 }

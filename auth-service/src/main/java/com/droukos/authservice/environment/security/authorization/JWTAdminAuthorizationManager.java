@@ -11,7 +11,7 @@ import org.springframework.security.web.server.authorization.AuthorizationContex
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import static com.droukos.authservice.environment.roles.roles_list.lvl1_roles.AdminRoles.GENERAL_ADMIN;
+import static com.droukos.authservice.environment.constants.authorities.Roles.GENERAL_ADMIN;
 import static com.droukos.authservice.environment.security.HttpExceptionFactory.unauthorized;
 
 @Component("adminAuthorizationManager")
@@ -37,7 +37,7 @@ public class JWTAdminAuthorizationManager
   private Mono<Authentication> isValidAdminRole(Authentication authentication) {
 
     return authentication.getAuthorities().stream()
-            .anyMatch(auth -> auth.getAuthority().equals(GENERAL_ADMIN.getCode()))
+            .anyMatch(auth -> auth.getAuthority().equals(GENERAL_ADMIN))
         ? Mono.just(authentication)
         : Mono.error(unauthorized("Admin only"));
   }

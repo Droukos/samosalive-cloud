@@ -4,7 +4,7 @@ import com.droukos.authservice.environment.constants.FieldNames;
 import com.droukos.authservice.environment.dto.client.auth.SignupInfo;
 import com.droukos.authservice.environment.interfaces.user_creation.*;
 import com.droukos.authservice.model.user.AppState;
-import com.droukos.authservice.model.user.Role;
+import com.droukos.authservice.model.user.RoleModel;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.model.user.personal.Address;
 import com.droukos.authservice.model.user.personal.Personal;
@@ -27,10 +27,10 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 
+import static com.droukos.authservice.environment.constants.authorities.Roles.USER;
 import static com.droukos.authservice.environment.enums.Availability.OFFLINE;
 import static com.droukos.authservice.environment.enums.PrivacySettings.PRIVATE;
 import static com.droukos.authservice.environment.enums.PrivacySettings.PUBLIC;
-import static com.droukos.authservice.environment.roles.roles_list.lvl1_roles.UserRoles.USER;
 
 @RequiredArgsConstructor
 public class UserGenUtil
@@ -108,7 +108,7 @@ public class UserGenUtil
             password,
             email.toLowerCase(),
             email,
-            Collections.singletonList(new Role(USER.getCode(), true, LocalDateTime.now(), SYSTEM)),
+            Collections.singletonList(new RoleModel(USER, true, LocalDateTime.now(), SYSTEM)),
             generateUserInfoPersonal(name, surname),
             generateUserInfoSettingsPrivacy(),
             generateUserInfoSystem(),
@@ -124,7 +124,7 @@ public class UserGenUtil
         passwordConfirmed,
         email.toLowerCase(),
         email,
-        Collections.singletonList(new Role(USER.getCode(), true, LocalDateTime.now(), SYSTEM)),
+        Collections.singletonList(new RoleModel(USER, true, LocalDateTime.now(), SYSTEM)),
         generateUserInfoPersonal(name, surname),
         generateUserInfoSettingsPrivacy(),
         generateUserInfoSystem(),

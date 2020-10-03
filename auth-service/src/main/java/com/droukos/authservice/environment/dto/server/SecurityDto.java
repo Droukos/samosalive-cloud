@@ -1,9 +1,7 @@
 package com.droukos.authservice.environment.dto.server;
 
 import com.droukos.authservice.environment.interfaces.core_services.ServiceInfo;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
@@ -12,6 +10,8 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @NoArgsConstructor
+@Data
+@ToString
 @Setter
 @Getter
 public class SecurityDto {

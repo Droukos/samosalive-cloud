@@ -2,7 +2,6 @@ package com.droukos.authservice.config;
 
 import com.droukos.authservice.environment.security.SecurityContextRepository;
 import com.droukos.authservice.environment.security.authentication.AuthenticationManager;
-import com.droukos.authservice.environment.security.authorization.JWTAdminAuthorizationManager;
 import com.droukos.authservice.environment.security.authorization.JWTAuthorizationManager;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.ArrayUtils;
@@ -17,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
 
+import static com.droukos.authservice.environment.constants.authorities.Roles.GENERAL_ADMIN;
 import static com.droukos.authservice.environment.services.lvl1_services.EnAuthServices.*;
 
 @Configuration
@@ -28,7 +28,6 @@ public class ReactSecurityConfig {
   private final AuthenticationManager authenticationManager;
   private final SecurityContextRepository securityContextRepository;
   private final JWTAuthorizationManager jwtAuthorizationManager;
-  private final JWTAdminAuthorizationManager jwtAdminAuthorizationManager;
 
   @Bean
   public static BCryptPasswordEncoder passwordEncoder() {
@@ -75,9 +74,14 @@ public class ReactSecurityConfig {
             .authorizeExchange()
             .pathMatchers(permitPatterns).permitAll()
             .pathMatchers(HttpMethod.OPTIONS).permitAll()
-            .pathMatchers(PUT_ROLE_ADD.getFullUrl()).access(jwtAdminAuthorizationManager)
-            .pathMatchers(PUT_ROLE_DEL.getFullUrl()).access(jwtAdminAuthorizationManager)
-            .anyExchange().access(jwtAuthorizationManager)
+            .pathMatchers(PASSWORD_RESET.getFullUrl()).access(jwtAuthorizationManager)
+            .pathMatchers(PASSWORD_CHANGE.getFullUrl()).access(jwtAuthorizationManager)
+            .pathMatchers(EMAIL_CHANGE.getFullUrl()).access(jwtAuthorizationManager)
+            .pathMatchers(REVOKE_TOKENS.getFullUrl()).access(jwtAuthorizationManager)
+            .pathMatchers(LOGOUT.getFullUrl()).access(jwtAuthorizationManager)
+            .pathMatchers(PUT_ROLE_ADD.getFullUrl()).hasAnyRole(GENERAL_ADMIN)
+            .pathMatchers(PUT_ROLE_DEL.getFullUrl()).hasAnyRole(GENERAL_ADMIN)
+            //.anyExchange().access(jwtAuthorizationManager)
             .and()
             .build();
   }

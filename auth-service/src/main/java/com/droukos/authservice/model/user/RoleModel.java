@@ -11,14 +11,14 @@ import java.time.LocalDateTime;
 @ToString
 @Document
 @AllArgsConstructor
-public class Role {
+public class RoleModel {
 
-  private String code;
+  private String role;
   private boolean active;
   private LocalDateTime added;
   private String addedBy;
 
-  public static Role build(String role, String username) {
-    return new Role(role, false, LocalDateTime.now(), username);
+  public static RoleModel build(String role, String username) {
+    return new RoleModel(role, false, LocalDateTime.now(), username);
   }
 }

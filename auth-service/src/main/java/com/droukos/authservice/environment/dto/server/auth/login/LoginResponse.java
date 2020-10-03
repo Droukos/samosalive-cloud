@@ -2,7 +2,7 @@ package com.droukos.authservice.environment.dto.server.auth.login;
 
 
 import com.droukos.authservice.model.user.UserRes;
-import com.droukos.authservice.model.user.Role;
+import com.droukos.authservice.model.user.RoleModel;
 import lombok.*;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class LoginResponse {
     private String email;
     private String avatar;
     private String description;
-    private List<Role> roles;
+    private List<RoleModel> roleModels;
     private boolean online;
     private Integer availability;
 

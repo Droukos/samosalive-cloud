@@ -8,11 +8,11 @@ import com.droukos.authservice.service.validator.auth.ValidatorFactory;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
-@Component
+@Controller
 @RequiredArgsConstructor
 public class AuthHandlerRSocket {
 

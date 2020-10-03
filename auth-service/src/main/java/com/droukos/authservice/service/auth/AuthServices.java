@@ -42,45 +42,47 @@ public class AuthServices {
 
     return fetchUser
         .apply(loginRequest.getUser().toLowerCase())
-        .switchIfEmpty(Mono.just(new UserRes()))
+        .defaultIfEmpty(new UserRes())
+        .flatMap(this::errorCaseUserNotExist)
         .doOnNext(user -> user.setServerRequest(loginRequest.getRequest()))
-        .doOnNext(user -> user.setLoginRequest(loginRequest))
-        .flatMap(
-            user ->
-                (user.getUser() == null)
-                    ? Mono.error(badRequest("User not found"))
-                    : Mono.just(user));
+        .doOnNext(user -> user.setLoginRequest(loginRequest));
   }
 
   public Mono<UserRes> getUserFromRequest(ServerRequest request) {
     return userRepository
         .findById(jwtService.getUserIdClaim(request))
         .defaultIfEmpty(new UserRes())
+        .flatMap(this::errorCaseUserNotExist)
         .doOnNext(userRes -> setServerRequestToUser.accept(userRes, request))
-        .doOnNext(userRes -> setUserDeviceToUser.accept(userRes, jwtService.getDevice(request)))
-        .flatMap(
-            userRes -> userRes.getUser() == null ? Mono.error(badRequest()) : Mono.just(userRes));
+        .doOnNext(userRes -> setUserDeviceToUser.accept(userRes, jwtService.getDevice(request)));
   }
 
   public Mono<UserRes> getUserFromHttpCookieRequest(ServerRequest request) {
     String refToken = tokenService.getRefreshToken(request);
     return userRepository
         .findFirstById(jwtService.getUserIdClaim(refToken))
-        .switchIfEmpty(Mono.just(new UserRes()))
+        .defaultIfEmpty(new UserRes())
+        .flatMap(this::errorCaseUserNotExist)
         .doOnNext(userRes -> setServerRequestToUser.accept(userRes, request))
         .doOnNext(userRes -> setUserDeviceToUser.accept(userRes, jwtService.getDevice(refToken)))
-        .doOnNext(userRes -> userRes.setRefreshToken(refToken))
-        .flatMap(
-            userRes -> userRes.getUser() == null ? Mono.error(badRequest()) : Mono.just(userRes));
+        .doOnNext(userRes -> userRes.setRefreshToken(refToken));
   }
 
   public Mono<UserRes> getUserByPathVarId(ServerRequest request) {
     return (request.pathVariables().size() > 0)
         ? userRepository
             .findFirstById(request.pathVariable("id"))
+            .defaultIfEmpty(new UserRes())
+            .flatMap(this::errorCaseUserNotExist)
             .doOnNext(userRes -> setServerRequestToUser.accept(userRes, request))
             .doOnNext(userRes -> setUserDeviceToUser.accept(userRes, jwtService.getDevice(request)))
         : Mono.error(badRequest("Not id given in path var"));
+  }
+
+  private Mono<UserRes> errorCaseUserNotExist(UserRes user) {
+    return user.getUser() == null
+        ? Mono.error(badRequest("User does not exists"))
+        : Mono.just(user);
   }
 
   public Mono<LoginRequest> createLoginReqDto(ServerRequest request) {
@@ -92,11 +94,9 @@ public class AuthServices {
 
   public Mono<UserRes> createUserDto(ServerRequest request) {
     return request
-            .bodyToMono(UserRes.class)
-            .defaultIfEmpty(new UserRes())
-            .flatMap(userRes -> userRes.getUser()==null
-                    ? Mono.error(badRequest())
-                    : Mono.just(userRes));
+        .bodyToMono(UserRes.class)
+        .defaultIfEmpty(new UserRes())
+        .flatMap(this::errorCaseUserNotExist);
   }
 
   public Mono<UserRes> createUpdateRoleDto(UserRes user) {
@@ -117,9 +117,9 @@ public class AuthServices {
 
   public Mono<UserRes> createUpdateEmailDto(UserRes user) {
     return user.getServerRequest()
-            .bodyToMono(UpdateEmail.class)
-            .defaultIfEmpty(new UpdateEmail())
-            .doOnNext(user::setUpdateEmail)
-            .then(Mono.just(user));
+        .bodyToMono(UpdateEmail.class)
+        .defaultIfEmpty(new UpdateEmail())
+        .doOnNext(user::setUpdateEmail)
+        .then(Mono.just(user));
   }
 }

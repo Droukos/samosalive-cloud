@@ -24,7 +24,7 @@ public class RoleAddValidator implements Validator {
     rejectIfEmptyOrWhitespace(errors, F_UPDATEDROLE, UPDATEDROLE_EMPTY.getShortWarning());
 
     UpdateRole updateRole = (UpdateRole) o;
-    if (!RolesUtil.doesRoleExist(updateRole.getUpdatedRole()))
+    if (RolesUtil.doesRoleNotExist(updateRole.getUpdatedRole()))
       errors.rejectValue(F_UPDATEDROLE, UPDATEDROLE_INVALID.getShortWarning());
 
     if (updateRole.getRolesOnDb().stream()

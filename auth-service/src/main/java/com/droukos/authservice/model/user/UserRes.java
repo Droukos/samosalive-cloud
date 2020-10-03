@@ -42,7 +42,7 @@ public class UserRes {
   @NonNull @Transient private String passC;
   @NonNull @Indexed private String email;
   @NonNull  private String emailC;
-  @NonNull @Indexed private List<Role> allRoles;
+  @NonNull @Indexed private List<RoleModel> allRoles;
   @NonNull  private Personal prsn;
   @NonNull  private PrivacySettingMap privy;
   @NonNull  private UserSystem sys;
