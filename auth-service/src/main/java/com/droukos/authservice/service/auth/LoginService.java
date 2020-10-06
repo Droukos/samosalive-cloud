@@ -15,8 +15,8 @@ import java.util.function.Predicate;
 
 import static com.droukos.authservice.environment.constants.Platforms.ANDROID;
 import static com.droukos.authservice.environment.constants.Platforms.IOS;
-import static com.droukos.authservice.environment.security.HttpBodyBuilderFactory.okJson;
-import static com.droukos.authservice.environment.security.HttpExceptionFactory.badRequest;
+import static com.droukos.authservice.util.factories.HttpBodyBuilderFactory.okJson;
+import static com.droukos.authservice.util.factories.HttpExceptionFactory.badRequest;
 import static java.time.LocalDateTime.now;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
@@ -38,15 +38,16 @@ public class LoginService {
   }
 
   public void createNewAccessToken(UserRes user) {
-    user.setAccessToken(tokenService.genNewAccessToken(user));
+    user.setRequesterAccessTokenData(tokenService.genNewAccessToken(user));
   }
 
-  public final void createNewRefreshToken(UserRes user) {
-    user.setRefreshToken(tokenService.genNewRefreshToken(user));
+  public void createNewRefreshToken(UserRes user) {
+    user.setRequesterRefreshTokenData(tokenService.genNewRefreshToken(user));
   }
 
   public final Mono<UserRes> saveAccessTokenIdToRedis(UserRes user) {
-    return tokenService.redisSetUserToken(user, user.getAccessToken()).then(Mono.just(user));
+    return tokenService.redisSetUserToken(user)
+            .then(Mono.just(user));
   }
 
   public final void setUserIsNowOnline(UserRes user) {
@@ -54,7 +55,7 @@ public class LoginService {
   }
 
   public final void saveThisLastLogin(UserRes user) {
-    switch (user.getUserDevice()) {
+    switch (user.getRequesterAccessTokenData().getUserDevice()) {
       case ANDROID -> user.setAndroidLastLogin(now());
       case IOS -> user.setIosLastLogin(now());
       default -> user.setWebLastLogin(now());
@@ -70,7 +71,7 @@ public class LoginService {
        return userRepository.save(user)
             .flatMap(savedUser ->
                                okJson()
-                                   .cookie(tokenService.refreshHttpCookie(user.getRefreshToken()))
-                                   .body(fromValue(LoginResponse.build(savedUser, user.getAccessToken()))));
+                                   .cookie(tokenService.refreshHttpCookie(user))
+                                   .body(fromValue(LoginResponse.build(savedUser, user.getRequesterAccessTokenData().getToken()))));
   }
 }

@@ -6,9 +6,8 @@ import com.droukos.authservice.environment.interfaces.user_creation.*;
 import com.droukos.authservice.model.user.AppState;
 import com.droukos.authservice.model.user.RoleModel;
 import com.droukos.authservice.model.user.UserRes;
-import com.droukos.authservice.model.user.personal.Address;
+import com.droukos.authservice.model.user.personal.AddressModel;
 import com.droukos.authservice.model.user.personal.Personal;
-import com.droukos.authservice.model.user.personal.PhoneList;
 import com.droukos.authservice.model.user.personal.Profile;
 import com.droukos.authservice.model.user.privacy.PrivacySetting;
 import com.droukos.authservice.model.user.privacy.PrivacySettingMap;
@@ -52,6 +51,22 @@ public class UserGenUtil
 
   public static UserRes buildUserFromSignupInfoDto(
       BCryptPasswordEncoder passwordEncoder, SignupInfo signupInfo) {
+    //UserRes.builder()
+    //        .user(signupInfo.getUsername().toLowerCase())
+    //        .userC(signupInfo.getUsername())
+    //        .pass(passwordEncoder.encode(signupInfo.getPassword()))
+    //        .prsn(Personal.builder()
+    //                .name(signupInfo.getName())
+    //                .sur(signupInfo.getSurname())
+    //                .build())
+    //        .email(signupInfo.getEmail().toLowerCase())
+    //        .emailC(signupInfo.getEmail())
+    //        .allRoles(Collections.singletonList(new RoleModel(USER, true, LocalDateTime.now(), "SYSTEM")))
+    //        .privy(UserGenUtil.generateUserInfoSettingsPrivacy())
+    //        .sys(UserGenUtil.generateUserInfoSystem())
+    //        .appState(new AppState(false, OFFLINE.getCode()))
+    //        .build()
+    //
     return new UserGenUtil(passwordEncoder)
         .username(signupInfo.getUsername())
         .passwordWithPassConf(signupInfo.getPassword(), signupInfo.getPasswordConfirmed())
@@ -136,11 +151,11 @@ public class UserGenUtil
         name,
         surname,
         new Profile(null, null, null),
-        new Address(null, null, null),
-        new PhoneList(null));
+        new AddressModel(),
+        null);
   }
 
-  private PrivacySettingMap generateUserInfoSettingsPrivacy() {
+  public static PrivacySettingMap generateUserInfoSettingsPrivacy() {
     var map = new HashMap<String, PrivacySetting>();
     map.put(FieldNames.F_PRIVY_ONLINE_STATUS, new PrivacySetting(PUBLIC.code(), null));
     map.put(FieldNames.F_PRIVY_LAST_LOGIN, new PrivacySetting(PRIVATE.code(), null));
@@ -154,7 +169,7 @@ public class UserGenUtil
     return new PrivacySettingMap(map);
   }
 
-  private UserSystem generateUserInfoSystem() {
+  public static UserSystem generateUserInfoSystem() {
     return new UserSystem(
         5.0,
         LocalDateTime.now(),

@@ -8,7 +8,7 @@ import org.springframework.validation.Validator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.droukos.authservice.environment.security.HttpExceptionFactory.badRequest;
+import static com.droukos.authservice.util.factories.HttpExceptionFactory.badRequest;
 
 public class ValidatorUtil {
 

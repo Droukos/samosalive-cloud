@@ -2,7 +2,6 @@ package com.droukos.authservice.service.auth;
 
 import com.droukos.authservice.environment.dto.server.auth.login.LoginResponse;
 import com.droukos.authservice.environment.dto.server.auth.token.NewAccessTokenResponse;
-import com.droukos.authservice.environment.security.JwtService;
 import com.droukos.authservice.environment.security.TokenService;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.model.user.system.security.jwt.platforms.AndroidJWT;
@@ -25,14 +24,13 @@ public class TokensService {
 
   @NonNull private final UserRepository userRepository;
   @NonNull private final TokenService tokenService;
-  @NonNull private final JwtService jwtService;
 
-  public void genNewAccTokenToUser(UserRes userRes) {
-    userRes.setAccessToken(tokenService.genNewAccessToken(userRes));
+  public void genNewAccTokenToUser(UserRes user) {
+    user.setRequesterAccessTokenData(tokenService.genNewAccessToken(user));
   }
 
-  public void genNewRefTokenToUser(UserRes userRes) {
-    userRes.setRefreshToken(tokenService.genNewRefreshToken(userRes));
+  public void genNewRefTokenToUser(UserRes user) {
+    user.setRequesterRefreshTokenData(tokenService.genNewRefreshToken(user));
   }
 
   public void deleteAllOldJwtTokens(UserRes user) {
@@ -46,7 +44,7 @@ public class TokensService {
   }
 
   public Mono<UserRes> setNewAccessTokenIdToRedis(UserRes user) {
-    return tokenService.redisSetUserToken(user, user.getAccessToken())
+    return tokenService.redisSetUserToken(user)
             .then(Mono.just(user));
   }
 
@@ -55,20 +53,21 @@ public class TokensService {
   }
 
   public Mono<ServerResponse> setRefTokenOnHttpCookieAndAccessTokenOnBody(UserRes user) {
-    return ok().cookie(tokenService.refreshHttpCookie(user.getRefreshToken()))
-        .body(fromValue(new NewAccessTokenResponse(user.getAccessToken())));
+    return ok().cookie(tokenService.refreshHttpCookie(user))
+        .body(fromValue(new NewAccessTokenResponse(user.getRequesterAccessTokenData().getToken())));
   }
 
   public void checkCaseRefreshTokenIsExpiring(UserRes userRes) {
-    userRes.setRefreshIsExpiring(tokenService.isRefreshAboutToExp(userRes));
+    userRes.getRequesterRefreshTokenData()
+            .setRefreshIsExpiring(tokenService.isRefreshAboutToExp(userRes));
   }
 
   public Mono<ServerResponse> newAccessToken(UserRes user) {
 
-    return user.isRefreshIsExpiring()
-                    ? ok().cookie(tokenService.refreshHttpCookie(user.getRefreshToken()))
-                        .body(fromValue(new NewAccessTokenResponse(user.getAccessToken())))
-                    : ok().body(fromValue(new NewAccessTokenResponse(user.getAccessToken())));
+    return user.getRequesterRefreshTokenData().isRefreshIsExpiring()
+                    ? ok().cookie(tokenService.refreshHttpCookie(user))
+                        .body(fromValue(new NewAccessTokenResponse(user.getRequesterAccessTokenData().getToken())))
+                    : ok().body(fromValue(new NewAccessTokenResponse(user.getRequesterAccessTokenData().getToken())));
   }
 
   public Mono<UserRes> validateUserRefreshToken(UserRes user) {
@@ -79,20 +78,12 @@ public class TokensService {
     tokenService.updateAccTokenOrTokens(user);
   }
 
-  public void setHttpCookieRefTokenToUser(UserRes userRes) {
-    userRes.setRefreshToken(tokenService.refTokenFromHttpCookie(userRes));
-  }
-
-  public void setUserDeviceFromCookieRefTokenToUser(UserRes userRes) {
-    userRes.setUserDevice(jwtService.getDevice(userRes.getRefreshToken()));
-  }
-
   public void setAccessTokenModel(UserRes userRes) {
     tokenService.setNewAccessTokenModel(
-        userRes, new AccessToken(jwtService.getTokenId(userRes.getAccessToken())));
+        userRes, new AccessToken(userRes.getRequesterAccessTokenData().getToken()));
   }
 
   public Mono<ServerResponse> buildUserData(UserRes user) {
-    return ok().body(fromValue(LoginResponse.build(user, user.getAccessToken())));
+    return ok().body(fromValue(LoginResponse.build(user, user.getRequesterAccessTokenData().getToken())));
   }
 }

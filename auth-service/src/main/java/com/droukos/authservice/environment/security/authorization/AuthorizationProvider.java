@@ -1,13 +1,13 @@
 package com.droukos.authservice.environment.security.authorization;
 
+import com.droukos.authservice.config.jwt.AccessTokenConfig;
 import com.droukos.authservice.environment.dto.server.SecurityDto;
 import com.droukos.authservice.environment.interfaces.core_services.Service0Info;
 import com.droukos.authservice.environment.interfaces.core_services.ServiceInfo;
-import com.droukos.authservice.environment.security.JwtService;
+import com.droukos.authservice.environment.security.tokens.AccessJwtService;
 import com.droukos.authservice.environment.services.LvL0_Services;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.PathContainer;
 import org.springframework.http.server.RequestPath;
@@ -23,16 +23,14 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.droukos.authservice.environment.security.HttpExceptionFactory.*;
+import static com.droukos.authservice.util.factories.HttpExceptionFactory.*;
 
 @Component
 @RequiredArgsConstructor
 public class AuthorizationProvider {
 
-  @NonNull private final JwtService jwtService;
-
-  @Value("${jwt.prefix.bearer}")
-  private String tokenPrefix;
+  @NonNull private final AccessJwtService accessJwtService;
+  @NonNull private final AccessTokenConfig accessTokenConfig;
 
   public Mono<SecurityDto> runSec(SecurityDto securityDto) {
 
@@ -64,7 +62,7 @@ public class AuthorizationProvider {
     return Mono.just(
             Objects.requireNonNull(
                     securityDto.getHttpRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
-                .replace(tokenPrefix, "")
+                .replace(accessTokenConfig.getTokenPrefix(), "")
                 .trim())
         .onErrorResume(Exception.class, err -> Mono.error(unauthorized()))
         .doOnNext(securityDto::setAccToken)
@@ -109,7 +107,7 @@ public class AuthorizationProvider {
   }
 
   private void setSecurityDtoUserId(SecurityDto securityDto) {
-    securityDto.setUserId(jwtService.getUserIdClaim(securityDto.getAccToken()));
+    securityDto.setUserId(accessJwtService.getUserIdClaim(securityDto.getAccToken()));
   }
 
   private void setSecurityDtoPathVarId(SecurityDto securityDto) {

@@ -115,7 +115,6 @@ public class AuthHandlerHttp {
     return authServices
         .getUserFromHttpCookieRequest(request)
         .flatMap(tokensService::validateUserRefreshToken)
-        .doOnNext(tokensService::setUserDeviceFromCookieRefTokenToUser)
         .doOnNext(tokensService::genNewAccTokenToUser)
         .doOnNext(tokensService::setAccessTokenModel)
         .flatMap(tokensService::setNewAccessTokenIdToRedis)

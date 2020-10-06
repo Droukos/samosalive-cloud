@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.droukos.authservice.environment.security.HttpExceptionFactory.unauthorized;
+import static com.droukos.authservice.util.factories.HttpExceptionFactory.unauthorized;
 import static com.droukos.authservice.environment.services.GeneralSemantics.*;
 
 @RequiredArgsConstructor

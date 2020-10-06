@@ -1,12 +1,14 @@
 package com.droukos.authservice.service.auth;
 
+import com.droukos.authservice.environment.dto.RequesterRefreshTokenData;
 import com.droukos.authservice.environment.dto.client.auth.UpdateEmail;
 import com.droukos.authservice.environment.dto.client.auth.UpdatePassword;
 import com.droukos.authservice.environment.dto.client.auth.UpdateRole;
 import com.droukos.authservice.environment.dto.client.auth.login.LoginRequest;
 import com.droukos.authservice.environment.enums.Regexes;
-import com.droukos.authservice.environment.security.JwtService;
 import com.droukos.authservice.environment.security.TokenService;
+import com.droukos.authservice.environment.security.tokens.AccessJwtService;
+import com.droukos.authservice.environment.security.tokens.RefreshJwtService;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.repo.UserRepository;
 import lombok.NonNull;
@@ -19,18 +21,18 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.droukos.authservice.environment.security.HttpExceptionFactory.badRequest;
+import static com.droukos.authservice.util.factories.HttpExceptionFactory.badRequest;
 
 @Service
 @RequiredArgsConstructor
 public class AuthServices {
 
   @NonNull private final UserRepository userRepository;
-  @NonNull private final JwtService jwtService;
+  @NonNull private final AccessJwtService accessJwtService;
+  @NonNull private final RefreshJwtService refreshJwtService;
   @NonNull private final TokenService tokenService;
   private final BiConsumer<UserRes, ServerRequest> setServerRequestToUser =
       UserRes::setServerRequest;
-  private final BiConsumer<UserRes, String> setUserDeviceToUser = UserRes::setUserDevice;
 
   public Mono<UserRes> getUser(LoginRequest loginRequest) {
     Predicate<String> isEmail = userInput -> userInput.matches(Regexes.EMAIL.getRegex());
@@ -49,23 +51,27 @@ public class AuthServices {
   }
 
   public Mono<UserRes> getUserFromRequest(ServerRequest request) {
+
     return userRepository
-        .findById(jwtService.getUserIdClaim(request))
+        .findById(accessJwtService.getUserIdClaim(request))
         .defaultIfEmpty(new UserRes())
         .flatMap(this::errorCaseUserNotExist)
         .doOnNext(userRes -> setServerRequestToUser.accept(userRes, request))
-        .doOnNext(userRes -> setUserDeviceToUser.accept(userRes, jwtService.getDevice(request)));
+        .flatMap(accessJwtService::requesterDataDtoFromRequest);
   }
 
   public Mono<UserRes> getUserFromHttpCookieRequest(ServerRequest request) {
     String refToken = tokenService.getRefreshToken(request);
     return userRepository
-        .findFirstById(jwtService.getUserIdClaim(refToken))
+        .findFirstById(refreshJwtService.getUserIdClaim(refToken))
         .defaultIfEmpty(new UserRes())
         .flatMap(this::errorCaseUserNotExist)
         .doOnNext(userRes -> setServerRequestToUser.accept(userRes, request))
-        .doOnNext(userRes -> setUserDeviceToUser.accept(userRes, jwtService.getDevice(refToken)))
-        .doOnNext(userRes -> userRes.setRefreshToken(refToken));
+        .doOnNext(
+            userRes ->
+                userRes.setRequesterRefreshTokenData(
+                    RequesterRefreshTokenData.builder().token(refToken).build()))
+        .flatMap(refreshJwtService::requesterDataDtoFromToken);
   }
 
   public Mono<UserRes> getUserByPathVarId(ServerRequest request) {
@@ -75,7 +81,7 @@ public class AuthServices {
             .defaultIfEmpty(new UserRes())
             .flatMap(this::errorCaseUserNotExist)
             .doOnNext(userRes -> setServerRequestToUser.accept(userRes, request))
-            .doOnNext(userRes -> setUserDeviceToUser.accept(userRes, jwtService.getDevice(request)))
+            .flatMap(accessJwtService::requesterDataDtoFromRequest)
         : Mono.error(badRequest("Not id given in path var"));
   }
 

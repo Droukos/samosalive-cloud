@@ -7,7 +7,7 @@ public class RedisUtil {
     private RedisUtil(){}
 
     public static String redisTokenK(UserRes user) {
-        return user.getId()+"-"+user.getUserDevice();
+        return user.getId()+"-"+user.getRequesterAccessTokenData().getUserDevice();
     }
     public static String redisTokenK(UserRes user, String device) {
         return user.getId()+"-"+device;

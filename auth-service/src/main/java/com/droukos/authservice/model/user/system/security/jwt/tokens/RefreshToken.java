@@ -6,6 +6,7 @@ import java.util.Date;
 
 @Data
 @ToString
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter

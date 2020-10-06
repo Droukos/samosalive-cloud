@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Address {
+public class AddressModel {
   private String cIso;
   private String state;
   private String city;

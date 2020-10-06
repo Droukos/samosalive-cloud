@@ -1,6 +1,13 @@
 package com.droukos.authservice.environment.security;
 
+import com.droukos.authservice.config.jwt.AccessTokenConfig;
+import com.droukos.authservice.config.jwt.ClaimsConfig;
+import com.droukos.authservice.config.jwt.RefreshTokenConfig;
+import com.droukos.authservice.environment.dto.RequesterAccessTokenData;
+import com.droukos.authservice.environment.dto.RequesterRefreshTokenData;
 import com.droukos.authservice.environment.interfaces.JwtToken;
+import com.droukos.authservice.environment.security.tokens.AccessJwtService;
+import com.droukos.authservice.environment.security.tokens.RefreshJwtService;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.model.user.system.security.jwt.platforms.AndroidJWT;
 import com.droukos.authservice.model.user.system.security.jwt.platforms.IosJWT;
@@ -9,7 +16,6 @@ import com.droukos.authservice.model.user.system.security.jwt.tokens.AccessToken
 import com.droukos.authservice.model.user.system.security.jwt.tokens.RefreshToken;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
@@ -29,7 +35,7 @@ import java.util.function.*;
 
 import static com.droukos.authservice.environment.constants.Platforms.ANDROID;
 import static com.droukos.authservice.environment.constants.Platforms.IOS;
-import static com.droukos.authservice.environment.security.HttpExceptionFactory.unauthorized;
+import static com.droukos.authservice.util.factories.HttpExceptionFactory.unauthorized;
 import static com.droukos.authservice.util.RedisUtil.redisTokenK;
 import static java.time.Duration.ofMinutes;
 
@@ -38,21 +44,16 @@ import static java.time.Duration.ofMinutes;
 public class TokenService {
 
   @NonNull private final ReactiveStringRedisTemplate redisTemplate;
-  @NonNull private final JwtService jwtService;
-  @Value("${jwt.identifier}") public String IDENTIFIER;
-  @Value("${user.platform}") public String USER_DEVICE;
-  @Value("${jwt.prefix.bearer}") public String TOKEN_PREFIX;
-  @Value("${jwt.limiter.forweb}") public int WEB_JWT_LIMITER;
-  @Value("${jwt.refresh_token_validity_fornative}") public String REFRESH_TOKEN_VALIDITY_FOR_NATIVE;
-  @Value("${jwt.refresh_token_validity_forweb}") public String REFRESH_TOKEN_VALIDITY_FOR_WEB;
-  @Value("${jwt.access_token_validity}") private long accessTokenMinValidity;
-  @Value("${jwt.refresh.days}") private int JWT_REFRESH_DAYS;
-  @Value("${jwt.refresh.key}") private String REFRESH_TOKEN_KEY;
+  @NonNull private final RefreshJwtService refreshJwtService;
+  @NonNull private final AccessJwtService accessJwtService;
+  @NonNull private final ClaimsConfig claimsConfig;
+  @NonNull private final AccessTokenConfig accessTokenConfig;
+  @NonNull private final RefreshTokenConfig refreshTokenConfig;
 
   public Mono<UserRes> validateRefreshToken(UserRes user) {
-    String refToken = this.getRefreshToken(user.getServerRequest());
+
     Predicate<JwtToken> validRefreshTokenId = jwtToken -> jwtToken.getRefreshTokenId()
-        .equals(jwtService.getTokenId(refToken));
+        .equals(user.getRequesterRefreshTokenData().getTokenId());
 
     Predicate<JwtToken> jwtTokenIsNull = Objects::isNull;
     Predicate<JwtToken> refreshTokenModelIsNull = jwtToken -> jwtToken.getRefreshTokenModel() == null;
@@ -60,38 +61,25 @@ public class TokenService {
     Predicate<JwtToken> refreshTokenIsNull = jwtToken -> jwtTokenIsNull
         .or(refreshTokenModelIsNull.or(refreshTokenIdIsNull)).test(jwtToken);
 
-    return validateToken(jwtService.getDevice(refToken), user, jwtToken ->
+    return validateToken(user.getRequesterRefreshTokenData().getUserDevice(), user, jwtToken ->
             (!refreshTokenIsNull.and(validRefreshTokenId).test(jwtToken))
                     ? Mono.just(user)
                     : Mono.error(unauthorized()));
   }
 
-  public Mono<UserRes> validateAccessToken(UserRes user, String token) {
-    Predicate<JwtToken> jwtTokenIsNull = Objects::isNull;
-    Predicate<JwtToken> accessTokenModelIsNull = jwtToken -> jwtToken.getAccessTokenModel() == null;
-    Predicate<JwtToken> accessTokenIdIsNull = jwtToken -> jwtToken.getAccessTokenId() == null;
-    Predicate<JwtToken> accessTokenIsNull = jwtToken -> jwtTokenIsNull
-        .or(accessTokenModelIsNull.or(accessTokenIdIsNull)).test(jwtToken);
-    Predicate<JwtToken> validAccessTokenId = jwtToken -> jwtToken.getAccessTokenId()
-        .equals(jwtService.getTokenId(token));
-
-    return validateToken(jwtService.getDevice(token), user, jwtToken ->
-            (!accessTokenIsNull.and(validAccessTokenId).test(jwtToken)) ? Mono.just(user) : Mono.error(unauthorized()));
-  }
-
-  public String genNewRefreshToken(UserRes user) {
+  public RequesterRefreshTokenData genNewRefreshToken(UserRes user) {
     var map = new HashMap<String, String>();
-    map.put(IDENTIFIER, UUID.randomUUID().toString());
-    map.put(USER_DEVICE, user.getUserDevice());
-    return jwtService.genRefreshToken(user, map);
+    map.put(claimsConfig.getTokenId(), UUID.randomUUID().toString());
+    map.put(claimsConfig.getPlatform(), user.getRequesterRefreshTokenData().getUserDevice());
+    return refreshJwtService.genRefreshToken(user, map);
   }
 
-  public String deleteAccessTokensForUser(UserRes user) {
+  public void deleteAccessTokensForUser(UserRes user) {
     Predicate<ServerRequest> isTheSameUser = request -> request.pathVariable("id")
-        .equals(jwtService.getUserIdClaim(request));
+        .equals(user.getRequesterAccessTokenData().getUserId());
 
     if (isTheSameUser.test(user.getServerRequest())) {
-      String accessTokenId = jwtService.getTokenId(user.getServerRequest());
+      String accessTokenId = user.getRequesterAccessTokenData().getTokenId();
       Predicate<JwtToken> jwtTokenNotNull = Objects::nonNull;
       Predicate<JwtToken> accessTokenModelNotNull = jwtToken -> jwtToken.getAccessTokenModel() != null;
       Predicate<JwtToken> accessTokenIdMatches = jwtToken -> jwtToken.getAccessTokenId()
@@ -99,11 +87,11 @@ public class TokenService {
       Predicate<JwtToken> accessTokenIdExists = jwtToken -> jwtTokenNotNull.and(accessTokenModelNotNull)
               .and(accessTokenIdMatches).test(jwtToken);
       removeNullJwtModels(user, accessTokenIdExists);
-      return generateNewAccessTokenToUser(user);
+      generateNewAccessTokenToUser(user);
     }
 
     deleteAllAccessTokenModels(user);
-    return null;
+    user.setRequesterAccessTokenData(null);
   }
 
   private void removeNullJwtModels(UserRes targetUser, Predicate<JwtToken> accessTokenExists) {
@@ -119,6 +107,7 @@ public class TokenService {
   }
 
   private void deleteAllAccessTokenModels(UserRes targetUser) {
+    //ToDo delete from Redis access tokens
     if (targetUser.getAndroidJwtModel() != null) {
       targetUser.setAndroidAccessToken(null);
     }
@@ -132,24 +121,22 @@ public class TokenService {
 
 
   public void setNewAccessTokenModel(UserRes userRes, AccessToken accessTokenModel) {
-    switch (userRes.getUserDevice()) {
+    switch (userRes.getRequesterAccessTokenData().getUserDevice()) {
       case ANDROID -> userRes.setAndroidAccessToken(accessTokenModel);
       case IOS -> userRes.setIosAccessToken(accessTokenModel);
       default -> userRes.setWebAccessToken(accessTokenModel);
     }
   }
 
-  public String generateNewAccessTokenToUser(UserRes user) {
-    user.setAccessToken(genNewAccessToken(user));
-    setUserNewAccToken(user);
-    return user.getAccessToken();
+  public void generateNewAccessTokenToUser(UserRes user) {
+    user.setRequesterAccessTokenData(genNewAccessToken(user));
   }
 
-  public String genNewAccessToken(UserRes user) {
+  public RequesterAccessTokenData genNewAccessToken(UserRes user) {
     HashMap<String, String> map = new HashMap<>();
-    map.put(IDENTIFIER, UUID.randomUUID().toString());
-    map.put(USER_DEVICE, user.getUserDevice());
-    return jwtService.generateAccessToken(user, map);
+    map.put(claimsConfig.getTokenId(), UUID.randomUUID().toString());
+    map.put(claimsConfig.getPlatform(), user.getRequesterAccessTokenData().getUserDevice());
+    return accessJwtService.generateAccessToken(user, map);
   }
 
   public Mono<UserRes> validateToken(String userDevice, UserRes user, Function<JwtToken, Mono<UserRes>> validateToken) {
@@ -160,10 +147,12 @@ public class TokenService {
     };
   }
 
-  public Mono<Boolean> redisSetUserToken(UserRes userRes, String accessToken) {
+  public Mono<Boolean> redisSetUserToken(UserRes userRes) {
     return redisTemplate
             .opsForValue()
-            .set(redisTokenK(userRes), jwtService.getTokenId(accessToken), ofMinutes(accessTokenMinValidity));
+            .set(redisTokenK(userRes),
+                    userRes.getRequesterAccessTokenData().getTokenId(),
+                    ofMinutes(accessTokenConfig.getValidMinutesAll()));
   }
 
   public Mono<Boolean> redisRemoveUserToken(UserRes userRes) {
@@ -172,13 +161,21 @@ public class TokenService {
 
 
   public void updateUserWithNewTokens(UserRes user) {
-    String userIP = user.getServerRequest().remoteAddress().toString().replace("Optional[", "")
-        .replace("]", ""); //Remove Optional[*userIPAndPort*]
-    RefreshToken reTokenModel = new RefreshToken(jwtService.getTokenId(user.getRefreshToken()), userIP,
-        jwtService.getExpDate(user.getRefreshToken()));
-    AccessToken accTokenModel = new AccessToken(jwtService.getTokenId(user.getAccessToken()));
+    String userIP = user.getServerRequest()
+            .remoteAddress()
+            .toString()
+            .replace("Optional[", "")
+            .replace("]", ""); //Remove Optional[*userIPAndPort*]
+    RefreshToken reTokenModel = RefreshToken.builder()
+            .id(user.getRequesterRefreshTokenData().getTokenId())
+            .ip(userIP)
+            .exp(user.getRequesterRefreshTokenData().getExpiration())
+            .build();
+    AccessToken accTokenModel = AccessToken.builder()
+            .id(user.getRequesterAccessTokenData().getTokenId())
+            .build();
 
-    switch (user.getUserDevice()) {
+    switch (user.getRequesterAccessTokenData().getUserDevice()) {
       case ANDROID -> user.setAndroidJwtModel(new AndroidJWT(reTokenModel, accTokenModel));
       case IOS -> user.setIosJwtModel(new IosJWT(reTokenModel, accTokenModel));
       default -> user.setWebJwtModel(new WebJWT(reTokenModel, accTokenModel));
@@ -186,32 +183,35 @@ public class TokenService {
   }
 
   public void setUserNewAccToken(UserRes user) {
-    switch (user.getUserDevice()) {
-      case ANDROID -> user.setAndroidAccessToken(new AccessToken(jwtService.getTokenId(user.getAccessToken())));
-      case IOS -> user.setIosAccessToken(new AccessToken(jwtService.getTokenId(user.getAccessToken())));
-      default -> user.setWebAccessToken(new AccessToken(jwtService.getTokenId(user.getAccessToken())));
+    switch (user.getRequesterAccessTokenData().getUserDevice()) {
+      case ANDROID -> user.setAndroidAccessToken(new AccessToken(user.getRequesterAccessTokenData().getTokenId()));
+      case IOS -> user.setIosAccessToken(new AccessToken(user.getRequesterAccessTokenData().getTokenId()));
+      default -> user.setWebAccessToken(new AccessToken(user.getRequesterAccessTokenData().getTokenId()));
     }
   }
 
-  public ResponseCookie refreshHttpCookie(String refreshToken) {
-    return switch (jwtService.getDevice(refreshToken)) {
-      case ANDROID, IOS -> ResponseCookie.from(REFRESH_TOKEN_KEY, refreshToken)
-          .httpOnly(true)
-          .maxAge(jwtService.getRefTokenAndroidIosExpDate().getNano())
-          //.sameSite("strict")
-          //.path("/api/auth/token")
-          .build();
-      default -> ResponseCookie.from(REFRESH_TOKEN_KEY, refreshToken)
-          .httpOnly(true)
-          .maxAge(jwtService.getRefTokenWebExpDate().getNano())
-          //.sameSite("strict")
-          //.path("/api/auth/token")
-          .build();
+  public ResponseCookie refreshHttpCookie(UserRes user) {
+
+    return switch (user.getRequesterRefreshTokenData().getUserDevice()) {
+      case ANDROID, IOS ->
+              ResponseCookie.from(refreshTokenConfig.getCookieName(), user.getRequesterRefreshTokenData().getToken())
+                      .httpOnly(true)
+                      .maxAge(refreshJwtService.getRefTokenAndroidIosExpDate().getNano())
+                      //.sameSite("strict")
+                      // .path("/api/auth/token")
+                      .build();
+      default ->
+              ResponseCookie.from(refreshTokenConfig.getCookieName(), user.getRequesterRefreshTokenData().getToken())
+                      .httpOnly(true)
+                      .maxAge(refreshJwtService.getRefTokenWebExpDate().getNano())
+                      //.sameSite("strict")
+                      //.path("/api/auth/token")
+                      .build();
     };
   }
 
   public ResponseCookie removeRefreshHttpCookie() {
-    return ResponseCookie.from(REFRESH_TOKEN_KEY, "")
+    return ResponseCookie.from(refreshTokenConfig.getCookieName(), "")
         .httpOnly(true)
         .maxAge(0)
         .sameSite("strict")
@@ -224,23 +224,23 @@ public class TokenService {
       throw unauthorized("No RefreshToken given");
     };
 
-    if (request.headers().header("Cookie").size() == 0) { unauthorizedRefCookie.get(); }
+    if (request.headers().header("Cookie").isEmpty()) { unauthorizedRefCookie.get(); }
     final String[] refToken = {""};
 
     Arrays.stream(request.headers().header("Cookie").get(0).split(";"))
-        .filter(s -> s.contains(REFRESH_TOKEN_KEY))
+        .filter(s -> s.contains(refreshTokenConfig.getCookieName()))
         .findFirst()
-        .map(s -> s.replace(REFRESH_TOKEN_KEY + "=", ""))
+        .map(s -> s.replace(refreshTokenConfig.getCookieName() + "=", ""))
         .ifPresentOrElse(s -> refToken[0] = s, unauthorizedRefCookie::get);
-    jwtService.getUserIdClaim(refToken[0]);
+    refreshJwtService.getUserIdClaim(refToken[0]);
     return refToken[0];
   }
 
 
   public LocalDateTime refreshTokenExp (UserRes userRes) {
     return LocalDate.from(
-                    jwtService
-                            .getExpDate(getRefreshToken(userRes.getServerRequest()))
+                    userRes.getRequesterRefreshTokenData()
+                            .getExpiration()
                             .toInstant()
                             .atZone(ZoneId.systemDefault())
                             .toLocalDate())
@@ -248,10 +248,10 @@ public class TokenService {
   }
 
   public boolean isRefreshAboutToExp(UserRes userRes) {
-    LocalDateTime day100FromNow = LocalDate.now().plusDays(JWT_REFRESH_DAYS).atStartOfDay();
+    LocalDateTime day100FromNow = LocalDate.now().plusDays(refreshTokenConfig.getRenewDaysAll()).atStartOfDay();
     IntPredicate refreshIsAboutToExpire = jwtRefreshDays ->
                     Duration.between(day100FromNow, refreshTokenExp(userRes)).toDays() < jwtRefreshDays;
-    return refreshIsAboutToExpire.test(JWT_REFRESH_DAYS);
+    return refreshIsAboutToExpire.test(refreshTokenConfig.getRenewDaysAll());
   }
 
   public void updateAccTokenOrTokens(UserRes userRes) {
@@ -263,7 +263,7 @@ public class TokenService {
   }
 
   public String refTokenFromHttpCookie(UserRes user) {
-    return Objects.requireNonNull(user.getServerRequest().cookies().getFirst(REFRESH_TOKEN_KEY))
+    return Objects.requireNonNull(user.getServerRequest().cookies().getFirst(refreshTokenConfig.getCookieName()))
             .getValue();
   }
 }

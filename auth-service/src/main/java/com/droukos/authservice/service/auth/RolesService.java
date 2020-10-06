@@ -1,6 +1,7 @@
 package com.droukos.authservice.service.auth;
 
-import com.droukos.authservice.environment.security.JwtService;
+import com.droukos.authservice.environment.dto.RequesterAccessTokenData;
+import com.droukos.authservice.environment.dto.server.auth.token.NewAccessTokenResponse;
 import com.droukos.authservice.environment.security.TokenService;
 import com.droukos.authservice.model.user.RoleModel;
 import com.droukos.authservice.model.user.UserRes;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 import static com.droukos.authservice.service.validator.auth.ValidatorFactory.validateAddRole;
 import static com.droukos.authservice.service.validator.auth.ValidatorFactory.validateDelRole;
+import static java.time.LocalDateTime.now;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
@@ -24,7 +26,6 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 public class RolesService {
 
   @NonNull private final TokenService tokenService;
-  @NonNull private final JwtService jwtService;
   @NonNull private final TokensService tokensService;
 
   public void validateRoleAddUpdate(UserRes user) {
@@ -37,15 +38,19 @@ public class RolesService {
 
   public void setAllRolesFromDbToDto(UserRes user) {
     user.getUpdateRole()
-        .setRolesOnDb(user.getAllRoles().stream().map(RoleModel::getRole).collect(Collectors.toList()));
+        .setRolesOnDb(
+            user.getAllRoles().stream().map(RoleModel::getRole).collect(Collectors.toList()));
   }
 
   public void addNewRoleToUser(UserRes user) {
     user.getAllRoles()
         .add(
-            RoleModel.build(
-                user.getUpdateRole().getUpdatedRole(),
-                jwtService.getUsername(user.getServerRequest())));
+            RoleModel.builder()
+                .role(user.getUpdateRole().getUpdatedRole())
+                .active(false)
+                .added(now())
+                .addedBy(user.getRequesterAccessTokenData().getUsername())
+                .build());
   }
 
   public void removeSpecifiedRoleFromUser(UserRes user) {
@@ -56,17 +61,20 @@ public class RolesService {
   }
 
   public Mono<ServerResponse> saveUserRole(UserRes user) {
-    String newAccessTokenForUser = tokenService.deleteAccessTokensForUser(user);
-    Predicate<String> sameUser = Objects::nonNull;
+    Predicate<RequesterAccessTokenData> sameUser = Objects::nonNull;
+    tokenService.deleteAccessTokensForUser(user);
 
-    return tokensService
-        .setNewAccessTokenIdToRedis(user)
-        .flatMap(tokensService::saveUserTokenChangesOnDb)
-        .doOnNext(tokensService::setHttpCookieRefTokenToUser)
+    return tokensService.saveUserTokenChangesOnDb(user)
         .flatMap(
             savedUser ->
-                sameUser.test(newAccessTokenForUser)
-                    ? tokensService.setRefTokenOnHttpCookieAndAccessTokenOnBody(savedUser)
+                sameUser.test(user.getRequesterAccessTokenData())
+                    ? tokensService
+                        .setNewAccessTokenIdToRedis(user)
+                        .then(
+                            ok().body(fromValue(
+                                        NewAccessTokenResponse.builder()
+                                            .accessToken(user.getRequesterAccessTokenData().getToken())
+                                            .build())))
                     : ok().body(fromValue("user.role.updated")));
   }
 }

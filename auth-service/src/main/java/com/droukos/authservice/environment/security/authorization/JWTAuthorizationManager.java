@@ -1,7 +1,7 @@
 package com.droukos.authservice.environment.security.authorization;
 
 import com.droukos.authservice.environment.dto.server.SecurityDto;
-import com.droukos.authservice.environment.security.JwtService;
+import com.droukos.authservice.environment.security.tokens.AccessJwtService;
 import io.jsonwebtoken.Claims;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class JWTAuthorizationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
 
-  @NonNull private final JwtService jwtService;
+  @NonNull private final AccessJwtService accessJwtService;
   @NonNull private final AuthorizationProvider authorizationProvider;
 
   public Mono<AuthorizationDecision> doAuthorization(Claims claims) {
@@ -35,7 +35,7 @@ public class JWTAuthorizationManager implements ReactiveAuthorizationManager<Aut
             .doOnNext(s -> s.setAuthorizationContext(context))
             .doOnNext(s -> s.setHttpRequest(context.getExchange().getRequest()))
             .flatMap(authorizationProvider::runSec)
-            .then(jwtService.fetchClaims(context))
+            .then(accessJwtService.fetchClaims(context))
             .flatMap(this::doAuthorization);
   }
 }

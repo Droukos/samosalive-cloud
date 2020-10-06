@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 
 import static com.droukos.authservice.environment.constants.Platforms.ANDROID;
 import static com.droukos.authservice.environment.constants.Platforms.IOS;
-import static com.droukos.authservice.environment.security.HttpBodyBuilderFactory.okJson;
+import static com.droukos.authservice.util.factories.HttpBodyBuilderFactory.okJson;
 import static java.time.LocalDateTime.now;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
@@ -31,7 +31,7 @@ public class LogoutService {
     private final Predicate<UserRes> webJwtModelIsNull = userToCheck -> userToCheck.getWebJwtModel() == null;
 
     public void nullifyUserJwtModel(UserRes user) {
-        switch (user.getUserDevice()) {
+        switch (user.getRequesterAccessTokenData().getUserDevice()) {
             case ANDROID -> user.setAndroidJwtModel(null);
             case IOS -> user.setIosJwtModel(null);
             default -> user.setWebJwtModel(null);
@@ -45,7 +45,7 @@ public class LogoutService {
     }
 
     public void saveThisLogoutTime(UserRes user) {
-        switch (user.getUserDevice()) {
+        switch (user.getRequesterAccessTokenData().getUserDevice()) {
             case ANDROID -> user.setAndroidLastLogout(now());
             case IOS -> user.setIosLastLogout(now());
             default -> user.setWebLastLogout(now());
