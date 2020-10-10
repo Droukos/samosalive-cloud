@@ -2,7 +2,7 @@ package com.droukos.authservice.environment.security.tokens;
 
 import com.droukos.authservice.config.jwt.AccessTokenConfig;
 import com.droukos.authservice.config.jwt.ClaimsConfig;
-import com.droukos.authservice.environment.dto.RequesterAccessTokenData;
+import com.droukos.authservice.environment.dto.NewAccTokenData;
 import com.droukos.authservice.model.user.RoleModel;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.util.DateUtils;
@@ -45,14 +45,6 @@ public class AccessJwtService {
         .get(0)
         .replace(accessTokenConfig.getTokenPrefix(), "")
         .trim();
-  }
-
-  public Mono<UserRes> requesterDataDtoFromRequest(UserRes user) {
-    return Mono.just(getAuthHeader(user.getServerRequest()))
-        .flatMap(this::getAllClaimsMono)
-        .flatMap(this::populateAccessTokenUserDataMono)
-        .doOnNext(user::setRequesterAccessTokenData)
-        .then(Mono.just(user));
   }
 
   public Mono<Claims> getAllClaimsMono(String token) {
@@ -111,34 +103,19 @@ public class AccessJwtService {
         .get(RedisUtil.redisTokenK(userId, userDevice))
         .switchIfEmpty(Mono.just(""))
         .flatMap(
-            value -> (value.isEmpty() || !value.equals(tokenId))
+            value ->
+                (value.isEmpty() || !value.equals(tokenId))
                     ? Mono.error(unauthorized())
                     : Mono.just(claimsJws.getBody()));
   }
 
-  @SuppressWarnings("unchecked")
-  private RequesterAccessTokenData populateAccessTokenUserData(Claims claims) {
-    return RequesterAccessTokenData.builder()
-        .userId(claims.get(claimsConfig.getUserId(), String.class))
-        .username(claims.getSubject())
-        .tokenId(claims.get(claimsConfig.getTokenId(), String.class))
-        .roles(claims.get(claimsConfig.getAuthorities(), List.class))
-        .userDevice(claims.get(claimsConfig.getPlatform(), String.class))
-        .build();
-  }
-
-  private Mono<RequesterAccessTokenData> populateAccessTokenUserDataMono(Claims claims) {
-    return Mono.just(populateAccessTokenUserData(claims));
-  }
-
-  public RequesterAccessTokenData generateAccessToken(
-      UserRes user, Map<String, String> issueInfo) {
+  public Mono<NewAccTokenData> generateAccessToken(UserRes user, Map<String, String> issueInfo) {
 
     return tokenGenerator(
         user, issueInfo, now().plusMinutes(accessTokenConfig.getValidMinutesAll()));
   }
 
-  private RequesterAccessTokenData tokenGenerator(
+  private Mono<NewAccTokenData> tokenGenerator(
       UserRes user, Map<String, String> issueInfo, LocalDateTime validityDate) {
 
     List<String> roles =
@@ -159,13 +136,8 @@ public class AccessJwtService {
             .setExpiration(dateToExpire)
             .compact();
 
-    return RequesterAccessTokenData.builder()
-                .token(accessToken)
-                .tokenId(tokenId)
-                .userId(user.getId())
-                .userDevice(platform)
-                .roles(roles)
-                .expiration(dateToExpire)
-                .build();
+    return Mono.just(
+        new NewAccTokenData(
+            accessToken, tokenId, user.getId(), user.getUser(), platform, dateToExpire, roles));
   }
 }

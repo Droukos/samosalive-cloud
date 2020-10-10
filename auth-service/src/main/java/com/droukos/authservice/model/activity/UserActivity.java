@@ -1,10 +1,14 @@
 package com.droukos.authservice.model.activity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Data @ToString
-@NoArgsConstructor @AllArgsConstructor
-@Getter @Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 public class UserActivity {
-    private String id;
+  private String id;
 }

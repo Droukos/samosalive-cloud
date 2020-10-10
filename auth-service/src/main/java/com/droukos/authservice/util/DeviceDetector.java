@@ -1,16 +1,14 @@
 package com.droukos.authservice.util;
 
-import com.droukos.authservice.environment.dto.RequesterAccessTokenData;
-import com.droukos.authservice.environment.dto.RequesterRefreshTokenData;
-import com.droukos.authservice.model.user.UserRes;
+import org.springframework.web.reactive.function.server.ServerRequest;
 
 import java.util.List;
 
 public class DeviceDetector {
   private DeviceDetector() {}
 
-  public static void detectUserDeviceOs(UserRes userRes) {
-    List<String> userAgent = userRes.getServerRequest().headers().header("User-Agent");
+  public static String detectUserDeviceOs(ServerRequest request) {
+    List<String> userAgent = request.headers().header("User-Agent");
     String os;
 
     if (userAgent.isEmpty()) {
@@ -28,7 +26,6 @@ public class DeviceDetector {
         os = "web";
       }
     }
-    userRes.setRequesterAccessTokenData(RequesterAccessTokenData.builder().userDevice(os).build());
-    userRes.setRequesterRefreshTokenData(RequesterRefreshTokenData.builder().userDevice(os).build());
+    return os;
   }
 }

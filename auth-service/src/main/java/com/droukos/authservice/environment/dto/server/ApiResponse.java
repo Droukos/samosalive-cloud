@@ -1,14 +1,17 @@
 package com.droukos.authservice.environment.dto.server;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Data @ToString
-@AllArgsConstructor @NoArgsConstructor
-@Setter @Getter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class ApiResponse {
 
-    private int status;
-    private String message;
-    private Object result;
-
+  private int status;
+  private String message;
+  private Object result;
 }

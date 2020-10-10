@@ -26,7 +26,7 @@ public class AuthRouter {
                         .PUT(REVOKE_TOKENS.getUrl()     , accept(APPLICATION_JSON), authHandler::revokeTokens)
                         .PUT(PUT_ROLE_ADD.getUrl()      , accept(APPLICATION_JSON), authHandler::userRoleAdd)
                         .PUT(PUT_ROLE_DEL.getUrl()      , accept(APPLICATION_JSON), authHandler::userRoleDel)
-                        .PUT(LOGOUT.getUrl()            , accept(APPLICATION_JSON), authHandler::logout)
+                        .PUT(LOGOUT.getUrl()            , accept(APPLICATION_JSON), request -> authHandler.logout())
                 ).build();
     }
 }

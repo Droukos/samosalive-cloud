@@ -1,23 +1,24 @@
 package com.droukos.authservice.service.auth;
 
-import com.droukos.authservice.environment.dto.RequesterRefreshTokenData;
+import com.droukos.authservice.environment.dto.NewAccTokenData;
+import com.droukos.authservice.environment.dto.RequesterRefTokenData;
 import com.droukos.authservice.environment.dto.client.auth.UpdateEmail;
 import com.droukos.authservice.environment.dto.client.auth.UpdatePassword;
 import com.droukos.authservice.environment.dto.client.auth.UpdateRole;
 import com.droukos.authservice.environment.dto.client.auth.login.LoginRequest;
 import com.droukos.authservice.environment.enums.Regexes;
 import com.droukos.authservice.environment.security.TokenService;
-import com.droukos.authservice.environment.security.tokens.AccessJwtService;
 import com.droukos.authservice.environment.security.tokens.RefreshJwtService;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.repo.UserRepository;
+import com.droukos.authservice.util.SecurityUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -28,104 +29,83 @@ import static com.droukos.authservice.util.factories.HttpExceptionFactory.badReq
 public class AuthServices {
 
   @NonNull private final UserRepository userRepository;
-  @NonNull private final AccessJwtService accessJwtService;
-  @NonNull private final RefreshJwtService refreshJwtService;
   @NonNull private final TokenService tokenService;
-  private final BiConsumer<UserRes, ServerRequest> setServerRequestToUser =
-      UserRes::setServerRequest;
+  @NonNull private final RefreshJwtService refreshJwtService;
 
   public Mono<UserRes> getUser(LoginRequest loginRequest) {
     Predicate<String> isEmail = userInput -> userInput.matches(Regexes.EMAIL.getRegex());
     Function<String, Mono<UserRes>> fetchUser =
-        user ->
-            (isEmail.test(user)
+        user -> isEmail.test(user)
                 ? userRepository.findFirstByEmail(user)
-                : userRepository.findFirstByUser(user));
+                : userRepository.findFirstByUser(user);
 
     return fetchUser
         .apply(loginRequest.getUser().toLowerCase())
-        .defaultIfEmpty(new UserRes())
-        .flatMap(this::errorCaseUserNotExist)
-        .doOnNext(user -> user.setServerRequest(loginRequest.getRequest()))
-        .doOnNext(user -> user.setLoginRequest(loginRequest));
+        .switchIfEmpty(Mono.error(badRequest("User does not exist")));
   }
 
-  public Mono<UserRes> getUserFromRequest(ServerRequest request) {
+   public Mono<UserRes> getUserFromSecurityContext(SecurityContext context) {
 
     return userRepository
-        .findById(accessJwtService.getUserIdClaim(request))
-        .defaultIfEmpty(new UserRes())
-        .flatMap(this::errorCaseUserNotExist)
-        .doOnNext(userRes -> setServerRequestToUser.accept(userRes, request))
-        .flatMap(accessJwtService::requesterDataDtoFromRequest);
-  }
+        .findById(SecurityUtil.getRequesterUserId(context))
+        .switchIfEmpty(Mono.error(badRequest("User does not exist")));
+   }
 
-  public Mono<UserRes> getUserFromHttpCookieRequest(ServerRequest request) {
-    String refToken = tokenService.getRefreshToken(request);
+   public Mono<RequesterRefTokenData> getRequesterRefreshData(ServerRequest request) {
+    return Mono.just(tokenService.getRequesterRefreshData(request));
+   }
+
+   public Mono<UserRes> getUserFromHttpCookieRequest(ServerRequest request) {
     return userRepository
-        .findFirstById(refreshJwtService.getUserIdClaim(refToken))
-        .defaultIfEmpty(new UserRes())
-        .flatMap(this::errorCaseUserNotExist)
-        .doOnNext(userRes -> setServerRequestToUser.accept(userRes, request))
-        .doOnNext(
-            userRes ->
-                userRes.setRequesterRefreshTokenData(
-                    RequesterRefreshTokenData.builder().token(refToken).build()))
-        .flatMap(refreshJwtService::requesterDataDtoFromToken);
-  }
+        .findFirstById(refreshJwtService.getUserIdClaim(tokenService.getRefreshToken(request)))
+        .switchIfEmpty(Mono.error(badRequest("Empty Login Request")));
+   }
 
   public Mono<UserRes> getUserByPathVarId(ServerRequest request) {
     return (request.pathVariables().size() > 0)
         ? userRepository
             .findFirstById(request.pathVariable("id"))
-            .defaultIfEmpty(new UserRes())
-            .flatMap(this::errorCaseUserNotExist)
-            .doOnNext(userRes -> setServerRequestToUser.accept(userRes, request))
-            .flatMap(accessJwtService::requesterDataDtoFromRequest)
+            .switchIfEmpty(Mono.error(badRequest("User not exists")))
         : Mono.error(badRequest("Not id given in path var"));
-  }
-
-  private Mono<UserRes> errorCaseUserNotExist(UserRes user) {
-    return user.getUser() == null
-        ? Mono.error(badRequest("User does not exists"))
-        : Mono.just(user);
   }
 
   public Mono<LoginRequest> createLoginReqDto(ServerRequest request) {
     return request
         .bodyToMono(LoginRequest.class)
-        .defaultIfEmpty(new LoginRequest())
-        .doOnNext(loginRequest -> loginRequest.setRequest(request));
+        .switchIfEmpty(Mono.error(badRequest("Empty Login Request")));
   }
 
   public Mono<UserRes> createUserDto(ServerRequest request) {
     return request
         .bodyToMono(UserRes.class)
-        .defaultIfEmpty(new UserRes())
-        .flatMap(this::errorCaseUserNotExist);
+        .switchIfEmpty(Mono.error(badRequest("Not empty user ")));
   }
 
-  public Mono<UserRes> createUpdateRoleDto(UserRes user) {
-    return user.getServerRequest()
+  public Mono<UpdateRole> createUpdateRoleDto(ServerRequest request) {
+    return request
         .bodyToMono(UpdateRole.class)
-        .defaultIfEmpty(new UpdateRole())
-        .doOnNext(user::setUpdateRole)
-        .then(Mono.just(user));
+        .switchIfEmpty(Mono.error(badRequest("Not empty update role")));
   }
 
-  public Mono<UserRes> createUpdatePasswordDto(UserRes user) {
-    return user.getServerRequest()
+  public Mono<UpdatePassword> createUpdatePasswordDto(ServerRequest request) {
+    return request
         .bodyToMono(UpdatePassword.class)
-        .defaultIfEmpty(new UpdatePassword())
-        .doOnNext(user::setUpdatePassword)
-        .then(Mono.just(user));
+        .switchIfEmpty(Mono.error(badRequest("Bad Update Password Dto")));
   }
 
-  public Mono<UserRes> createUpdateEmailDto(UserRes user) {
-    return user.getServerRequest()
+   public Mono<UpdateEmail> createUpdateEmailDto(ServerRequest request) {
+    return request
         .bodyToMono(UpdateEmail.class)
-        .defaultIfEmpty(new UpdateEmail())
-        .doOnNext(user::setUpdateEmail)
-        .then(Mono.just(user));
+        .switchIfEmpty(Mono.error(badRequest("Bad Update Email Dto")));
+   }
+
+  public boolean accessTokenDataIsNotEmpty(NewAccTokenData tokenData) {
+    return tokenData.getUserId() != null;
+  }
+
+  public boolean isSameUserIdAsPathId(SecurityContext securityContext, ServerRequest request) {
+    return SecurityUtil.getRequesterData(securityContext)
+            .getUserId()
+            .equals(request.pathVariable("id"));
   }
 }

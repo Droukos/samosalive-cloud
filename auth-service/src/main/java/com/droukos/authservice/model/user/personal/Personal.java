@@ -1,20 +1,28 @@
 package com.droukos.authservice.model.user.personal;
 
+import com.droukos.authservice.model.user.UserRes;
 import lombok.*;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
 
-@Data
-@ToString
-@Document
-@Getter
 @AllArgsConstructor
-@Setter
+@NoArgsConstructor
+@Getter
+@ToString
 public class Personal {
-  private String name;
-  private String sur;
-  private Profile prof;
-  private AddressModel addr;
-  private Map<String, PhoneModel> phones;
+  String name;
+  String sur;
+  Profile prof;
+  AddressModel addr;
+  Map<String, PhoneModel> phones;
+
+  public static Personal noUpdate(UserRes user) {
+    return new Personal(
+            user.getName(),
+            user.getSurname(),
+            user.getPrsn().getProf(),
+            user.getPrsn().getAddr(),
+            user.getPrsn().getPhones()
+    );
+  }
 }

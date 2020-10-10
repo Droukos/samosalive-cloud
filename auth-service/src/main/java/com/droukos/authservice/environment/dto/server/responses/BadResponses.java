@@ -4,7 +4,6 @@ import com.droukos.authservice.environment.constants.StatusCodes;
 import com.droukos.authservice.environment.dto.server.ApiResponse;
 import com.droukos.authservice.model.user.UserRes;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,7 +12,6 @@ import reactor.core.publisher.Mono;
 import static com.droukos.authservice.environment.enums.Warnings.*;
 import static org.springframework.web.reactive.function.server.ServerResponse.badRequest;
 
-@Service
 public class BadResponses {
 
     public Mono<ServerResponse> badResponse(Object obj) {

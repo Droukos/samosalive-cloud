@@ -2,7 +2,6 @@ package com.droukos.authservice.service.validator.auth;
 
 import com.droukos.authservice.environment.dto.client.auth.UpdatePassword;
 import com.droukos.authservice.environment.enums.Regexes;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -44,10 +43,5 @@ public class PasswordChangeValidator implements Validator {
         && (updatePassword.getPassNew().length() > 160
             || !updatePassword.getPassNew().matches(Regexes.PASSWORD.getRegex())))
       errors.rejectValue(F_PASSNEW, PASSWORD_NEW_INVALID.getShortWarning());
-
-    if (passIsNotNull
-        && (!new BCryptPasswordEncoder()
-            .matches(updatePassword.getPass(), updatePassword.getPassOnDb())))
-      errors.rejectValue(F_PASS, USER_CREDENTIALS_INVALID.getShortWarning());
   }
 }

@@ -3,16 +3,14 @@ package com.droukos.authservice.environment.constants;
 public class Fields {
     private Fields(){}
 
-    public static final String USERNAME = "user";
-    public static final String USERNAME_CANON = "userC";
-    public static final String PASSWORD = "pass";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
     public static final String EMAIL = "email";
-    public static final String EMAIL_CANON = "emailC";
-    public static final String PASSWORD_CONFRIMED = "passC";
+    public static final String PASSWORD_CONFRIMED = "passwordConfirmed";
 
     public static final String USERINFO_PERSONAL = "prsn.";
-    public static final String NAME = USERINFO_PERSONAL + "name";
-    public static final String SURNAME = USERINFO_PERSONAL + "sur";
+    public static final String NAME = "name";
+    public static final String SURNAME = "surname";
     public static final String PROFILE = USERINFO_PERSONAL + "prof.";
     public static final String AVATAR = PROFILE + "av";
     public static final String DESCRIPTION = PROFILE + "desc";

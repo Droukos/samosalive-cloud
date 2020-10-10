@@ -2,8 +2,7 @@ package com.droukos.authservice.environment.security.tokens;
 
 import com.droukos.authservice.config.jwt.ClaimsConfig;
 import com.droukos.authservice.config.jwt.RefreshTokenConfig;
-import com.droukos.authservice.environment.dto.RequesterAccessTokenData;
-import com.droukos.authservice.environment.dto.RequesterRefreshTokenData;
+import com.droukos.authservice.environment.dto.NewRefTokenData;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.util.DateUtils;
 import io.jsonwebtoken.Claims;
@@ -47,19 +46,7 @@ public class RefreshJwtService {
     return Mono.just(getAllClaims(token));
   }
 
-  public Mono<UserRes> requesterDataDtoFromToken(UserRes user) {
-    return Mono.just(user.getRequesterRefreshTokenData().getToken())
-            .flatMap(this::getAllClaimsMono)
-            .flatMap(this::populateRefreshTokenUserData)
-            .doOnNext(user::setRequesterRefreshTokenData)
-            .doOnNext(requesterRefreshTokenData -> user.setRequesterAccessTokenData(
-                    RequesterAccessTokenData.builder()
-                            .userDevice(requesterRefreshTokenData.getUserDevice())
-                            .build()))
-            .then(Mono.just(user));
-  }
-
-  public RequesterRefreshTokenData genRefreshToken(UserRes user, Map<String, String> issueInfo) {
+  public Mono<NewRefTokenData> genRefreshToken(UserRes user, Map<String, String> issueInfo) {
     String userPlatform = issueInfo.get(claimsConfig.getPlatform());
     return userPlatform.equals(ANDROID) || userPlatform.equals(IOS)
         ? tokenGenerator(user, issueInfo, getRefTokenAndroidIosExpDate())
@@ -74,18 +61,7 @@ public class RefreshJwtService {
     return LocalDateTime.now().plusDays(refreshTokenConfig.getValidDaysWeb());
   }
 
-  private Mono<RequesterRefreshTokenData> populateRefreshTokenUserData(Claims claims) {
-    return Mono.just(
-            RequesterRefreshTokenData.builder()
-                    .userId(claims.get(claimsConfig.getUserId(), String.class))
-                    .username(claims.getSubject())
-                    .tokenId(claims.get(claimsConfig.getTokenId(), String.class))
-                    .expiration(claims.getExpiration())
-                    .userDevice(claims.get(claimsConfig.getPlatform(), String.class))
-                    .build());
-  }
-
-  private RequesterRefreshTokenData tokenGenerator(
+  private Mono<NewRefTokenData> tokenGenerator(
       UserRes user, Map<String, String> issueInfo, LocalDateTime validityDate) {
 
     String tokenId = issueInfo.get(claimsConfig.getTokenId());
@@ -102,12 +78,15 @@ public class RefreshJwtService {
         .setExpiration(dateToExpire)
         .compact();
 
-    return RequesterRefreshTokenData.builder()
-            .token(refToken)
-            .tokenId(tokenId)
-            .userId(user.getId())
-            .userDevice(platform)
-            .expiration(dateToExpire)
-            .build();
+    return Mono.just(
+            new NewRefTokenData(
+                    refToken,
+                    tokenId,
+                    null,
+                    user.getId(),
+                    user.getUser(),
+                    platform,
+                    dateToExpire)
+           );
   }
 }

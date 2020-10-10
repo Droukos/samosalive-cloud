@@ -1,14 +1,21 @@
 package com.droukos.authservice.model.user.system.security.jwt.tokens;
 
+import com.droukos.authservice.environment.dto.NewAccTokenData;
 import lombok.*;
 
-@Data
-@ToString
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Setter
-@Getter
+@Value
 public class AccessToken {
-  private String id;
+  String id;
+
+  public static AccessToken noUpdate(AccessToken accessToken) {
+    return new AccessToken(
+            accessToken.id
+    );
+  }
+
+  public static AccessToken update(NewAccTokenData newAccTokenData) {
+    return new AccessToken(
+            newAccTokenData.getTokenId()
+    );
+  }
 }

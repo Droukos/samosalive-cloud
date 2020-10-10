@@ -1,15 +1,33 @@
 package com.droukos.authservice.model.user.system.security;
 
+import com.droukos.authservice.model.user.UserRes;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
-@ToString
-@AllArgsConstructor
-@Setter
-@Getter
+@Value
 public class AccountBanned {
-    private boolean accBanned;
-    private LocalDateTime until;
+    boolean accBanned;
+    LocalDateTime until;
+
+    public static AccountBanned noUpdate(UserRes user) {
+        return new AccountBanned(
+                user.getSys().getSec().getBan().isAccBanned(),
+                user.getSys().getSec().getBan().getUntil()
+        );
+    }
+
+    public static AccountBanned lockUser() {
+        return new AccountBanned(
+                true,
+                LocalDateTime.now()
+        );
+    }
+
+    public static AccountBanned unlockUser() {
+        return new AccountBanned(
+                false,
+                LocalDateTime.now()
+        );
+    }
 }

@@ -1,26 +1,19 @@
 package com.droukos.authservice.model.user.system;
 
 import com.droukos.authservice.model.user.system.security.Security;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Document
-@Data
-@ToString
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@ToString
 public class UserSystem {
 
-  private Double credStars;
+  Double credStars;
+  LocalDateTime accC;
+  LocalDateTime accU;
+  Security sec;
 
-  private LocalDateTime accC;
-
-  private LocalDateTime accU;
-
-  private Security sec;
 }

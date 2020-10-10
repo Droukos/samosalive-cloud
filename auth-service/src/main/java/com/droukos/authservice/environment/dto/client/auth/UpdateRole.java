@@ -4,10 +4,11 @@ import lombok.*;
 
 import java.util.List;
 
-@Data @ToString
-@NoArgsConstructor @AllArgsConstructor
-@Setter @Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@ToString
 public class UpdateRole {
-    private String updatedRole;
-    private List<String> rolesOnDb;
+  private String updatedRole;
+  private List<String> rolesOnDb;
 }

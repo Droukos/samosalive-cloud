@@ -1,7 +1,11 @@
 package com.droukos.authservice.service.auth;
 
+import com.droukos.authservice.environment.dto.NewAccTokenData;
+import com.droukos.authservice.environment.dto.NewRefTokenData;
+import com.droukos.authservice.environment.dto.client.auth.login.LoginRequest;
 import com.droukos.authservice.environment.dto.server.auth.login.LoginResponse;
 import com.droukos.authservice.environment.security.TokenService;
+import com.droukos.authservice.model.factories.user.res.UserFactoryLogin;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.repo.UserRepository;
 import lombok.NonNull;
@@ -10,14 +14,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-
-import java.util.function.Predicate;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuple3;
 
 import static com.droukos.authservice.environment.constants.Platforms.ANDROID;
 import static com.droukos.authservice.environment.constants.Platforms.IOS;
 import static com.droukos.authservice.util.factories.HttpBodyBuilderFactory.okJson;
 import static com.droukos.authservice.util.factories.HttpExceptionFactory.badRequest;
-import static java.time.LocalDateTime.now;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @Service
@@ -26,52 +29,48 @@ public class LoginService {
 
   @NonNull private final UserRepository userRepository;
   @NonNull private final TokenService tokenService;
+  @NonNull private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-  private final Predicate<UserRes> passwordNotMatch =
-          user -> !new BCryptPasswordEncoder().matches(user.getLoginRequest().getPass(), user.getPass());
+  public Mono<UserRes> validatePassword(Tuple2<LoginRequest, UserRes> objects) {
 
-  public Mono<UserRes> validatePassword(UserRes user) {
-
-    return passwordNotMatch.test(user)
+    return !bCryptPasswordEncoder.matches(
+            objects.getT1().getPass(),
+            objects.getT2().getPass())
         ? Mono.error(badRequest())
-        : Mono.just(user);
+        : Mono.just(objects.getT2());
   }
 
-  public void createNewAccessToken(UserRes user) {
-    user.setRequesterAccessTokenData(tokenService.genNewAccessToken(user));
+  public Mono<NewAccTokenData> createNewAccessToken(UserRes user, String os) {
+    return tokenService.genNewAccessToken(user, os);
   }
 
-  public void createNewRefreshToken(UserRes user) {
-    user.setRequesterRefreshTokenData(tokenService.genNewRefreshToken(user));
+  public Mono<NewRefTokenData> createNewRefreshToken(UserRes user, String os) {
+    return tokenService.genNewRefreshToken(user, os);
   }
 
-  public final Mono<UserRes> saveAccessTokenIdToRedis(UserRes user) {
-    return tokenService.redisSetUserToken(user)
-            .then(Mono.just(user));
+  public final Mono<Tuple3<UserRes, NewAccTokenData, NewRefTokenData>>
+  saveAccessTokenIdToRedis(Tuple3<UserRes, NewAccTokenData, NewRefTokenData> tuple3) {
+
+    return tokenService.redisSetUserToken(tuple3.getT1(), tuple3.getT2())
+            .then(Mono.just(tuple3));
   }
 
-  public final void setUserIsNowOnline(UserRes user) {
-    user.getAppState().setOn(true);
+  public final Mono<Tuple3<UserRes, NewAccTokenData, NewRefTokenData>> saveThisLastLogin
+          (Tuple3<UserRes, NewAccTokenData, NewRefTokenData> tuple3) {
+
+    return Mono.zip(
+            userRepository.save(
+            switch (tuple3.getT2().getUserDevice()) {
+              case ANDROID  -> UserFactoryLogin.androidLoginUpdate(tuple3);
+              case IOS      -> UserFactoryLogin.iosLoginUpdate(tuple3);
+              default       -> UserFactoryLogin.webLoginUpdate(tuple3);
+            }),
+            Mono.just(tuple3.getT2()), Mono.just(tuple3.getT3()));
   }
 
-  public final void saveThisLastLogin(UserRes user) {
-    switch (user.getRequesterAccessTokenData().getUserDevice()) {
-      case ANDROID -> user.setAndroidLastLogin(now());
-      case IOS -> user.setIosLastLogin(now());
-      default -> user.setWebLastLogin(now());
-    }
-  }
-
-  public final void setUserNewTokens(UserRes user) {
-    tokenService.updateUserWithNewTokens(user);
-  }
-
-  public Mono<ServerResponse> loggedInUser(UserRes user) {
-
-       return userRepository.save(user)
-            .flatMap(savedUser ->
-                               okJson()
-                                   .cookie(tokenService.refreshHttpCookie(user))
-                                   .body(fromValue(LoginResponse.build(savedUser, user.getRequesterAccessTokenData().getToken()))));
+  public Mono<ServerResponse> loggedInUser(Tuple3<UserRes, NewAccTokenData, NewRefTokenData> tuple3) {
+       return okJson()
+               .cookie(tokenService.refreshHttpCookie(tuple3.getT3()))
+               .body(fromValue(LoginResponse.build(tuple3.getT1(), tuple3.getT2().getToken())));
   }
 }

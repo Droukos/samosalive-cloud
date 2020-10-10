@@ -7,21 +7,19 @@ import lombok.*;
 
 import java.util.List;
 
-@Data @ToString
-@AllArgsConstructor @NoArgsConstructor
-@Setter @Getter
+@Value
 public class LoginResponse {
-    private String accessToken;
-    private String userid;
-    private String username;
-    private String name;
-    private String surname;
-    private String email;
-    private String avatar;
-    private String description;
-    private List<RoleModel> roleModels;
-    private boolean online;
-    private Integer availability;
+    String accessToken;
+    String userid;
+    String username;
+    String name;
+    String surname;
+    String email;
+    String avatar;
+    String description;
+    List<RoleModel> roleModels;
+    boolean online;
+    Integer availability;
 
     public static LoginResponse build(UserRes user, String accessToken) {
         return new LoginResponse(

@@ -1,17 +1,18 @@
 package com.droukos.authservice.model.user.privacy;
 
-
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
 
-@Data @ToString @Document
-@NoArgsConstructor @AllArgsConstructor
+@ToString
+@Document
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 public class PrivacySettingMap {
-    private Map<String, PrivacySetting> privySets;
-
+  private Map<String, PrivacySetting> privySets;
 }

@@ -1,11 +1,10 @@
 package com.droukos.authservice.environment.dto.client.auth;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
-@Data
 @AllArgsConstructor
+@NoArgsConstructor
+@ToString
 @Getter
 public class SignupInfo {
     private String username;

@@ -1,21 +1,30 @@
 package com.droukos.authservice.model.user.system;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.droukos.authservice.model.user.UserRes;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
-@ToString
-@Document
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@ToString
 public class Verification {
 
-  private boolean ver;
+  boolean ver;
+  LocalDateTime verOn;
 
-  private LocalDateTime verOn;
+  public static Verification noUpdate(UserRes user) {
+    return new Verification(
+            user.getSys().getSec().getVerified().ver,
+            user.getSys().getSec().getVerified().verOn
+    );
+  }
+
+  public static Verification verifyUser() {
+    return new Verification(
+            true,
+            LocalDateTime.now()
+    );
+  }
 }

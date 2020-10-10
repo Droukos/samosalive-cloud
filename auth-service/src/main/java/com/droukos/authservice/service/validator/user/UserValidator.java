@@ -1,5 +1,6 @@
 package com.droukos.authservice.service.validator.user;
 
+import com.droukos.authservice.environment.dto.client.auth.SignupInfo;
 import com.droukos.authservice.environment.enums.Regexes;
 import com.droukos.authservice.model.user.UserRes;
 import org.springframework.validation.Errors;
@@ -31,23 +32,23 @@ public class UserValidator implements Validator {
     rejectIfEmptyOrWhitespace(errors, NAME, NAME_EMPTY.getShortWarning());
     rejectIfEmptyOrWhitespace(errors, SURNAME, SURNAME_EMPTY.getShortWarning());
 
-    UserRes user = (UserRes) o;
+    SignupInfo signupInfo = (SignupInfo) o;
 
-    checkValues(user, errors);
+    checkValues(signupInfo, errors);
   }
 
-  private void checkValues(UserRes user, Errors errors) {
-    if (!user.getUser().matches(VALIDNAME.getRegex()))
+  private void checkValues(SignupInfo signupInfo, Errors errors) {
+    if (!signupInfo.getUsername().matches(VALIDNAME.getRegex()))
       errors.rejectValue(USERNAME, USERNAME_INVALID.getShortWarning());
-    if (!user.getPrsn().getName().matches(VALIDNAME.getRegex()))
+    if (!signupInfo.getName().matches(VALIDNAME.getRegex()))
       errors.rejectValue(NAME, NAME_INVALID.getShortWarning());
-    if (!user.getPrsn().getSur().matches(VALIDNAME.getRegex()))
+    if (!signupInfo.getSurname().matches(VALIDNAME.getRegex()))
       errors.rejectValue(SURNAME, SURNAME_INVALID.getShortWarning());
-    if (user.getPass().length() > 160 || !user.getPass().matches(Regexes.PASSWORD.getRegex()))
+    if (signupInfo.getPassword().length() > 160 || !signupInfo.getPassword().matches(Regexes.PASSWORD.getRegex()))
       errors.rejectValue(PASSWORD, PASSWORD_INVALID.getShortWarning());
-    if (!user.getPass().equals(user.getPassC()))
+    if (!signupInfo.getPassword().equals(signupInfo.getPasswordConfirmed()))
       errors.rejectValue(PASSWORD_CONFRIMED, PASSWORD_NOMATCH_ERROR.getShortWarning());
-    if (user.getEmail().length() > 160 || !user.getEmail().matches(Regexes.EMAIL.getRegex()))
+    if (signupInfo.getEmail().length() > 160 || !signupInfo.getEmail().matches(Regexes.EMAIL.getRegex()))
       errors.rejectValue(EMAIL, EMAIL_INVALID.getShortWarning());
   }
 }

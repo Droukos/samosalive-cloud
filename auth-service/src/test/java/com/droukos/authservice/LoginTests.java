@@ -1,6 +1,7 @@
 package com.droukos.authservice;
 
 import com.droukos.authservice.environment.dto.client.auth.login.LoginRequest;
+import com.droukos.authservice.model.user.personal.AddressModel;
 import com.droukos.authservice.repo.UserRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -29,7 +30,7 @@ class LoginTests {
     private WebTestClient webClient;
 
     @Test
-    void loginOnAllLayers() throws Exception {
+    void loginOnAllLayers() {
         LoginRequest loginRequest = new LoginRequest("kostas","xaxaxa96");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonStr = gson.toJson(loginRequest);

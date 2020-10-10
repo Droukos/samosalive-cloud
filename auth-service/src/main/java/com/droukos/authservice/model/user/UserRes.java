@@ -1,75 +1,79 @@
 package com.droukos.authservice.model.user;
 
-import com.droukos.authservice.environment.dto.RequesterAccessTokenData;
-import com.droukos.authservice.environment.dto.RequesterRefreshTokenData;
-import com.droukos.authservice.environment.dto.client.auth.UpdateEmail;
-import com.droukos.authservice.environment.dto.client.auth.UpdatePassword;
-import com.droukos.authservice.environment.dto.client.auth.UpdateRole;
-import com.droukos.authservice.environment.dto.client.auth.login.LoginRequest;
 import com.droukos.authservice.model.user.personal.Personal;
 import com.droukos.authservice.model.user.privacy.PrivacySettingMap;
 import com.droukos.authservice.model.user.system.UserSystem;
+import com.droukos.authservice.model.user.system.Verification;
+import com.droukos.authservice.model.user.system.security.AccountBanned;
+import com.droukos.authservice.model.user.system.security.AccountLocked;
+import com.droukos.authservice.model.user.system.security.auth.PasswordReset;
 import com.droukos.authservice.model.user.system.security.jwt.platforms.AndroidJWT;
 import com.droukos.authservice.model.user.system.security.jwt.platforms.IosJWT;
 import com.droukos.authservice.model.user.system.security.jwt.platforms.WebJWT;
-import com.droukos.authservice.model.user.system.security.jwt.tokens.AccessToken;
-import lombok.*;
+import com.droukos.authservice.model.user.system.security.logins.AndroidLogins;
+import com.droukos.authservice.model.user.system.security.logins.IosLogins;
+import com.droukos.authservice.model.user.system.security.logins.WebLogins;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.web.reactive.function.server.ServerRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@ToString
-@Data
+@AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
-@Setter
 @Getter
 @Document
 public class UserRes {
 
-  @Id private String id;
-  @NonNull @Indexed private String user;
-  @NonNull private String userC;
-  @NonNull private String pass;
-  @NonNull @Transient private String passC;
-  @NonNull @Indexed private String email;
-  @NonNull private String emailC;
-  @NonNull @Indexed private List<RoleModel> allRoles;
-  @NonNull private Personal prsn;
-  @NonNull private PrivacySettingMap privy;
-  @NonNull private UserSystem sys;
-  @NonNull private AppState appState;
+  private @Id String id;
+  private @Indexed String user;
+  private String userC;
+  private String pass;
+  private @Transient String passC;
+  private @Indexed String email;
+  private String emailC;
+  private @Indexed List<RoleModel> allRoles;
+  private Personal prsn;
+  private PrivacySettingMap privy;
+  private UserSystem sys;
+  private AppState appState;
 
-  /*Services Fields*/
-  @Transient private ServerRequest serverRequest;
-  @Transient private RequesterAccessTokenData requesterAccessTokenData;
-  @Transient private RequesterRefreshTokenData requesterRefreshTokenData;
+  /*
+  * User entity factories
+  */
 
-  /*Services Dto*/
-  @Transient private LoginRequest loginRequest;
-  @Transient private UpdateRole updateRole;
-  @Transient private UpdateEmail updateEmail;
-  @Transient private UpdatePassword updatePassword;
+  public static UserRes passwordUpdate(String newPass, UserRes user) {
+
+    return new UserRes(
+        user.id,
+        user.user,
+        user.userC,
+        newPass,
+        user.passC,
+        user.email,
+        user.emailC,
+        user.allRoles,
+        user.prsn,
+        user.privy,
+        user.sys,
+        user.appState);
+  }
+
+  /*
+   * Shortcut getters for inside user objects
+   */
 
   public String getName() {
     return this.prsn.getName();
   }
 
-  public void setName(String name) {
-    this.prsn.setName(name);
-  }
-
   public String getSurname() {
     return this.prsn.getSur();
-  }
-
-  public void setSurname(String surname) {
-    this.prsn.setSur(surname);
   }
 
   public String getDescription() {
@@ -80,72 +84,41 @@ public class UserRes {
     return this.prsn.getProf().getAv();
   }
 
-  public void setAndroidLastLogin(LocalDateTime time) {
-    this.sys.getSec().getAndroidLog().setLLogin(time);
-  }
-
-  public void setIosLastLogin(LocalDateTime time) {
-    this.sys.getSec().getIosLog().setLLogin(time);
-  }
-
-  public void setWebLastLogin(LocalDateTime time) {
-    this.sys.getSec().getWebLog().setLLogin(time);
-  }
-
-  public void setAndroidLastLogout(LocalDateTime time) {
-    this.sys.getSec().getAndroidLog().setLLogout(time);
-  }
-
-  public void setIosLastLogout(LocalDateTime time) {
-    this.sys.getSec().getIosLog().setLLogout(time);
-  }
-
-  public void setWebLastLogout(LocalDateTime time) {
-    this.sys.getSec().getWebLog().setLLogout(time);
-  }
-
   public AndroidJWT getAndroidJwtModel() {
     return this.sys.getSec().getAndroidJWT();
   }
 
-  public void setAndroidJwtModel(AndroidJWT androidJwtModel) {
-    this.sys.getSec().setAndroidJWT(androidJwtModel);
-  }
-
   public IosJWT getIosJwtModel() {
-    return this.sys.getSec().getIosJWT();
-  }
-
-  public void setIosJwtModel(IosJWT iosJwtModel) {
-    this.sys.getSec().setIosJWT(iosJwtModel);
+    return this.getSys().getSec().getIosJWT();
   }
 
   public WebJWT getWebJwtModel() {
-    return this.sys.getSec().getWebJWT();
+    return this.getSys().getSec().getWebJWT();
   }
 
-  public void setWebJwtModel(WebJWT webJwtModel) {
-    this.sys.getSec().setWebJWT(webJwtModel);
+  public AndroidLogins getAndroidLoginsModel() { return this.getSys().getSec().getAndroidLog();}
+
+  public IosLogins getIosLoginsModel() { return this.getSys().getSec().getIosLog(); }
+
+  public WebLogins getWebLoginsModel() { return this.getSys().getSec().getWebLog(); }
+
+  public List<PasswordReset> getPasswordResetList() { return this.getSys().getSec().getPassResets(); }
+
+  public Verification getVerificationModel() { return this.getSys().getSec().getVerified(); }
+
+  public AccountLocked getAccountLockedModel() { return this.getSys().getSec().getLock(); }
+
+  public AccountBanned getAccountBannedModel() { return this.getSys().getSec().getBan(); }
+
+  public LocalDateTime getAndroidLastLogin() {
+    return this.getSys().getSec().getAndroidLog().getLLogin();
+  }
+
+  public LocalDateTime getAndroidLastLogout() {
+    return this.getSys().getSec().getAndroidLog().getLLogout();
   }
 
   public String getAndroidAccessTokenId() {
-    return this.sys.getSec().getAndroidJWT().getAccToken().getId();
+    return this.getSys().getSec().getAndroidJWT().getAccToken().getId();
   }
-
-  public void setAndroidAccessTokenId(String id) {
-    this.sys.getSec().getAndroidJWT().getAccToken().setId(id);
-  }
-
-  public void setAndroidAccessToken(AccessToken accessToken) {
-    this.sys.getSec().getAndroidJWT().setAccToken(accessToken);
-  }
-
-  public void setIosAccessToken(AccessToken accessToken) {
-    this.sys.getSec().getIosJWT().setAccToken(accessToken);
-  }
-
-  public void setWebAccessToken(AccessToken accessToken) {
-    this.sys.getSec().getWebJWT().setAccToken(accessToken);
-  }
-
 }

@@ -9,10 +9,8 @@ import org.springframework.context.annotation.Configuration;
 public class AccessTokenConfig {
     @Value("${jwt.prefix.bearer}")
     private String tokenPrefix;
-
     @Value("${jwt.token.access.secret-key}")
     private String secretKey;
-
     @Value("${jwt.token.access.validity.all.minutes}")
     private long validMinutesAll;
 }

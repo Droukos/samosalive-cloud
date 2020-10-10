@@ -1,5 +1,6 @@
 package com.droukos.authservice.util;
 
+import java.util.List;
 import java.util.function.Function;
 
 import static com.droukos.authservice.environment.constants.authorities.Roles.*;
@@ -46,5 +47,13 @@ public class RolesUtil {
 
     private static String clearRole(String role){
         return role.replace("ROLE_","");
+    }
+
+    public static boolean roleChangeValidAdmins(List<String> roles) {
+      return roles.stream()
+              .anyMatch(role -> switch (role) {
+                  case GENERAL_ADMIN, AREA_ADMIN -> true;
+                  default -> false;
+              });
     }
 }

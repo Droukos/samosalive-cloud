@@ -1,10 +1,10 @@
 package com.droukos.authservice.environment.security;
 
+import com.droukos.authservice.config.jwt.AccessTokenConfig;
 import com.droukos.authservice.environment.security.authentication.AuthenticationManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -20,9 +20,7 @@ import reactor.core.publisher.Mono;
 public class SecurityContextRepository implements ServerSecurityContextRepository {
 
   @NonNull private final AuthenticationManager authenticationManager;
-
-  @Value("${jwt.prefix.bearer}")
-  private String tokenPrefix;
+  @NonNull private final AccessTokenConfig accessTokenConfig;
 
   @Override
   public Mono<Void> save(ServerWebExchange swe, SecurityContext sc) {
@@ -35,8 +33,8 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
     String authHeader = swe.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
     String authToken = null;
-    if (authHeader != null && authHeader.startsWith(tokenPrefix))
-      authToken = authHeader.replace(tokenPrefix, "").trim();
+    if (authHeader != null && authHeader.startsWith(accessTokenConfig.getTokenPrefix()))
+      authToken = authHeader.replace(accessTokenConfig.getTokenPrefix(), "").trim();
     else log.warn("couldn't find bearer string, will ignore the header.");
 
     return (authToken != null)
