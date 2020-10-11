@@ -1,0 +1,41 @@
+package com.droukos.newsservice.service.validator;
+
+import com.droukos.newsservice.model.news.News;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+
+import java.util.regex.Pattern;
+
+import static com.droukos.newsservice.environment.constants.Fields.NEWS_TITLE;
+import static com.droukos.newsservice.environment.enums.Warnings.*;
+import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace;
+
+public class NewsTitleValidator implements Validator {
+
+    @Value("${news.content.maxlength}")
+    private int MAX_LENGTH;
+
+    @Override
+    public boolean supports(Class<?> aClass) {
+        return News.class.equals(aClass);
+    }
+
+    @Override
+    public void validate(Object o, Errors errors) {
+        rejectIfEmptyOrWhitespace(errors, NEWS_TITLE, NEWS_TITLE_EMPTY.getShortWarning());
+
+        News news = (News) o;
+        if (/*isNumeric(news.getNewsTitle()) || */((News) o).getNewsTitle()==null)
+            errors.rejectValue(NEWS_TITLE, NEWS_TITLE_INVALID.getShortWarning());
+        //if (news.getContent()!=null||news.getContent().length()>MAX_LENGTH)
+        //    errors.rejectValue(NEWS_CONTENT, NEWS_CONTENT_LENGTH.getShortWarning());
+    }
+
+    public boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        return Pattern.compile("-?\\d+(\\.\\d+)?").matcher(strNum).matches();
+    }
+}
