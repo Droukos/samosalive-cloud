@@ -1,6 +1,6 @@
-package com.droukos.authservice.environment.interfaces;
+package com.droukos.userservice.environment.interfaces;
 
-import com.droukos.authservice.environment.security.JwtService;
+import com.droukos.userservice.environment.security.AccessJwtService;
 import io.jsonwebtoken.Claims;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authorization.AuthorizationDecision;
@@ -18,11 +18,11 @@ public abstract class JWTReactiveAuthorizationManager implements ReactiveAuthori
 
     return monoAuthentication
         .flatMap(authentication -> Mono.just(authentication.getCredentials().toString()))
-        .flatMap(token -> context.getBean(JwtService.class).testToken(token))
+        .flatMap(token -> context.getBean(AccessJwtService.class).testToken(token))
         .flatMap(this::doAuthorization);
 
   }
 
-  public abstract JwtService getJwtService();
+  public abstract AccessJwtService getJwtService();
   public abstract Mono<AuthorizationDecision> doAuthorization(Claims claims);
 }

@@ -59,7 +59,7 @@ class SignupTest {
   void testSignup() {
 
     Mono<Boolean> result =
-        requester.route("auth.signup").data(badPassMatchSignupInfo).retrieveMono(Boolean.class);
+        requester.route("auth.signup").data(goodSignupInfo).retrieveMono(Boolean.class);
 
     StepVerifier.create(result)
         .expectErrorSatisfies(

@@ -92,6 +92,7 @@ public class ReactSecurityConfig {
             .jwt(jwtSpec -> jwtSpec.authenticationManager(authenticationManager))
             .authorizePayload(
                     authorizePayloadsSpec -> authorizePayloadsSpec
+                            .route("auth.signup").permitAll()
                             .anyRequest().authenticated()
                             .anyExchange().permitAll()
             )
