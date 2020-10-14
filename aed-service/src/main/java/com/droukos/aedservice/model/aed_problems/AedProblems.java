@@ -31,8 +31,8 @@ public class AedProblems {
 
     private String status;
 
-    private LocalDateTime uploaded_time;
+    private LocalDateTime uploadedTime;
 
-    private LocalDateTime completed_time;
+    private LocalDateTime completedTime;
 
 }

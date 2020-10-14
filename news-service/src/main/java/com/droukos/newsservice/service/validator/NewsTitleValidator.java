@@ -1,5 +1,6 @@
 package com.droukos.newsservice.service.validator;
 
+import com.droukos.newsservice.environment.dto.client.NewsDtoSearch;
 import com.droukos.newsservice.model.news.News;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.Errors;
@@ -25,8 +26,8 @@ public class NewsTitleValidator implements Validator {
     public void validate(Object o, Errors errors) {
         rejectIfEmptyOrWhitespace(errors, NEWS_TITLE, NEWS_TITLE_EMPTY.getShortWarning());
 
-        News news = (News) o;
-        if (/*isNumeric(news.getNewsTitle()) || */((News) o).getNewsTitle()==null)
+        NewsDtoSearch newsDtoSearch = (NewsDtoSearch) o;
+        if (/*isNumeric(news.getNewsTitle()) || */((NewsDtoSearch) o).getNewsTitle()==null)
             errors.rejectValue(NEWS_TITLE, NEWS_TITLE_INVALID.getShortWarning());
         //if (news.getContent()!=null||news.getContent().length()>MAX_LENGTH)
         //    errors.rejectValue(NEWS_CONTENT, NEWS_CONTENT_LENGTH.getShortWarning());

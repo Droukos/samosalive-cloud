@@ -5,7 +5,6 @@ import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDto
 import com.droukos.aedservice.environment.dto.server.ApiResponse;
 import com.droukos.aedservice.model.aed_problems.AedProblems;
 import com.droukos.aedservice.repo.AedProblemsRepository;
-import com.droukos.aedservice.service.validator.aed_event.AedCreationValidator;
 import com.droukos.aedservice.service.validator.aed_problems.AedProblemsCreationValidator;
 import com.droukos.aedservice.util.ValidatorUtil;
 import lombok.NonNull;
@@ -30,13 +29,10 @@ public class AedProblemsCreation {
         return Mono.just(problemsCreate (aedProblemsDtoCreate) );
     }
     public void validateProblems (AedProblemsDtoCreate aedProblemsDtoCreate) {
-        ValidatorUtil.validate(aedProblemsDtoCreate, new AedCreationValidator());
+        ValidatorUtil.validate(aedProblemsDtoCreate, new AedProblemsCreationValidator());
     }
 
-    public Mono<ServerResponse> saveAedProblem(AedProblems problems){
-        Function<AedProblems, Mono<ServerResponse>> result = savedProblems -> ok().contentType(APPLICATION_JSON)
-                .body(BodyInserters.fromValue(new ApiResponse(StatusCodes.OK, "Problem created", "problem.created")));
-
-        return aedProblemsRepository.save(problems).flatMap(result);
+    public Mono<Boolean> saveAedProblem(AedProblems problems){
+        return aedProblemsRepository.save(problems).then(Mono.just(true));
     }
 }

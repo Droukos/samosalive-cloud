@@ -27,5 +27,5 @@ public class News {
 
     private String content;
 
-    private LocalDateTime uploaded_time;
+    private LocalDateTime uploadedTime;
 }

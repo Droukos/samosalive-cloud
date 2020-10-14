@@ -1,6 +1,7 @@
 package com.droukos.aedservice.controller;
 
 import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
+import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoSearch;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
 import com.droukos.aedservice.model.aed_event.AedEvent;
 import com.droukos.aedservice.service.aed_event.AedEventCreation;
@@ -23,15 +24,16 @@ public class AedEventController {
     private final AedEventInfo aedEventInfo;
 
     @MessageMapping("aed.event.post")
-    public Mono<AedEvent> createEvent(AedEventDtoCreate aedEventDtoCreate){
+    public Mono<Boolean> createEvent(AedEventDtoCreate aedEventDtoCreate){
         return Mono.just(aedEventDtoCreate)
                 .doOnNext(aedEventCreation::validateEvent)
-                .flatMap(aedEventCreation::createAedEvent);
+                .flatMap(aedEventCreation::createAedEvent)
+                .flatMap(aedEventCreation::saveAedEvent);
     }
 
-    @MessageMapping("aed.event.get.{title}")
-    public Flux<RequestedPreviewAedEvent> findEvent(@DestinationVariable("title") String title){
-        return Flux.just(title)
+    @MessageMapping("aed.event.get")
+    public Flux<RequestedPreviewAedEvent> findEvent(AedEventDtoSearch aedEventDtoSearch){
+        return Flux.just(aedEventDtoSearch)
                 .doOnNext(aedEventInfo::validateType)
                 .flatMap(aedEventInfo::findEventByType)
                 .flatMap(aedEventInfo::fetchEventByType);

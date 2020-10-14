@@ -31,10 +31,8 @@ public class AedEventCreation {
     public void validateEvent (AedEventDtoCreate aedEventDtoCreate) {
         ValidatorUtil.validate(aedEventDtoCreate, new AedCreationValidator());
     }
-    public Mono<ServerResponse> saveAedEvent(AedEvent event){
-        Function<AedEvent, Mono<ServerResponse>> result = savedEvent -> ok().contentType(APPLICATION_JSON)
-                .body(BodyInserters.fromValue(new ApiResponse(StatusCodes.OK, "Event created", "event.created")));
 
-        return aedEventRepository.save(event).flatMap(result);
+    public Mono<Boolean> saveAedEvent(AedEvent event){
+        return aedEventRepository.save(event).then(Mono.just(true));
     }
 }

@@ -24,7 +24,7 @@ public class AedEvent {
     @Indexed
     private String occurrenceType;
 
-    private GeoJson occurrence_point;
+    private GeoJson occurrencePoint;
 
     private String address;
 
@@ -36,9 +36,9 @@ public class AedEvent {
 
     private String status;
 
-    private LocalDateTime requested_time;
+    private LocalDateTime requestedTime;
 
-    private LocalDateTime accepted_time;
+    private LocalDateTime acceptedTime;
 
     private String callee;
 }

@@ -1,11 +1,10 @@
-package com.droukos.aedservice;
+package com.droukos.newsservice;
 
-import com.droukos.aedservice.config.jwt.AccessTokenConfig;
-import com.droukos.aedservice.config.jwt.ClaimsConfig;
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
-import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoCreate;
-import com.droukos.aedservice.model.aed_event.AedEvent;
-import com.droukos.aedservice.model.aed_problems.AedProblems;
+import com.droukos.newsservice.config.jwt.AccessTokenConfig;
+import com.droukos.newsservice.config.jwt.ClaimsConfig;
+import com.droukos.newsservice.environment.dto.client.NewsDtoCreate;
+import com.droukos.newsservice.environment.dto.client.NewsDtoSearch;
+import com.droukos.newsservice.environment.dto.server.news.RequestedPreviewNews;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,12 +15,13 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.MimeTypeUtils;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
 @SpringBootTest
-public class AedProblemsCreateTest {
+public class NewsSearchTest {
     private static RSocketRequester requester;
 
     @BeforeAll
@@ -50,17 +50,15 @@ public class AedProblemsCreateTest {
     }
 
     @Test
-    void createAedProblems(){
-        AedProblemsDtoCreate aedProblemsDtoCreate = new AedProblemsDtoCreate("123","tom","Samos","addre","fwe","pending");
-        Mono<Boolean> result =
+    void findNews(){
+        NewsDtoSearch newsDtoSearch  = new NewsDtoSearch("Sa");
+        Flux<RequestedPreviewNews> result =
                 requester
-                        .route("aed.problems.post")
+                        .route("news.get")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
-                        .data(aedProblemsDtoCreate)
-                        .retrieveMono(Boolean.class);
+                        .data(newsDtoSearch)
+                        .retrieveFlux(RequestedPreviewNews.class);
 
-        //System.out.println(result.blockFirst());
-
-        System.out.println(result.block());
+        result.doOnNext(System.out::println).blockLast();
     }
 }
