@@ -80,7 +80,7 @@ public class SignUpService {
                         signupInfo.getPasswordConfirmed(),
                         signupInfo.getEmail().toLowerCase(),
                         signupInfo.getEmail(),
-                        Collections.singletonList(new RoleModel(USER, true, LocalDateTime.now(), SYSTEM)),
+                        Collections.singletonList(new RoleModel(USER, null,true, LocalDateTime.now(), SYSTEM)),
                         generateUserInfoPersonal(signupInfo.getName(), signupInfo.getSurname()),
                         generateUserInfoSettingsPrivacy(),
                         generateUserInfoSystem(),
