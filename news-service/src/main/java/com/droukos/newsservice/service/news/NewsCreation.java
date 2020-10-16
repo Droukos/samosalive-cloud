@@ -28,14 +28,12 @@ public class NewsCreation {
     public Mono<News> createNews (NewsDtoCreate newsDtoCreate){
         return Mono.just(newsCreate (newsDtoCreate) );
     }
+
     public void validateNews (NewsDtoCreate newsDtoCreate) {
         ValidatorUtil.validate(newsDtoCreate, new NewsCreationValidator());
     }
 
-    public Mono<ServerResponse> saveNews(News news){
-        Function<News, Mono<ServerResponse>> result = savedNews -> ok().contentType(APPLICATION_JSON)
-                .body(BodyInserters.fromValue(new ApiResponse(StatusCodes.OK, "News created", "news.created")));
-
-        return newsRepository.save(news).flatMap(result);
+    public Mono<Boolean> saveNews(News news){
+        return newsRepository.save(news).then(Mono.just(true));
     }
 }

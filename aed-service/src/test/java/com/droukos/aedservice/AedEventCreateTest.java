@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 
 @SpringBootTest
-class AedEventCreateTest {
+public class AedEventCreateTest {
     private static RSocketRequester requester;
 
     @BeforeAll
@@ -50,14 +50,12 @@ class AedEventCreateTest {
     @Test
     void createAedEvent(){
        AedEventDtoCreate aedEventDtoCreate = new AedEventDtoCreate("123","tom","1","ef","fwe","pending");
-       Mono<AedEvent> result =
+       Mono<Boolean> result =
                 requester
                         .route("aed.event.post")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
                         .data(aedEventDtoCreate)
-                        .retrieveMono(AedEvent.class);
-
-        //System.out.println(result.blockFirst());
+                        .retrieveMono(Boolean.class);
 
         System.out.println(result.block());
     }

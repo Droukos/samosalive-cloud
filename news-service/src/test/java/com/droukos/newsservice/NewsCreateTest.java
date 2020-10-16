@@ -1,11 +1,10 @@
-package com.droukos.aedservice;
+package com.droukos.newsservice;
 
-import com.droukos.aedservice.config.jwt.AccessTokenConfig;
-import com.droukos.aedservice.config.jwt.ClaimsConfig;
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
-import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoCreate;
-import com.droukos.aedservice.model.aed_event.AedEvent;
-import com.droukos.aedservice.model.aed_problems.AedProblems;
+import com.droukos.newsservice.config.jwt.AccessTokenConfig;
+import com.droukos.newsservice.config.jwt.ClaimsConfig;
+import com.droukos.newsservice.environment.dto.client.NewsDtoCreate;
+import com.droukos.newsservice.model.news.News;
+import com.droukos.newsservice.RedisUtil;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 
 @SpringBootTest
-public class AedProblemsCreateTest {
+public class NewsCreateTest {
     private static RSocketRequester requester;
 
     @BeforeAll
@@ -50,17 +49,14 @@ public class AedProblemsCreateTest {
     }
 
     @Test
-    void createAedProblems(){
-        AedProblemsDtoCreate aedProblemsDtoCreate = new AedProblemsDtoCreate("123","tom","Samos","addre","fwe","pending");
+    void createNews(){
+        NewsDtoCreate newsDtoCreate  = new NewsDtoCreate("123","tom","Samos","test");
         Mono<Boolean> result =
                 requester
-                        .route("aed.problems.post")
+                        .route("news.post")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
-                        .data(aedProblemsDtoCreate)
+                        .data(newsDtoCreate)
                         .retrieveMono(Boolean.class);
-
-        //System.out.println(result.blockFirst());
-
         System.out.println(result.block());
     }
 }

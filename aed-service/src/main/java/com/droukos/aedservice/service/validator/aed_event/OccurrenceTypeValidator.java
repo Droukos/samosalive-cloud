@@ -1,5 +1,6 @@
 package com.droukos.aedservice.service.validator.aed_event;
 
+import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoSearch;
 import com.droukos.aedservice.model.aed_event.AedEvent;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -13,18 +14,18 @@ import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhit
 public class OccurrenceTypeValidator implements Validator {
     @Override
     public boolean supports(Class<?> aClass) {
-        return String.class.equals(aClass);
+        return AedEventDtoSearch.class.equals(aClass);
     }
 
     @Override
     public void validate(Object o, Errors errors) {
         rejectIfEmptyOrWhitespace(errors, OCCURRENCE_TYPE, OCCURRENCE_TYPE_EMPTY.getShortWarning());
 
-        String type = (String) o;
-        if(!isNumeric(type))
+        AedEventDtoSearch type = (AedEventDtoSearch) o;
+        if(!isNumeric(type.getOccurrenceType()))
             errors.rejectValue(OCCURRENCE_TYPE, OCCURRENCE_TYPE_INVALID.getShortWarning());
-        if(isNumeric(type)){
-            int typeInt = Integer.parseInt(type);
+        if(isNumeric(type.getOccurrenceType())){
+            int typeInt = Integer.parseInt(type.getOccurrenceType());
             if(typeInt < 0 || typeInt > 2)
                 errors.rejectValue(OCCURRENCE_TYPE, OCCURRENCE_TYPE_INVALID.getShortWarning());
         }

@@ -1,5 +1,6 @@
 package com.droukos.aedservice.service.validator.aed_problems;
 
+import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoSearch;
 import com.droukos.aedservice.model.aed_problems.AedProblems;
 import com.droukos.aedservice.model.aed_problems.AedProblems;
 import org.springframework.validation.Errors;
@@ -14,15 +15,15 @@ import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhit
 public class AedProblemsTitleValidator implements Validator {
     @Override
     public boolean supports(Class<?> aClass) {
-        return AedProblems.class.equals(aClass);
+        return AedProblemsDtoSearch.class.equals(aClass);
     }
 
     @Override
     public void validate(Object o, Errors errors) {
         rejectIfEmptyOrWhitespace(errors, PROBLEMS_TITLE, PROBLEMS_TITLE_EMPTY.getShortWarning());
 
-        AedProblems problems = (AedProblems) o;
-        if (/*isNumeric(news.getNewsTitle()) || */((AedProblems) o).getProblemTitle()==null)
+        AedProblemsDtoSearch problems = (AedProblemsDtoSearch) o;
+        if (/*isNumeric(news.getNewsTitle()) || */((AedProblemsDtoSearch) o).getTitle()==null)
             errors.rejectValue(PROBLEMS_TITLE, PROBLEMS_TITLE_INVALID.getShortWarning());
         //if (news.getContent()!=null||news.getContent().length()>MAX_LENGTH)
         //    errors.rejectValue(NEWS_CONTENT, NEWS_CONTENT_LENGTH.getShortWarning());
