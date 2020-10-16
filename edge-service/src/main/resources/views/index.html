@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>SamosAlive</title>
+    <!--<link rel="icon" type="image/png" th:href="@{environment.getProperty('')}" />-->
+    <meta name="serve" id="meta_serve" content="http://localhost:8080/api">
+    <meta name="device" content="android">
+    <link th:href="@{${@environment.getProperty('leaflet.css')}}" />
+
+</head>
+
+<body>
+
+    <div id="app"></div>
+    <script th:src="@{${@environment.getProperty('axios.js')}}"></script>
+    <script th:src="@{${@environment.getProperty('leaflet.js')}}"></script>
+    <script th:src="@{${@environment.getProperty('index.bundled.js')}}"></script>
+</body>
+</html>

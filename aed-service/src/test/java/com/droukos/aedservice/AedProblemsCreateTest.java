@@ -2,9 +2,7 @@ package com.droukos.aedservice;
 
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
 import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoCreate;
-import com.droukos.aedservice.model.aed_event.AedEvent;
 import com.droukos.aedservice.model.aed_problems.AedProblems;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,7 +17,7 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
-public class AedProblemsCreateTest {
+class AedProblemsCreateTest {
     private static RSocketRequester requester;
 
     @BeforeAll

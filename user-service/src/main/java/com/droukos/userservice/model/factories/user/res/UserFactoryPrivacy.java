@@ -2,7 +2,6 @@ package com.droukos.userservice.model.factories.user.res;
 
 import com.droukos.userservice.environment.dto.client.user.UpdateUserPrivacy;
 import com.droukos.userservice.model.user.UserRes;
-import com.droukos.userservice.model.user.personal.Personal;
 import com.droukos.userservice.model.user.privacy.PrivacySettingMap;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;

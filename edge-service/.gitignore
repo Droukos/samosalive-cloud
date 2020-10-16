@@ -20,7 +20,7 @@ target/
 *.ipr
 
 ### NetBeans ###
-/nbproject/private/
+/nhttps://github.com/Droukos/samosalive-cloud.gitbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
@@ -34,3 +34,7 @@ build/
 !/mvnw
 !/.mvn/
 !/HELP.md
+/.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+!/.mvn/wrapper/MavenWrapperDownloader.java
+!/.mvn/wrapper/maven-wrapper.properties
