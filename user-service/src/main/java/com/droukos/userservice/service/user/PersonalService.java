@@ -33,9 +33,9 @@ public class PersonalService {
     //};
   //}
 
-  public Mono<Boolean> updateUserPersonal(Tuple2<UserRes, UpdateUserPersonal> tuple2) {
+  public Mono<Boolean> updateUserPersonal(Tuple2<UpdateUserPersonal, UserRes> tuple2) {
 
-    UserRes updatedUser = UserFactoryPersonal.updatePersonalInfo(tuple2.getT1(), tuple2.getT2());
+    UserRes updatedUser = UserFactoryPersonal.updatePersonalInfo(tuple2.getT2(), tuple2.getT1());
     return userRepository.save(updatedUser)
             .then(Mono.just(true));
     //Function<User, Mono<ServerResponse>> result = savedUser -> ok().body(BodyInserters.fromValue(

@@ -3,9 +3,11 @@ package com.droukos.authservice.environment.dto.server.auth.login;
 
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.model.user.RoleModel;
+import com.droukos.authservice.util.RolesUtil;
 import lombok.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Value
 public class LoginResponse {
@@ -22,17 +24,20 @@ public class LoginResponse {
     Integer availability;
 
     public static LoginResponse build(UserRes user, String accessToken) {
-        return new LoginResponse(
-                accessToken,
-                user.getId(),
-                user.getUserC(),
-                user.getName(),
-                user.getSurname(),
-                user.getEmailC(),
-                user.getAvatar(),
-                user.getDescription(),
-                user.getAllRoles(),
-                user.getAppState().isOn(),
-                user.getAppState().getStatus());
+    return new LoginResponse(
+        accessToken,
+        user.getId(),
+        user.getUserC(),
+        user.getName(),
+        user.getSurname(),
+        user.getEmailC(),
+        user.getAvatar(),
+        user.getDescription(),
+        user.getAllRoles()
+                .stream()
+                .map(RoleModel::buildRoleModelWithRoleCode)
+                .collect(Collectors.toList()),
+        user.getAppState().isOn(),
+        user.getAppState().getStatus());
     }
 }

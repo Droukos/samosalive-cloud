@@ -1,10 +1,20 @@
 package com.droukos.userservice.config;
 
 import com.droukos.userservice.environment.security.authentication.AuthenticationManager;
+import io.rsocket.RSocket;
+import io.rsocket.RSocketFactory;
+import io.rsocket.frame.decoder.PayloadDecoder;
+import io.rsocket.metadata.WellKnownMimeType;
+import io.rsocket.transport.netty.client.WebsocketClientTransport;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.rsocket.messaging.RSocketStrategiesCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.codec.cbor.Jackson2CborDecoder;
+import org.springframework.http.codec.cbor.Jackson2CborEncoder;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
 import org.springframework.security.config.Customizer;
@@ -16,6 +26,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver;
 import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
 import org.springframework.security.rsocket.metadata.SimpleAuthenticationEncoder;
+import org.springframework.util.MimeTypeUtils;
 
 import static com.droukos.userservice.environment.constants.authorities.Roles.GENERAL_ADMIN;
 
@@ -28,10 +39,16 @@ public class ReactSecurityConfig {
 
   private final AuthenticationManager authenticationManager;
 
-  //@Bean
-  //RSocketStrategiesCustomizer strategiesCustomizer() {
-  //  return strategies -> strategies.encoder(new SimpleAuthenticationEncoder());
-  //}
+ //@Bean
+ //public RSocket rSocket() {
+ //  return RSocketFactory
+ //          .connect()
+ //          .dataMimeType(MimeTypeUtils.APPLICATION_JSON_VALUE)
+ //          .frameDecoder(PayloadDecoder.ZERO_COPY)
+ //          .transport(WebsocketClientTransport.create(8985))
+ //          .start().block();
+ //}
+
 
   @Bean
   public PayloadSocketAcceptorInterceptor rSocketInterceptor(RSocketSecurity security) {
@@ -40,12 +57,19 @@ public class ReactSecurityConfig {
             //.simpleAuthentication(Customizer.withDefaults())
         .authorizePayload(
             authorizePayloadsSpec -> authorizePayloadsSpec
-                    .route("hello").hasAnyRole(GENERAL_ADMIN)
                     .anyRequest().authenticated()
                     .anyExchange().permitAll()
         )
         .build();
   }
+
+  //@Bean
+  //public RSocketStrategies rsocketStrategies() {
+  //  return RSocketStrategies.builder()
+  //          .decoder(new Jackson2CborDecoder())
+  //          .encoder(new Jackson2CborEncoder())
+  //          .build();
+  //}
 
   @Bean
   public RSocketMessageHandler messageHandler(RSocketStrategies rsocketStrategies) {

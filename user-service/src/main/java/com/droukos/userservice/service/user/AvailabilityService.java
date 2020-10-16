@@ -24,28 +24,9 @@ public class AvailabilityService {
 
   @NonNull private final UserRepository userRepository;
 
-  /*public Mono<UserRes> validateAvailability(User user) {
-    Consumer<UpdateAvailability> prepareUpdate = updateAvailability -> user.getState()
-        .setStatus(updateAvailability.getStatus());
-
-    Function<UpdateAvailability, Mono<User>> process = updateAvailability -> {
-      validate(updateAvailability, AvailabilityValidator.build());
-      prepareUpdate.accept(updateAvailability);
-      return Mono.just(user);
-    };
-
-    return request
-        .bodyToMono(UpdateAvailability.class)
-        .defaultIfEmpty(new UpdateAvailability())
-        .flatMap(process);
-  }
-
-  public Mono<ServerResponse> updateAvailability(User user) {
-    Function<User, Mono<ServerResponse>> result = savedUser -> ok().body(BodyInserters.fromValue(
-        new ApiResponse(StatusCodes.OK, "Availability Updated", "user.availability.updated")));
-
+  public Mono<Boolean> saveToMongoDb(UserRes user) {
     return userRepository.save(user)
-        .flatMap(result);
+            .then(Mono.just(true));
   }
-*/
+
 }

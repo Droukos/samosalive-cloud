@@ -58,7 +58,7 @@ public class AuthServices {
    public Mono<UserRes> getUserFromHttpCookieRequest(ServerRequest request) {
     return userRepository
         .findFirstById(refreshJwtService.getUserIdClaim(tokenService.getRefreshToken(request)))
-        .switchIfEmpty(Mono.error(badRequest("Empty Login Request")));
+        .switchIfEmpty(Mono.error(badRequest("User can't be found")));
    }
 
   public Mono<UserRes> getUserByPathVarId(ServerRequest request) {

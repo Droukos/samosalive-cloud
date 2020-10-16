@@ -164,8 +164,8 @@ public class AuthHandlerHttp {
                 Mono.zip(
                         Mono.just(tuple2.getT1()),
                         Mono.just(tuple2.getT2()),
-                        tokensService.genNewAccTokenToUser(tuple2.getT1()),
-                        tokensService.genNewRefTokenToUser(tuple2.getT1())
+                        tokensService.genNewAccTokenFromRefToUser(tuple2),
+                        tokensService.genNewRefTokenFromRefToUser(tuple2)
                 )
             )
             .flatMap(tokensService::checkCaseRefTokenIsExpiring)
@@ -183,7 +183,7 @@ public class AuthHandlerHttp {
               .flatMap(tuple ->
                       Mono.zip(
                             Mono.just(tuple.getT1()),
-                            tokensService.genNewAccTokenToUser(tuple.getT1())
+                            tokensService.genNewAccTokenFromRefToUser(tuple)
                       )
               )
               .flatMap(tokensService::updateUserAccessToken)

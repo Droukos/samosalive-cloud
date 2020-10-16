@@ -40,9 +40,17 @@ public class TokensService {
     return tokenService.genNewAccessToken(user);
   }
 
+    public Mono<NewAccTokenData> genNewAccTokenFromRefToUser(Tuple2<UserRes, RequesterRefTokenData> tuple2) {
+        return tokenService.genNewAccessToken(tuple2.getT1(), tuple2.getT2().getUserDevice());
+    }
+
   public Mono<NewRefTokenData> genNewRefTokenToUser(UserRes user) {
     return tokenService.genNewRefreshToken(user);
   }
+
+    public Mono<NewRefTokenData> genNewRefTokenFromRefToUser(Tuple2<UserRes, RequesterRefTokenData> tuple2) {
+        return tokenService.genNewRefreshToken(tuple2.getT1(), tuple2.getT2().getUserDevice());
+    }
 
   public boolean isValidAdmin(SecurityContext context) {
     return RolesUtil.roleChangeValidAdmins(SecurityUtil.getRequesterRoles(context));
@@ -219,7 +227,7 @@ public class TokensService {
 
     public Mono<ServerResponse> newAccessToken(Tuple3<UserRes, NewAccTokenData, NewRefTokenData> tuple3) {
 
-        return tuple3.getT3().getTokenId() == null
+        return tuple3.getT3().getTokenId() != null
                 ? ok().cookie(tokenService.refreshHttpCookie(tuple3.getT3()))
                 .body(fromValue(new NewAccessTokenResponse(tuple3.getT2().getToken())))
                 : ok().body(fromValue(new NewAccessTokenResponse(tuple3.getT2().getToken())));

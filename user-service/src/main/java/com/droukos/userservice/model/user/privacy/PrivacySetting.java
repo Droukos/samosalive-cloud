@@ -4,12 +4,11 @@ import lombok.*;
 
 import java.util.List;
 
-@Data
 @ToString
 @AllArgsConstructor
-@Setter
 @Getter
 public class PrivacySetting {
-  private Integer type;
-  private List<String> users;
+  private final Integer type;
+  private final List<String> users;
+
 }
