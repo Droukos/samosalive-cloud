@@ -11,4 +11,5 @@ public interface UserRepository extends ReactiveMongoRepository<UserRes, String>
     Mono<UserRes> findFirstById(String id);
     Mono<UserRes> findFirstByUser(String username);
     Mono<UserRes> findFirstByEmail(String email);
+    Mono<UserRes> findFirstByUserOrEmail(String username, String email);
 }

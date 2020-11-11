@@ -7,12 +7,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
 
-@Data
 @ToString
-@Document
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
-@Setter
 public class Personal {
   private String name;
   private String sur;

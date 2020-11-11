@@ -1,10 +1,14 @@
 package com.droukos.userservice.environment.dto.server.user;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @ToString
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class RequestedUsernameOnly {
-    private String user;
+  private String user;
 }

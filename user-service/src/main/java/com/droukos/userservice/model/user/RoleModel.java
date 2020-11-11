@@ -1,24 +1,30 @@
 package com.droukos.userservice.model.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.ToString;
+import com.droukos.userservice.util.RolesUtil;
+import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Data
 @ToString
 @Document
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class RoleModel {
 
   private String role;
+  private String code;
   private boolean active;
   private LocalDateTime added;
   private String addedBy;
 
-  public static RoleModel build(String role, String username) {
-    return new RoleModel(role, false, LocalDateTime.now(), username);
+  public static RoleModel buildRoleModelWithRoleCode(RoleModel roleModel) {
+    return new RoleModel(
+            roleModel.getRole(),
+            RolesUtil.roleCode(roleModel.getRole()),
+            roleModel.isActive(),
+            roleModel.getAdded(),
+            roleModel.getAddedBy());
   }
 }

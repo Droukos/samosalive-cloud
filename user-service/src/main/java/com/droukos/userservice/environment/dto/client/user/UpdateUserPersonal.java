@@ -2,10 +2,11 @@ package com.droukos.userservice.environment.dto.client.user;
 
 import lombok.*;
 
-@Data @ToString
+@ToString
 @NoArgsConstructor @AllArgsConstructor
-@Setter @Getter
+@Getter
 public class UpdateUserPersonal {
+    private String userid;
     private String name;
     private String sur;
     private String desc;

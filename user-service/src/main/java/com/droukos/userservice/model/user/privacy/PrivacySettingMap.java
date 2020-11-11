@@ -6,14 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @ToString
-@Document
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -21,6 +19,7 @@ public class PrivacySettingMap {
   private Map<String, PrivacySetting> privySets;
 
   public static PrivacySettingMap buildUpdatePrivacy(UpdateUserPrivacy updateUserPrivacy) {
+    System.out.println(updateUserPrivacy);
     var map = new HashMap<String, PrivacySetting>();
     map.put(
         FieldNames.F_PRIVY_ONLINE_STATUS, filterPrivacySetting(updateUserPrivacy.getOnStatus()));

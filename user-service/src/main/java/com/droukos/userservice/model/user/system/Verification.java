@@ -1,18 +1,14 @@
 package com.droukos.userservice.model.user.system;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Data
 @ToString
-@Document
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class Verification {
 
   private boolean ver;
