@@ -1,7 +1,9 @@
 package com.droukos.aedservice.controller;
 
 import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoCreate;
+import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoIdSearch;
 import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoSearch;
+import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
 import com.droukos.aedservice.environment.dto.server.aed.aedProblem.RequestedPreviewAedProblems;
 import com.droukos.aedservice.model.aed_problems.AedProblems;
 import com.droukos.aedservice.service.aed_problem.AedProblemsCreation;
@@ -34,5 +36,12 @@ public class AedProblemsController {
                 .doOnNext(aedProblemsInfo::validateTitle)
                 .flatMap(aedProblemsInfo::findProblemsByTitle)
                 .flatMap(aedProblemsInfo::fetchProblemsByTitle);
+    }
+
+    @MessageMapping("aed.problems.getId")
+    public Mono<RequestedPreviewAedProblems> findProblemsId(AedProblemsDtoIdSearch aedProblemsDtoIdSearch){
+        return Mono.just(aedProblemsDtoIdSearch.getId())
+                .flatMap(aedProblemsInfo::findProblemsId)
+                .flatMap(RequestedPreviewAedProblems::buildMono);
     }
 }

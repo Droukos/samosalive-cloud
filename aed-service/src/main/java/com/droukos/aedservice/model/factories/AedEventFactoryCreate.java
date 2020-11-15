@@ -20,7 +20,7 @@ public class AedEventFactoryCreate {
                 null,
                 null,
                 aedEventDtoCreate.getStatus(),
-                null,
+                aedEventDtoCreate.getRequestedTime(),
                 null,
                 null
         );

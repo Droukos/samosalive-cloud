@@ -6,9 +6,8 @@ import lombok.*;
 @NoArgsConstructor @AllArgsConstructor
 @Getter
 public class NewsDtoCreate {
-    private String userid;
     private String username;
     private String newsTitle;
     private String content;
-
+    private String uploadedTime;
 }

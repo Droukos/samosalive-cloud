@@ -3,7 +3,6 @@ package com.droukos.aedservice;
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
 import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
-import com.droukos.aedservice.model.aed_event.AedEvent;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,6 +16,7 @@ import org.springframework.util.MimeTypeUtils;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.util.Date;
 
 @SpringBootTest
 public class AedEventCreateTest {
@@ -49,7 +49,7 @@ public class AedEventCreateTest {
 
     @Test
     void createAedEvent(){
-       AedEventDtoCreate aedEventDtoCreate = new AedEventDtoCreate("123","tom","1","ef","fwe","pending");
+       AedEventDtoCreate aedEventDtoCreate = new AedEventDtoCreate("123","tom",1,"ef","fwe",1, new Date().toString());
        Mono<Boolean> result =
                 requester
                         .route("aed.event.post")

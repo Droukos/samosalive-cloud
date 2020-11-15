@@ -2,9 +2,6 @@ package com.droukos.aedservice.service.aed_problem;
 
 import com.droukos.aedservice.model.aed_problems.AedProblems;
 import com.droukos.aedservice.repo.AedProblemsRepository;
-import com.droukos.aedservice.service.validator.aed_problems.AedProblemsCreationValidator;
-import com.droukos.aedservice.service.validator.aed_problems.AedProblemsTitleValidator;
-import com.droukos.aedservice.util.ValidatorUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +17,7 @@ public class AedProblemsServices {
     @NonNull private final AedProblemsRepository aedProblemsRepository;
 
     public Flux<AedProblems> getProblemsByTitle(String title) {
-        return aedProblemsRepository.findAllByProblemTitleContaining(title);
+        return aedProblemsRepository.findAllByProblemsTitleContaining(title);
     }
 
     //public Mono<Problems> validateInfomation (ServerRequest request){

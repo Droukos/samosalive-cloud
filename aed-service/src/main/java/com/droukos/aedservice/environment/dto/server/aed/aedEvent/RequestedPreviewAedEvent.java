@@ -2,17 +2,23 @@ package com.droukos.aedservice.environment.dto.server.aed.aedEvent;
 
 import com.droukos.aedservice.model.aed_event.AedEvent;
 import lombok.*;
+import reactor.core.publisher.Mono;
 
 @ToString
 @NoArgsConstructor @AllArgsConstructor
 @Getter
 public class RequestedPreviewAedEvent {
     private String id;
-    private String user;
-    private String occ;
-    private String addr;
-    private String comm;
-    private String status;
+    private String username;
+    private Integer occurrenceType;
+    private String address;
+    private String comment;
+    private Integer status;
+    private String requestedTime;
+
+    public static Mono<RequestedPreviewAedEvent> buildMono(AedEvent aedEvent){
+        return Mono.just(build(aedEvent));
+    }
 
     public static RequestedPreviewAedEvent build(AedEvent aedEvent) {
         return new RequestedPreviewAedEvent(
@@ -21,6 +27,7 @@ public class RequestedPreviewAedEvent {
                 aedEvent.getOccurrenceType(),
                 aedEvent.getAddress(),
                 aedEvent.getComment(),
-                aedEvent.getStatus());
+                aedEvent.getStatus(),
+                aedEvent.getRequestedTime());
     }
 }

@@ -1,6 +1,7 @@
 package com.droukos.aedservice.controller;
 
 import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
+import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoIdSearch;
 import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoSearch;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
 import com.droukos.aedservice.model.aed_event.AedEvent;
@@ -35,8 +36,14 @@ public class AedEventController {
     public Flux<RequestedPreviewAedEvent> findEvent(AedEventDtoSearch aedEventDtoSearch){
         return Flux.just(aedEventDtoSearch)
                 .doOnNext(aedEventInfo::validateType)
-                .flatMap(aedEventInfo::findEventByType)
+                .flatMap(aedEventInfo::findEventOnFilter)
                 .flatMap(aedEventInfo::fetchEventByType);
+    }
+    @MessageMapping("aed.event.getId")
+    public Mono<RequestedPreviewAedEvent> findEventId(AedEventDtoIdSearch aedEventDtoIdSearch){
+        return Mono.just(aedEventDtoIdSearch.getId())
+                .flatMap(aedEventInfo::findEventId)
+                .flatMap(RequestedPreviewAedEvent::buildMono);
     }
 
     //@MessageMapping("aed.event.getEventLike")

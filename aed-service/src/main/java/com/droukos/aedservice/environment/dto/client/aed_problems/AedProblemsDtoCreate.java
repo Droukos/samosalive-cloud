@@ -6,10 +6,10 @@ import lombok.*;
 @NoArgsConstructor @AllArgsConstructor
 @Getter
 public class AedProblemsDtoCreate {
-        private String id;
-        private String user;
-        private String title;
-        private String addr;
-        private String info;
-        private String status;
+        private String username;
+        private String problemsTitle;
+        private String address;
+        private String information;
+        private Number status;
+        private String uploadedTime;
 }

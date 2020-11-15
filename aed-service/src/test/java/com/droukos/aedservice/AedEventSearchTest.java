@@ -48,7 +48,7 @@ public class AedEventSearchTest {
 
     @Test
     void findAedEvent(){
-        AedEventDtoSearch aedEventDtoSearch= new AedEventDtoSearch("1");
+        AedEventDtoSearch aedEventDtoSearch= new AedEventDtoSearch(0,1);
         Flux<RequestedPreviewAedEvent> result =
                 requester
                         .route("aed.event.get")

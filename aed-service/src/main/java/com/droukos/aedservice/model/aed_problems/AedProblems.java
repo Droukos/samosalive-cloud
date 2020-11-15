@@ -23,15 +23,15 @@ public class AedProblems {
     private String username_canon;
 
     @Indexed
-    private String problemTitle;
+    private String problemsTitle;
 
     private String address;
 
     private String information;
 
-    private String status;
+    private Number status;
 
-    private LocalDateTime uploadedTime;
+    private String uploadedTime;
 
     private LocalDateTime completedTime;
 

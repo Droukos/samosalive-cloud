@@ -2,10 +2,11 @@ package com.droukos.aedservice;
 
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
-import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoCreate;
-import com.droukos.aedservice.model.aed_event.AedEvent;
-import com.droukos.aedservice.model.aed_problems.AedProblems;
+import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoIdSearch;
+import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoIdSearch;
+import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoSearch;
+import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
+import com.droukos.aedservice.environment.dto.server.aed.aedProblem.RequestedPreviewAedProblems;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,13 +17,13 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.MimeTypeUtils;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.Date;
 
 @SpringBootTest
-public class AedProblemsCreateTest {
+public class AedProblemsSearchIdTest {
     private static RSocketRequester requester;
 
     @BeforeAll
@@ -51,17 +52,16 @@ public class AedProblemsCreateTest {
     }
 
     @Test
-    void createAedProblems(){
-        AedProblemsDtoCreate aedProblemsDtoCreate = new AedProblemsDtoCreate("tom","Samos","addre","fwe",1,new Date().toString());
-        Mono<Boolean> result =
+    void searchAedProblemsId(){
+        String id = "5fa83593c28e47600c48c1b8";
+        AedProblemsDtoIdSearch aedProblemsDtoIdSearch = new AedProblemsDtoIdSearch(id);
+        Mono<RequestedPreviewAedProblems> result =
                 requester
-                        .route("aed.problems.post")
+                        .route("aed.problems.getId")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
-                        .data(aedProblemsDtoCreate)
-                        .retrieveMono(Boolean.class);
+                        .data(aedProblemsDtoIdSearch)
+                        .retrieveMono(RequestedPreviewAedProblems.class);
 
-        //System.out.println(result.blockFirst());
-
-        System.out.println(result.block());
+        result.doOnNext(System.out::println).block();
     }
 }

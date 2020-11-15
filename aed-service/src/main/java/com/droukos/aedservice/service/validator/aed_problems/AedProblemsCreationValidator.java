@@ -23,11 +23,11 @@ public class AedProblemsCreationValidator implements Validator {
         rejectIfEmptyOrWhitespace(errors, PROBLEMS_INFO, PROBLEMS_INFO_EMPTY.getShortWarning());
 
         AedProblemsDtoCreate aedProblemsDtoCreate = (AedProblemsDtoCreate) o;
-        if ((isNumeric(aedProblemsDtoCreate.getTitle()) || aedProblemsDtoCreate.getTitle().length()>50) || ((AedProblemsDtoCreate) o).getTitle()==null)
+        if ((isNumeric(aedProblemsDtoCreate.getProblemsTitle()) || aedProblemsDtoCreate.getProblemsTitle().length()>50) || ((AedProblemsDtoCreate) o).getProblemsTitle()==null)
             errors.rejectValue(PROBLEMS_TITLE, PROBLEMS_TITLE_INVALID.getShortWarning());
-        if (aedProblemsDtoCreate.getInfo()==null || aedProblemsDtoCreate.getInfo().length()>500)
+        if (aedProblemsDtoCreate.getInformation()==null || aedProblemsDtoCreate.getInformation().length()>500)
             errors.rejectValue(PROBLEMS_INFO, PROBLEMS_INFO_LENGTH.getShortWarning());
-        if (isNumeric(aedProblemsDtoCreate.getInfo()))//||isSpecials(news.getContent()))
+        if (isNumeric(aedProblemsDtoCreate.getInformation()))//||isSpecials(news.getContent()))
             errors.rejectValue(PROBLEMS_INFO, PROBLEMS_INFO_INVALID.getShortWarning());
     }
 

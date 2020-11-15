@@ -8,13 +8,14 @@ public class AedProblemsFactoryCreate {
     private AedProblemsFactoryCreate(){}
 
     public static AedProblems problemsCreate(AedProblemsDtoCreate aedProblemsDtoCreate){
-        return new AedProblems(null,aedProblemsDtoCreate.getUser(),
-                aedProblemsDtoCreate.getUser().toLowerCase(),
-                aedProblemsDtoCreate.getTitle(),
-                aedProblemsDtoCreate.getAddr(),
-                aedProblemsDtoCreate.getInfo(),
+        return new AedProblems(null,
+                aedProblemsDtoCreate.getUsername().toLowerCase(),
+                aedProblemsDtoCreate.getUsername(),
+                aedProblemsDtoCreate.getProblemsTitle(),
+                aedProblemsDtoCreate.getAddress(),
+                aedProblemsDtoCreate.getInformation(),
                 aedProblemsDtoCreate.getStatus(),
-                null,
+                aedProblemsDtoCreate.getUploadedTime(),
                 null
         );
     }

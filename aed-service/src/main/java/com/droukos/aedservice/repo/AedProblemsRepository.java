@@ -7,5 +7,5 @@ import reactor.core.publisher.Flux;
 
 @Repository
 public interface AedProblemsRepository extends ReactiveMongoRepository<AedProblems, String> {
-    Flux<AedProblems> findAllByProblemTitleContaining(String problemTitle);
+    Flux<AedProblems> findAllByProblemsTitleContaining(String problemTitle);
 }

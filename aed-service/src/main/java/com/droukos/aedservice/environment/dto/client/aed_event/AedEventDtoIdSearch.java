@@ -5,10 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Getter @ToString
+@Getter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class AedEventDtoSearch {
-    private Integer occurrenceType;
-    private Integer status;
+public class AedEventDtoIdSearch {
+    private String id;
 }

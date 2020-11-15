@@ -9,6 +9,6 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 public class ReactRedisConfig {
     @Bean
     public ReactiveRedisConnectionFactory reactiveRedisConnectionFactory() {
-        return new LettuceConnectionFactory("192.168.99.100", 6379);
+        return new LettuceConnectionFactory("127.0.0.1", 6379);
     }
 }
