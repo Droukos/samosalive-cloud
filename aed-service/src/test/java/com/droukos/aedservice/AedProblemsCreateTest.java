@@ -2,10 +2,7 @@ package com.droukos.aedservice;
 
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
 import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoCreate;
-import com.droukos.aedservice.model.aed_event.AedEvent;
-import com.droukos.aedservice.model.aed_problems.AedProblems;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,8 +16,7 @@ import org.springframework.util.MimeTypeUtils;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.Date;
-
+import java.time.LocalDateTime;
 @SpringBootTest
 public class AedProblemsCreateTest {
     private static RSocketRequester requester;
@@ -52,7 +48,7 @@ public class AedProblemsCreateTest {
 
     @Test
     void createAedProblems(){
-        AedProblemsDtoCreate aedProblemsDtoCreate = new AedProblemsDtoCreate("tom","Samos","addre","fwe",1,new Date().toString());
+        AedProblemsDtoCreate aedProblemsDtoCreate = new AedProblemsDtoCreate("tom","Samos","addre","fwe",1, LocalDateTime.now());
         Mono<Boolean> result =
                 requester
                         .route("aed.problems.post")

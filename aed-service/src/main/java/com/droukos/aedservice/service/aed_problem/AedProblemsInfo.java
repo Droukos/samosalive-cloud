@@ -35,4 +35,8 @@ public class AedProblemsInfo {
                 .defaultIfEmpty(new AedProblems())
                 .flatMap(aedProblems -> aedProblems.getId() == null ? Mono.error(badRequest("Event not found")) : Mono.just(aedProblems));
     }
+
+    public Mono<Void> saveAedProblems(AedProblems aedProblems){
+        return aedProblemsRepository.save(aedProblems).then(Mono.empty());
+    }
 }

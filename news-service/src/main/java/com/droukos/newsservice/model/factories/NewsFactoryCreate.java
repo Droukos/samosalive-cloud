@@ -13,7 +13,7 @@ public class NewsFactoryCreate {
                 newsDtoCreate.getUsername(),
                 newsDtoCreate.getNewsTitle(),
                 newsDtoCreate.getContent(),
-                null
+                newsDtoCreate.getUploadedTime()
         );
     }
 }

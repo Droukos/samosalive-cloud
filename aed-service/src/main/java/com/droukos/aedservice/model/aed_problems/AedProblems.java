@@ -31,8 +31,10 @@ public class AedProblems {
 
     private Number status;
 
-    private String uploadedTime;
+    private String technical;
 
-    private LocalDateTime completedTime;
+    private LocalDateTime uploadedTime;
+
+    private LocalDateTime acceptedTime;
 
 }

@@ -1,7 +1,9 @@
-package com.droukos.aedservice.model.factories;
+package com.droukos.aedservice.model.factories.aed_problems;
 
 import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoCreate;
 import com.droukos.aedservice.model.aed_problems.AedProblems;
+
+import java.time.LocalDateTime;
 
 public class AedProblemsFactoryCreate {
 
@@ -15,7 +17,8 @@ public class AedProblemsFactoryCreate {
                 aedProblemsDtoCreate.getAddress(),
                 aedProblemsDtoCreate.getInformation(),
                 aedProblemsDtoCreate.getStatus(),
-                aedProblemsDtoCreate.getUploadedTime(),
+                null,
+                LocalDateTime.now(),
                 null
         );
     }

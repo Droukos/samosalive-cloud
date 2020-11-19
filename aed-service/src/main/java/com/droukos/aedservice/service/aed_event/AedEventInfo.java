@@ -41,6 +41,11 @@ public class AedEventInfo {
                 .defaultIfEmpty(new AedEvent())
                 .flatMap(aedEvent -> aedEvent.getId() == null ? Mono.error(badRequest("Event not found")) : Mono.just(aedEvent));
     }
+
+    public Mono<Void> saveAedEvent(AedEvent aedEvent){
+        return aedEventRepository.save(aedEvent).then(Mono.empty());
+    }
+
     public Mono<RequestedPreviewAedEvent> fetchEventByType(AedEvent aedEvent){
         return Mono.just(RequestedPreviewAedEvent.build(aedEvent));
     }

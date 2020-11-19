@@ -2,6 +2,8 @@ package com.droukos.aedservice.environment.dto.client.aed_problems;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @ToString
 @NoArgsConstructor @AllArgsConstructor
 @Getter
@@ -11,5 +13,5 @@ public class AedProblemsDtoCreate {
         private String address;
         private String information;
         private Number status;
-        private String uploadedTime;
+        private LocalDateTime uploadedTime;
 }

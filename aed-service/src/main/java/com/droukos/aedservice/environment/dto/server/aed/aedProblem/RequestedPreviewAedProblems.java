@@ -1,11 +1,10 @@
 package com.droukos.aedservice.environment.dto.server.aed.aedProblem;
 
-//import com.droukos.samosalive.model.problems.Problems;
-import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
-import com.droukos.aedservice.model.aed_event.AedEvent;
 import com.droukos.aedservice.model.aed_problems.AedProblems;
 import lombok.*;
 import reactor.core.publisher.Mono;
+
+import java.time.LocalDateTime;
 
 @ToString
 @NoArgsConstructor @AllArgsConstructor
@@ -17,7 +16,7 @@ public class RequestedPreviewAedProblems {
     private String address;
     private String information;
     private Number status;
-    private String uploadedTime;
+    private LocalDateTime uploadedTime;
 
     public static Mono<RequestedPreviewAedProblems> buildMono(AedProblems aedProblems){
         return Mono.just(build(aedProblems));

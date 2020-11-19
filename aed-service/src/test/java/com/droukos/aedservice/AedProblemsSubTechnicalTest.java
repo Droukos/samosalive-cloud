@@ -2,7 +2,7 @@ package com.droukos.aedservice;
 
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
+import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoTechnicalSub;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,11 +16,9 @@ import org.springframework.util.MimeTypeUtils;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @SpringBootTest
-public class AedEventCreateTest {
+public class AedProblemsSubTechnicalTest {
     private static RSocketRequester requester;
 
     @BeforeAll
@@ -49,13 +47,13 @@ public class AedEventCreateTest {
     }
 
     @Test
-    void createAedEvent(){
-       AedEventDtoCreate aedEventDtoCreate = new AedEventDtoCreate("123","tom",1,"ef","fwe",1, LocalDateTime.now());
-       Mono<Boolean> result =
+    void subTechnical(){
+        AedProblemsDtoTechnicalSub aedProblemsDtoTechnicalSub = new AedProblemsDtoTechnicalSub("5fb6bc1682c8a025d194f663", "tommy");
+        Mono<Boolean> result =
                 requester
-                        .route("aed.event.post")
+                        .route("aed.problems.subTechnical")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
-                        .data(aedEventDtoCreate)
+                        .data(aedProblemsDtoTechnicalSub)
                         .retrieveMono(Boolean.class);
 
         System.out.println(result.block());

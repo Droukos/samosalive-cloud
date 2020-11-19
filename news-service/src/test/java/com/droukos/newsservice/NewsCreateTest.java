@@ -18,6 +18,7 @@ import org.springframework.util.MimeTypeUtils;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @SpringBootTest
@@ -51,7 +52,7 @@ public class NewsCreateTest {
 
     @Test
     void createNews(){
-        NewsDtoCreate newsDtoCreate  = new NewsDtoCreate("tom","Samos","test", new Date().toString());
+        NewsDtoCreate newsDtoCreate  = new NewsDtoCreate("tom","Samos","test", LocalDateTime.now());
         Mono<Boolean> result =
                 requester
                         .route("news.post")

@@ -4,6 +4,8 @@ import com.droukos.aedservice.model.aed_event.AedEvent;
 import lombok.*;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 @ToString
 @NoArgsConstructor @AllArgsConstructor
 @Getter
@@ -14,7 +16,7 @@ public class RequestedPreviewAedEvent {
     private String address;
     private String comment;
     private Integer status;
-    private String requestedTime;
+    private LocalDateTime requestedTime;
 
     public static Mono<RequestedPreviewAedEvent> buildMono(AedEvent aedEvent){
         return Mono.just(build(aedEvent));

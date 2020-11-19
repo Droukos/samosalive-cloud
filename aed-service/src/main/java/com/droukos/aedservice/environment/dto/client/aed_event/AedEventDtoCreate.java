@@ -15,5 +15,5 @@ public class AedEventDtoCreate {
     private String address;
     private String comment;
     private Integer status;
-    private String requestedTime;
+    private LocalDateTime requestedTime;
 }

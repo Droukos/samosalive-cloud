@@ -37,9 +37,9 @@ public class AedEvent {
 
     private Integer status;
 
-    private String requestedTime;
+    private LocalDateTime requestedTime;
 
-    private Date acceptedTime;
+    private LocalDateTime acceptedTime;
 
     private String callee;
 }
