@@ -1,13 +1,14 @@
 package com.droukos.aedservice.controller;
 
 import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
+import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoIdSearch;
+import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoRescuerSub;
 import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoSearch;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
-import com.droukos.aedservice.model.aed_event.AedEvent;
+import com.droukos.aedservice.model.factories.aed_event.AedEventFactorySubRescuer;
 import com.droukos.aedservice.service.aed_event.AedEventCreation;
 import com.droukos.aedservice.service.aed_event.AedEventInfo;
 import lombok.AllArgsConstructor;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
@@ -35,9 +36,26 @@ public class AedEventController {
     public Flux<RequestedPreviewAedEvent> findEvent(AedEventDtoSearch aedEventDtoSearch){
         return Flux.just(aedEventDtoSearch)
                 .doOnNext(aedEventInfo::validateType)
-                .flatMap(aedEventInfo::findEventByType)
+                .flatMap(aedEventInfo::findEventOnFilter)
                 .flatMap(aedEventInfo::fetchEventByType);
     }
+    @MessageMapping("aed.event.getId")
+    public Mono<RequestedPreviewAedEvent> findEventId(AedEventDtoIdSearch aedEventDtoIdSearch){
+        return Mono.just(aedEventDtoIdSearch.getId())
+                .flatMap(aedEventInfo::findEventId)
+                .flatMap(RequestedPreviewAedEvent::buildMono);
+    }
+
+    @MessageMapping("aed.event.subRescuer")
+    public Mono<Boolean> setEventRescuer(AedEventDtoRescuerSub aedEventDtoRescuerSub){
+        return Mono.just(aedEventDtoRescuerSub.getId())
+                .flatMap(aedEventInfo::findEventId)
+                .zipWith(Mono.just(aedEventDtoRescuerSub))
+                .flatMap(AedEventFactorySubRescuer::subRescuerMono)
+                .flatMap(aedEventInfo::saveAedEvent)
+                .then(Mono.just(true));
+    }
+
 
     //@MessageMapping("aed.event.getEventLike")
     //public Mono<AedEvent> getEventLike(){

@@ -12,6 +12,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static com.droukos.newsservice.util.factories.HttpExceptionFactory.badRequest;
+
 @Service
 @RequiredArgsConstructor
 @Getter
@@ -34,6 +36,10 @@ public class NewsService {
     public Flux<News> getNewsByNewsTitle(String newsTitle) {
         return newsRepository.findAllByNewsTitleIsContaining(newsTitle);
     }
+    //public Mono<News> findNewsById(String id) {
+    //    return newsRepository.findById(id)
+    //            .switchIfEmpty(Mono.error(badRequest("News does not exists")));
+    //}
 
     //public Mono<News> validateNews (ServerRequest request){
     //    return request.bodyToMono(News.class)

@@ -49,7 +49,7 @@ public class AedProblemsSearchTest {
 
     @Test
     void searchAedProblems(){
-            AedProblemsDtoSearch aedProblemsDtoSearch= new AedProblemsDtoSearch("Sam");
+            AedProblemsDtoSearch aedProblemsDtoSearch= new AedProblemsDtoSearch("h");
             Flux<RequestedPreviewAedProblems> result =
                     requester
                             .route("aed.problems.get")

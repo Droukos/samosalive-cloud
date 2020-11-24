@@ -5,9 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Getter @ToString
+@Getter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class AedProblemsDtoSearch {
-    private String problemsTitle;
+public class AedProblemsDtoTechnicalSub {
+    private String id;
+    private String technical;
 }

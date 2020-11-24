@@ -1,7 +1,9 @@
 package com.droukos.newsservice.controller;
 
 import com.droukos.newsservice.environment.dto.client.NewsDtoCreate;
+import com.droukos.newsservice.environment.dto.client.NewsDtoIdSearch;
 import com.droukos.newsservice.environment.dto.client.NewsDtoSearch;
+import com.droukos.newsservice.environment.dto.server.news.RequestedNews;
 import com.droukos.newsservice.environment.dto.server.news.RequestedPreviewNews;
 import com.droukos.newsservice.model.news.News;
 import com.droukos.newsservice.service.news.NewsCreation;
@@ -33,5 +35,11 @@ public class NewsController {
                 .doOnNext(newsInfo::validateTitle)
                 .flatMap(newsInfo::findNewsByTitle)
                 .flatMap(newsInfo::fetchNewsByTitle);
+    }
+    @MessageMapping("news.getId")
+    public Mono<RequestedNews> findNewsById(NewsDtoIdSearch newsId){
+        return Mono.just(newsId.getId())
+                .flatMap(newsInfo::findNewsById)
+                .flatMap(RequestedNews::buildMono);
     }
 }

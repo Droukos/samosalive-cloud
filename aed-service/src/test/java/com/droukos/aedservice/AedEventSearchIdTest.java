@@ -2,7 +2,8 @@ package com.droukos.aedservice;
 
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
+import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoIdSearch;
+import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,11 +17,9 @@ import org.springframework.util.MimeTypeUtils;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @SpringBootTest
-public class AedEventCreateTest {
+public class AedEventSearchIdTest {
     private static RSocketRequester requester;
 
     @BeforeAll
@@ -49,15 +48,17 @@ public class AedEventCreateTest {
     }
 
     @Test
-    void createAedEvent(){
-       AedEventDtoCreate aedEventDtoCreate = new AedEventDtoCreate("123","tom",1,"ef","fwe",1, LocalDateTime.now());
-       Mono<Boolean> result =
+    void findEventId(){
+        String id = "5fa82d99f954c2435a9c1ca9";
+        AedEventDtoIdSearch aedEventDtoIdSearch = new AedEventDtoIdSearch(id);
+        Mono<RequestedPreviewAedEvent> result =
                 requester
-                        .route("aed.event.post")
+                        .route("aed.event.getId")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
-                        .data(aedEventDtoCreate)
-                        .retrieveMono(Boolean.class);
+                        .data(aedEventDtoIdSearch)
+                        .retrieveMono(RequestedPreviewAedEvent.class);
 
-        System.out.println(result.block());
+        result.doOnNext(System.out::println).block();
     }
 }
+

@@ -17,8 +17,8 @@ public class AedEventServices {
 
     @NonNull private final AedEventRepository aedEventRepository;
 
-    public Flux<AedEvent> getEventsByOccurrence(String occurrence) {
-        return aedEventRepository.findAllByOccurrenceTypeIsLike(occurrence);
+    public Flux<AedEvent> getEventsByOccurrence(Integer occurrence) {
+        return aedEventRepository.findAedEventsByOccurrenceType(occurrence);
     }
 
     //public Mono<AedEvent> validateComment (ServerRequest request){

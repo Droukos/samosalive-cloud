@@ -1,8 +1,9 @@
-package com.droukos.aedservice.model.factories;
+package com.droukos.aedservice.model.factories.aed_event;
 
 import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
 import com.droukos.aedservice.model.aed_event.AedEvent;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class AedEventFactoryCreate {
@@ -20,7 +21,7 @@ public class AedEventFactoryCreate {
                 null,
                 null,
                 aedEventDtoCreate.getStatus(),
-                null,
+                LocalDateTime.now(),
                 null,
                 null
         );

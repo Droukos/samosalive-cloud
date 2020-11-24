@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @ToString
 @AllArgsConstructor @NoArgsConstructor
@@ -22,7 +23,7 @@ public class AedEvent {
     private String username_canon;
 
     @Indexed
-    private String occurrenceType;
+    private Integer occurrenceType;
 
     private GeoJson occurrencePoint;
 
@@ -34,7 +35,7 @@ public class AedEvent {
 
     private String phone;//αυτός που κάνει την αίτηση, είτε είναι ο ίδιος είτε έχει ανατεθεί αλλού
 
-    private String status;
+    private Integer status;
 
     private LocalDateTime requestedTime;
 

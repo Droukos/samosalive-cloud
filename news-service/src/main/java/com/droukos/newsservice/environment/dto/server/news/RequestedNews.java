@@ -2,25 +2,30 @@ package com.droukos.newsservice.environment.dto.server.news;
 
 import com.droukos.newsservice.model.news.News;
 import lombok.*;
+import reactor.core.publisher.Mono;
 
-@ToString
-@NoArgsConstructor @AllArgsConstructor
 @Getter
-public class RequestedPreviewNews {
-
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+public class RequestedNews {
     private String id;
-    private String user;
-    private String title;
+    private String username;
+    private String newsTitle;
     private String content;
     private String uploadedTime;
 
-    public static RequestedPreviewNews build(News news) {
-        return new RequestedPreviewNews(
+    public static Mono<RequestedNews> buildMono(News news){
+        return Mono.just(build(news));
+    }
+
+    public static RequestedNews build(News news) {
+        return new RequestedNews(
                 news.getId(),
                 news.getUsername(),
                 news.getNewsTitle(),
                 news.getContent(),
                 news.getUploadedTime()
-    );
+        );
     }
 }

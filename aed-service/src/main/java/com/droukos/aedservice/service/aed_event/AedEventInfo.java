@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static com.droukos.aedservice.environment.constants.AedStatusCodes.SDISABLED;
+import static com.droukos.aedservice.environment.constants.AedTypeCodes.TDISABLED;
+import static com.droukos.aedservice.util.factories.HttpExceptionFactory.badRequest;
+
 @Service
 @RequiredArgsConstructor
 public class AedEventInfo {
@@ -21,10 +25,27 @@ public class AedEventInfo {
         ValidatorUtil.validate(aedEventDtoSearch, new OccurrenceTypeValidator());
     }
 
-    public Flux<AedEvent> findEventByType(AedEventDtoSearch aedEventDtoSearch) {
-        return aedEventRepository.findAllByOccurrenceTypeIsLike(aedEventDtoSearch.getOccurrenceType());
-                //.flatMap(fetchedEvent -> Mono.just(RequestedPreviewAedEvent.build(fetchedEvent)));
+    public Flux<AedEvent> findEventOnFilter(AedEventDtoSearch aedEventDtoSearch) {
+        if(aedEventDtoSearch.getOccurrenceType()==TDISABLED&&aedEventDtoSearch.getStatus()!=SDISABLED){
+            return aedEventRepository.findAedEventsByStatus(aedEventDtoSearch.getStatus());
+        }
+        else if(aedEventDtoSearch.getOccurrenceType()!=TDISABLED&&aedEventDtoSearch.getStatus()==SDISABLED){
+            return aedEventRepository.findAedEventsByOccurrenceType(aedEventDtoSearch.getOccurrenceType());
+        }
+        else{
+            return aedEventRepository.findAedEventsByOccurrenceTypeAndStatus(aedEventDtoSearch.getOccurrenceType(),aedEventDtoSearch.getStatus());
+        }
     }
+    public Mono<AedEvent> findEventId(String id) {
+        return aedEventRepository.findById(id)
+                .defaultIfEmpty(new AedEvent())
+                .flatMap(aedEvent -> aedEvent.getId() == null ? Mono.error(badRequest("Event not found")) : Mono.just(aedEvent));
+    }
+
+    public Mono<Void> saveAedEvent(AedEvent aedEvent){
+        return aedEventRepository.save(aedEvent).then(Mono.empty());
+    }
+
     public Mono<RequestedPreviewAedEvent> fetchEventByType(AedEvent aedEvent){
         return Mono.just(RequestedPreviewAedEvent.build(aedEvent));
     }

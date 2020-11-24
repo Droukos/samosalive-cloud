@@ -22,19 +22,25 @@ public class OccurrenceTypeValidator implements Validator {
         rejectIfEmptyOrWhitespace(errors, OCCURRENCE_TYPE, OCCURRENCE_TYPE_EMPTY.getShortWarning());
 
         AedEventDtoSearch type = (AedEventDtoSearch) o;
-        if(!isNumeric(type.getOccurrenceType()))
+        if (!isNumber(type.getOccurrenceType()))
             errors.rejectValue(OCCURRENCE_TYPE, OCCURRENCE_TYPE_INVALID.getShortWarning());
-        if(isNumeric(type.getOccurrenceType())){
-            int typeInt = Integer.parseInt(type.getOccurrenceType());
-            if(typeInt < 0 || typeInt > 2)
+        if (isNumber(type.getOccurrenceType())) {
+            int typeInt = type.getOccurrenceType();
+            if (typeInt < 0 || typeInt > 3)
                 errors.rejectValue(OCCURRENCE_TYPE, OCCURRENCE_TYPE_INVALID.getShortWarning());
         }
     }
 
-    public boolean isNumeric(String strNum) {
-        if (strNum == null) {
+    public boolean isNumber(Integer strNum) {
+        if (strNum.getClass().equals(Integer.class)) {
+            return true;
+        }
+        else if (strNum.getClass().equals(String.class)){
             return false;
         }
-        return Pattern.compile("-?\\d+(\\.\\d+)?").matcher(strNum).matches();
+        else{
+            return false;
+        }
+        //return Pattern.compile("-?\\d+(\\.\\d+)?").matcher(strNum).matches();
     }
 }

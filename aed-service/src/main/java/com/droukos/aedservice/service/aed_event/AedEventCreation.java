@@ -10,8 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-
-import static com.droukos.aedservice.model.factories.AedEventFactoryCreate.eventCreate;
+import static com.droukos.aedservice.model.factories.aed_event.AedEventFactoryCreate.eventCreate;
 
 @Service
 @RequiredArgsConstructor

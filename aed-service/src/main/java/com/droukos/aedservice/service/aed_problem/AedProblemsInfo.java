@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static com.droukos.aedservice.util.factories.HttpExceptionFactory.badRequest;
+
 @Service
 @RequiredArgsConstructor
 public class AedProblemsInfo {
@@ -22,9 +24,19 @@ public class AedProblemsInfo {
     }
 
     public Flux<AedProblems> findProblemsByTitle(AedProblemsDtoSearch aedProblemsDtoSearch) {
-        return aedProblemsRepository.findAllByProblemTitleContaining(aedProblemsDtoSearch.getTitle());
+        return aedProblemsRepository.findAllByProblemsTitleContaining(aedProblemsDtoSearch.getProblemsTitle());
     }
     public Mono<RequestedPreviewAedProblems> fetchProblemsByTitle(AedProblems aedProblems){
         return Mono.just(RequestedPreviewAedProblems.build(aedProblems));
+    }
+
+    public Mono<AedProblems> findProblemsId(String id) {
+        return aedProblemsRepository.findById(id)
+                .defaultIfEmpty(new AedProblems())
+                .flatMap(aedProblems -> aedProblems.getId() == null ? Mono.error(badRequest("Event not found")) : Mono.just(aedProblems));
+    }
+
+    public Mono<Void> saveAedProblems(AedProblems aedProblems){
+        return aedProblemsRepository.save(aedProblems).then(Mono.empty());
     }
 }
