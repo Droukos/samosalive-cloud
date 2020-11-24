@@ -9,5 +9,5 @@ import lombok.*;
 @Setter
 @Getter
 public class AccessToken {
-  private String id;
+    private String id;
 }

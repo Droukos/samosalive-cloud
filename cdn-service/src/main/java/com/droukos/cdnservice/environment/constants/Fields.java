@@ -50,7 +50,7 @@ public class Fields {
     public static final String SYS_VERIFICATION = USERINFO_SYSTEM + "verification";
     public static final String VERIFIED = SYS_VERIFICATION + "ver";
     public static final String VERIFIED_CODE = SYS_VERIFICATION + "verC";
-    public static final String VERIFIED_ON = SYS_VERIFICATION +"verOn";
+    public static final String VERIFIED_ON = SYS_VERIFICATION + "verOn";
     public static final String SYS_IP_ADDRESS = USERINFO_SYSTEM + "ipAddr";
 
 

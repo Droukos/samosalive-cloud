@@ -4,9 +4,12 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data @ToString
-@NoArgsConstructor @AllArgsConstructor
-@Setter @Getter
+@Data
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 public class PasswordReset {
 
     private String ip;

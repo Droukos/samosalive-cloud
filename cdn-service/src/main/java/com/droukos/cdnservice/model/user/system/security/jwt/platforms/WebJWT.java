@@ -8,7 +8,8 @@ import lombok.*;
 import java.util.Date;
 
 @ToString
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class WebJWT implements JwtToken {
     private RefreshToken reToken;

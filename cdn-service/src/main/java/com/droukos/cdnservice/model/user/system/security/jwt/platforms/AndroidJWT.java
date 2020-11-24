@@ -7,9 +7,12 @@ import lombok.*;
 
 import java.util.Date;
 
-@Data @ToString
-@NoArgsConstructor @AllArgsConstructor
-@Setter @Getter
+@Data
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 public class AndroidJWT implements JwtToken {
     private RefreshToken reToken;
     private AccessToken accToken;

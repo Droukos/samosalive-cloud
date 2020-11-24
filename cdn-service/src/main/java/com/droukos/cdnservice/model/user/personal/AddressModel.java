@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 public class AddressModel {
-  private String cIso;
-  private String state;
-  private String city;
+    private String cIso;
+    private String state;
+    private String city;
 }

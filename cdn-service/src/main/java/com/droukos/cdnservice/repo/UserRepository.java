@@ -14,6 +14,7 @@ public interface UserRepository extends ReactiveMongoRepository<UserRes, String>
 
     @Query("{ $or:  [{ 'id' : ?0 }, { 'id': ?1 }]}")
     Flux<UserRes> findUserAndTargetUser(String id, String targetId);
+
     //Flux<User> findUserAndTargetUsers(String id, )
     Mono<UserRes> findFirstByUser(String username);
 }

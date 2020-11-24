@@ -12,26 +12,26 @@ import static com.droukos.cdnservice.environment.constants.Fields.AVATAR;
 @Component
 public class AvatarValidator implements Validator {
 
-  public static AvatarValidator build() {
-    return new AvatarValidator();
-  }
-
-  @Override
-  public boolean supports(Class<?> aClass) {
-    return UpdateAvatar.class.equals(aClass);
-  }
-
-  @Override
-  public void validate(Object o, Errors errors) {
-    // ValidationUtils.rejectIfEmptyOrWhitespace(errors, "av",
-    // AVATAR_INVALID.getShortWarning());
-
-    UpdateAvatar update_avatar = (UpdateAvatar) o;
-    try {
-      // It's an image (only BMP, GIF, JPG and PNG are recognized).
-      ImageIO.read(update_avatar.getAv()).toString();
-    } catch (Exception e) {
-      errors.reject(AVATAR, "invalid.file");
+    public static AvatarValidator build() {
+        return new AvatarValidator();
     }
-  }
+
+    @Override
+    public boolean supports(Class<?> aClass) {
+        return UpdateAvatar.class.equals(aClass);
+    }
+
+    @Override
+    public void validate(Object o, Errors errors) {
+        // ValidationUtils.rejectIfEmptyOrWhitespace(errors, "av",
+        // AVATAR_INVALID.getShortWarning());
+
+        UpdateAvatar update_avatar = (UpdateAvatar) o;
+        try {
+            // It's an image (only BMP, GIF, JPG and PNG are recognized).
+            ImageIO.read(update_avatar.getAv()).toString();
+        } catch (Exception e) {
+            errors.reject(AVATAR, "invalid.file");
+        }
+    }
 }

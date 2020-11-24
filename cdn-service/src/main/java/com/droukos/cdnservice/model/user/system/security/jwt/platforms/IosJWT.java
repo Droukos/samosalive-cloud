@@ -7,9 +7,12 @@ import lombok.*;
 
 import java.util.Date;
 
-@Data @ToString
-@NoArgsConstructor @AllArgsConstructor
-@Getter @Setter
+@Data
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class IosJWT implements JwtToken {
     private RefreshToken reToken;
     private AccessToken accToken;

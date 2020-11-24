@@ -6,7 +6,8 @@ import org.springframework.security.core.context.SecurityContext;
 import java.util.List;
 
 public class SecurityUtil {
-    private SecurityUtil() {}
+    private SecurityUtil() {
+    }
 
     public static RequesterAccessTokenData getRequesterData(SecurityContext context) {
         return (RequesterAccessTokenData) context.getAuthentication().getPrincipal();

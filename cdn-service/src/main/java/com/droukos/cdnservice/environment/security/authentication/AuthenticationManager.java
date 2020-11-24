@@ -23,8 +23,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuthenticationManager implements ReactiveAuthenticationManager {
 
-    @NonNull private final AccessJwtService accessJwtService;
-    @NonNull private final ClaimsConfig claimsConfig;
+    @NonNull
+    private final AccessJwtService accessJwtService;
+    @NonNull
+    private final ClaimsConfig claimsConfig;
 
     @Override
     @SuppressWarnings("unchecked")

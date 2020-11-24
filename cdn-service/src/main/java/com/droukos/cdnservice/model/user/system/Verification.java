@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Verification {
 
-  private boolean ver;
+    private boolean ver;
 
-  private LocalDateTime verOn;
+    private LocalDateTime verOn;
 }

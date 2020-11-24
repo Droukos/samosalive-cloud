@@ -29,9 +29,11 @@ public class AedDeviceImgsDto {
     }
 
     public static AedDeviceImgsDto buildDtoFromMapPart(Map<String, Part> partMap) {
+        System.out.println(partMap.get("addrFile"));
+        System.out.println(partMap.get("deviceFile"));
         FilePart f = (FilePart) partMap.get("addrFile");
         FilePart f1 = (FilePart) partMap.get("deviceFile");
-        if(f == null || f1 == null) throw badRequest();
+        if (f == null || f1 == null) throw badRequest();
         File addressFile = new File(FilesUtil.tempPathForAedAddressPic() + f.filename());
         File deviceFile = new File(FilesUtil.tempPathForAedDevicePic() + f1.filename());
 

@@ -11,9 +11,9 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Personal {
-  private String name;
-  private String sur;
-  private Profile prof;
-  private AddressModel addr;
-  private Map<String, PhoneModel> phones;
+    private String name;
+    private String sur;
+    private Profile prof;
+    private AddressModel addr;
+    private Map<String, PhoneModel> phones;
 }

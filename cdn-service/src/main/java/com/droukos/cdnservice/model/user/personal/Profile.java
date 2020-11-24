@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 public class Profile {
-  private String av;
-  private String bk;
-  private String desc;
+    private String av;
+    private String bk;
+    private String desc;
 }

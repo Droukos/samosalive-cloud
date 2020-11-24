@@ -40,8 +40,8 @@ public class AedDeviceService {
     public Mono<Tuple2<AedDevice, AedDeviceImgsDto>> validateImgsSize(Tuple2<AedDevice, AedDeviceImgsDto> tuple2) {
         AedDeviceImgsDto aedDeviceImgsDto = tuple2.getT2();
 
-        long addrImgInMegabytes = aedDeviceImgsDto.getAddressImg().length()/1024/1024;
-        long devImgInMegabytes = aedDeviceImgsDto.getDeviceImg().length()/1024/1024;
+        long addrImgInMegabytes = aedDeviceImgsDto.getAddressImg().length() / 1024 / 1024;
+        long devImgInMegabytes = aedDeviceImgsDto.getDeviceImg().length() / 1024 / 1024;
         if (addrImgInMegabytes > 1 || devImgInMegabytes > 1) {
             aedDeviceImgsDto.getAddressImg().delete();
             aedDeviceImgsDto.getDeviceImg().delete();
@@ -50,7 +50,7 @@ public class AedDeviceService {
         return Mono.just(tuple2);
     }
 
-    public Mono<ServerResponse> saveAedDeviceImgs (AedDevice aedDevice) {
+    public Mono<ServerResponse> saveAedDeviceImgs(AedDevice aedDevice) {
         return aedDeviceRepository.save(aedDevice)
                 .then(ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue("Updated")));

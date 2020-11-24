@@ -34,17 +34,16 @@ public class CdnController {
         return Mono.just(true);
     }
 
-    @PostMapping(value = "api/cdn/user/upload-avatar/{userid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.OK)
-    public Flux<String> putUserInfoAvatar(@PathVariable String userid, @RequestPart("files") Flux<FilePart> filePartFlux) {
-
-        return avatarService.getLines(filePartFlux);
-        //return userServices.getUserByPathVarId(request)
-        //        .flatMap(avatarService::fetchAvatarFromMPData)
-        //        .flatMap(avatarService::validateAvatar)
-        //        .flatMap(avatarService::updateUserAvatarAndResponse);
-    }
-
+    //@PostMapping(value = "api/cdn/user/upload-avatar/{userid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+    //@ResponseStatus(value = HttpStatus.OK)
+    //public Flux<String> putUserInfoAvatar(@PathVariable String userid, @RequestPart("files") Flux<FilePart> filePartFlux) {
+//
+    //    return avatarService.getLines(filePartFlux);
+    //    //return userServices.getUserByPathVarId(request)
+    //    //        .flatMap(avatarService::fetchAvatarFromMPData)
+    //    //        .flatMap(avatarService::validateAvatar)
+    //    //        .flatMap(avatarService::updateUserAvatarAndResponse);
+    //}
 
 
 }

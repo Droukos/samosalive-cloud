@@ -27,7 +27,7 @@ public class AvatarImgDto {
 
     public static AvatarImgDto buildFromPart(Map<String, Part> partMap) {
         FilePart f = (FilePart) partMap.get("avFile");
-        if(f == null) throw badRequest();
+        if (f == null) throw badRequest();
         File avatarFile = new File(FilesUtil.tempPathForAvatarPic() + f.filename());
 
         f.transferTo(avatarFile);

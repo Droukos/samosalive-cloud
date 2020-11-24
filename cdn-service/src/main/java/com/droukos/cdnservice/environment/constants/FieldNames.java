@@ -18,7 +18,7 @@ public class FieldNames {
     public static final String F_SURNAME = "sur";
     public static final String F_AVATAR = "av";
     public static final String F_DESCRIPTION = "desc";
-    public static final String F_COUNTRYISO ="ciso";
+    public static final String F_COUNTRYISO = "ciso";
     public static final String F_STATE = "state";
     public static final String F_CITY = "city";
 
@@ -30,7 +30,7 @@ public class FieldNames {
     public static final String F_PRIVY_ACCOUNT_CREATED = "accC";
     public static final String F_PRIVY_DESCRIPTION = "desc";
     public static final String F_PRIVY_ADDRESS = "addr";
-    public static final String F_PRIVY_PHONE =  "phone";
+    public static final String F_PRIVY_PHONE = "phone";
 
     public static final String F_PRIVY_TYPE = ".type";
     public static final String F_PRIVY_USERS = ".users";

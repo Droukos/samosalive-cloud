@@ -11,6 +11,6 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 public class WebLogins {
-  private LocalDateTime lLogin;
-  private LocalDateTime lLogout;
+    private LocalDateTime lLogin;
+    private LocalDateTime lLogout;
 }

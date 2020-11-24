@@ -28,47 +28,48 @@ import static com.droukos.cdnservice.environment.services.AedDeviceServices.PUT_
 @AllArgsConstructor
 public class ReactSecurityConfig {
 
-  private final AuthenticationManager authenticationManager;
-  private final SecurityContextRepository securityContextRepository;
-  @Bean
-  SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
+    private final AuthenticationManager authenticationManager;
+    private final SecurityContextRepository securityContextRepository;
 
-    return http.exceptionHandling()
-            .authenticationEntryPoint(
-                    (swe, e) -> Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED)))
-            .accessDeniedHandler(
-                    (swe, e) -> Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN)))
-            .and()
-            .cors().disable()
-            .csrf().disable()
-            .logout().disable()
-            .authenticationManager(authenticationManager)
-            .securityContextRepository(securityContextRepository)
-            .authorizeExchange()
-            .pathMatchers(HttpMethod.OPTIONS).permitAll()
-            .pathMatchers(PUT_AED_DEVICE_PICS.getFullUrl()).hasAnyRole(GENERAL_ADMIN)
-            .anyExchange().authenticated()
-            .and()
-            .build();
-  }
+    @Bean
+    SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
 
-  @Bean
-  public PayloadSocketAcceptorInterceptor rSocketInterceptor(RSocketSecurity security) {
-    return security
-        .jwt(jwtSpec -> jwtSpec.authenticationManager(authenticationManager))
-        // .simpleAuthentication(Customizer.withDefaults())
-        .authorizePayload(
-            authorizePayloadsSpec ->
-                authorizePayloadsSpec.anyRequest().authenticated().anyExchange().permitAll())
-        .build();
-  }
+        return http.exceptionHandling()
+                .authenticationEntryPoint(
+                        (swe, e) -> Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED)))
+                .accessDeniedHandler(
+                        (swe, e) -> Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN)))
+                .and()
+                .cors().disable()
+                .csrf().disable()
+                .logout().disable()
+                .authenticationManager(authenticationManager)
+                .securityContextRepository(securityContextRepository)
+                .authorizeExchange()
+                .pathMatchers(HttpMethod.OPTIONS).permitAll()
+                .pathMatchers(PUT_AED_DEVICE_PICS.getFullUrl()).hasAnyRole(GENERAL_ADMIN)
+                .anyExchange().authenticated()
+                .and()
+                .build();
+    }
 
-  @Bean
-  public RSocketMessageHandler messageHandler(RSocketStrategies rsocketStrategies) {
-    RSocketMessageHandler rmh = new RSocketMessageHandler();
-    rmh.getArgumentResolverConfigurer()
-        .addCustomResolver(new AuthenticationPrincipalArgumentResolver());
-    rmh.setRSocketStrategies(rsocketStrategies);
-    return rmh;
-  }
+    @Bean
+    public PayloadSocketAcceptorInterceptor rSocketInterceptor(RSocketSecurity security) {
+        return security
+                .jwt(jwtSpec -> jwtSpec.authenticationManager(authenticationManager))
+                // .simpleAuthentication(Customizer.withDefaults())
+                .authorizePayload(
+                        authorizePayloadsSpec ->
+                                authorizePayloadsSpec.anyRequest().authenticated().anyExchange().permitAll())
+                .build();
+    }
+
+    @Bean
+    public RSocketMessageHandler messageHandler(RSocketStrategies rsocketStrategies) {
+        RSocketMessageHandler rmh = new RSocketMessageHandler();
+        rmh.getArgumentResolverConfigurer()
+                .addCustomResolver(new AuthenticationPrincipalArgumentResolver());
+        rmh.setRSocketStrategies(rsocketStrategies);
+        return rmh;
+    }
 }

@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RoleModel {
 
-  private String role;
-  private String code;
-  private boolean active;
-  private LocalDateTime added;
-  private String addedBy;
+    private String role;
+    private String code;
+    private boolean active;
+    private LocalDateTime added;
+    private String addedBy;
 }

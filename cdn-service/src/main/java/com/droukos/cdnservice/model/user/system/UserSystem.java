@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UserSystem {
 
-  private Double credStars;
+    private Double credStars;
 
-  private LocalDateTime accC;
+    private LocalDateTime accC;
 
-  private LocalDateTime accU;
+    private LocalDateTime accU;
 
-  private Security sec;
+    private Security sec;
 }

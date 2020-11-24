@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.geo.GeoJson;
 
 @ToString
@@ -11,10 +12,10 @@ import org.springframework.data.mongodb.core.geo.GeoJson;
 @NoArgsConstructor
 @Getter
 public class AedDeviceRegisterDto {
-    private String nickname;
+    private String uniqueNickname;
     private String modelName;
     private String description;
-    //TODO check on the raw parameterized class 'GeoJson'
-    private GeoJson defaultMap;
+    private double defaultMapX;
+    private double defaultMapY;
     private String address;
 }

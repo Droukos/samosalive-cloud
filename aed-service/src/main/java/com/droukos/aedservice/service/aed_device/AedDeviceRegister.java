@@ -5,9 +5,10 @@ import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDeviceCdn
 import com.droukos.aedservice.model.aed_device.AedDevice;
 import com.droukos.aedservice.repo.AedDeviceRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 import static com.droukos.aedservice.util.factories.HttpExceptionFactory.badRequest;
 
@@ -16,15 +17,24 @@ import static com.droukos.aedservice.util.factories.HttpExceptionFactory.badRequ
 public class AedDeviceRegister {
 
     private final AedDeviceRepository aedDeviceRepository;
-    private final ReactiveStringRedisTemplate redisTemplate;
 
     public Mono<AedDeviceRegisterDto> validateRegisterDto(AedDeviceRegisterDto dto) {
         return (dto.getDescription().length() <= 500
-                && dto.getNickname().length() < 40
+                && dto.getUniqueNickname().length() < 40
                 && dto.getAddress().length() < 100
                 && dto.getModelName().length() < 40)
                 ? Mono.just(dto) : Mono.error(badRequest());
 
+    }
+
+    public Mono<Tuple2<AedDeviceRegisterDto, SecurityContext>> validateUniqueNickname(Tuple2<AedDeviceRegisterDto, SecurityContext> tuple2) {
+        return aedDeviceRepository.getAedDeviceByUniqNickname(tuple2.getT1().getUniqueNickname())
+                .defaultIfEmpty(new AedDevice())
+                .flatMap(aedDevice ->
+                        aedDevice.getId() != null
+                                ? Mono.error(badRequest("Device nickname already exists"))
+                                : Mono.zip(Mono.just(tuple2.getT1()), Mono.just(tuple2.getT2()))
+                );
     }
 
     public Mono<AedDevice> aedDeviceToMongoDB(AedDevice aedDevice) {

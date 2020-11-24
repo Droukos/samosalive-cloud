@@ -4,8 +4,8 @@ import com.droukos.aedservice.environment.dto.RequesterAccessTokenData;
 import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceRegisterDto;
 import com.droukos.aedservice.environment.enums.DeviceAvailability;
 import com.droukos.aedservice.model.aed_device.AedDevice;
-import com.droukos.aedservice.service.aed_device.AedDeviceRegister;
 import com.droukos.aedservice.util.SecurityUtil;
+import org.springframework.data.geo.Point;
 import org.springframework.security.core.context.SecurityContext;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
@@ -24,15 +24,14 @@ public class AedDeviceFactory {
 
         return new AedDevice(
                 null,
-                aedDeviceRegisterDto.getNickname(),
+                aedDeviceRegisterDto.getUniqueNickname(),
                 aedDeviceRegisterDto.getModelName(),
                 aedDeviceRegisterDto.getDescription(),
                 LocalDateTime.now(),
                 requesterData.getUserId(),
-                LocalDateTime.now(),
                 DeviceAvailability.AVAILABLE.getCode(),
                 null,
-                aedDeviceRegisterDto.getDefaultMap(),
+                new Point(aedDeviceRegisterDto.getDefaultMapX(), aedDeviceRegisterDto.getDefaultMapY()),
                 null,
                 null,
                 aedDeviceRegisterDto.getAddress(),

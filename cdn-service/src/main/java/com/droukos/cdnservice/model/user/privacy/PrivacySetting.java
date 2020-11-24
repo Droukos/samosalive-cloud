@@ -8,7 +8,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class PrivacySetting {
-  private final Integer type;
-  private final List<String> users;
+    private final Integer type;
+    private final List<String> users;
 
 }

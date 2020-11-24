@@ -19,28 +19,30 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class SecurityContextRepository implements ServerSecurityContextRepository {
 
-  @NonNull private final AuthenticationManager authenticationManager;
-  @NonNull private final AccessTokenConfig accessTokenConfig;
+    @NonNull
+    private final AuthenticationManager authenticationManager;
+    @NonNull
+    private final AccessTokenConfig accessTokenConfig;
 
-  @Override
-  public Mono<Void> save(ServerWebExchange swe, SecurityContext sc) {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    @Override
+    public Mono<Void> save(ServerWebExchange swe, SecurityContext sc) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  @Override
-  public Mono<SecurityContext> load(ServerWebExchange swe) {
+    @Override
+    public Mono<SecurityContext> load(ServerWebExchange swe) {
 
-    String authHeader = swe.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        String authHeader = swe.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-    String authToken = null;
-    if (authHeader != null && authHeader.startsWith(accessTokenConfig.getTokenPrefix()))
-      authToken = authHeader.replace(accessTokenConfig.getTokenPrefix(), "").trim();
-    else log.warn("couldn't find bearer string, will ignore the header.");
+        String authToken = null;
+        if (authHeader != null && authHeader.startsWith(accessTokenConfig.getTokenPrefix()))
+            authToken = authHeader.replace(accessTokenConfig.getTokenPrefix(), "").trim();
+        else log.warn("couldn't find bearer string, will ignore the header.");
 
-    return (authToken != null)
-        ? this.authenticationManager
-            .authenticate(new UsernamePasswordAuthenticationToken(swe.getRequest(), authToken))
-            .map(SecurityContextImpl::new)
-        : Mono.empty();
-  }
+        return (authToken != null)
+                ? this.authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(swe.getRequest(), authToken))
+                .map(SecurityContextImpl::new)
+                : Mono.empty();
+    }
 }

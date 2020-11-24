@@ -6,9 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class CdnServiceApplicationTests {
 
-	@Test
-	void filePartTest() {
+    @Test
+    void filePartTest() {
 
-	}
+    }
 
 }

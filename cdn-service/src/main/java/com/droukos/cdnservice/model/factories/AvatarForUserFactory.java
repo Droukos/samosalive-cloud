@@ -11,11 +11,13 @@ import reactor.util.function.Tuple2;
 @ToString
 @Getter
 public class AvatarForUserFactory {
-    private AvatarForUserFactory() {}
+    private AvatarForUserFactory() {
+    }
 
     public static Mono<UserRes> updateUserAvatarUrlMono(Tuple2<UserRes, String> tuple2) {
         return Mono.just(updateUserAvatarUrl(tuple2));
     }
+
     public static UserRes updateUserAvatarUrl(Tuple2<UserRes, String> tuple2) {
         UserRes user = tuple2.getT1();
         String url = tuple2.getT2();

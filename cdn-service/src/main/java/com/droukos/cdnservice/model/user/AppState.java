@@ -12,6 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppState {
-  private boolean on;
-  private Integer status;
+    private boolean on;
+    private Integer status;
 }

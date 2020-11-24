@@ -8,5 +8,5 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class PhoneModel {
-  private String phone;
+    private String phone;
 }

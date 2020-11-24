@@ -14,5 +14,5 @@ import java.util.Map;
 @AllArgsConstructor
 @Getter
 public class PrivacySettingMap {
-  private Map<String, PrivacySetting> privySets;
+    private Map<String, PrivacySetting> privySets;
 }

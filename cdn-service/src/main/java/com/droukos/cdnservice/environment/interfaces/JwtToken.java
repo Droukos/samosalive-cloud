@@ -8,8 +8,12 @@ import java.util.Date;
 
 public interface JwtToken {
     AccessToken getAccessTokenModel();
+
     RefreshToken getRefreshTokenModel();
+
     String getAccessTokenId();
+
     String getRefreshTokenId();
+
     Date getRefreshTokenExp();
 }

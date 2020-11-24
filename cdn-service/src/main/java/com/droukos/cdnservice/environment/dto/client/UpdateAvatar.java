@@ -12,6 +12,6 @@ import java.io.File;
 @AllArgsConstructor
 @Getter
 public class UpdateAvatar {
-  private String userid;
-  private File av;
+    private String userid;
+    private File av;
 }

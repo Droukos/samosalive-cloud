@@ -11,7 +11,7 @@ import java.util.Date;
 @Setter
 @Getter
 public class RefreshToken {
-  private String id;
-  private String ip;
-  private Date exp;
+    private String id;
+    private String ip;
+    private Date exp;
 }

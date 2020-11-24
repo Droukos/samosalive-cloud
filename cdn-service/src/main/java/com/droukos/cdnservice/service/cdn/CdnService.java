@@ -14,26 +14,26 @@ import static com.droukos.cdnservice.util.factories.HttpExceptionFactory.badRequ
 @Service
 @AllArgsConstructor
 public class CdnService {
-  private final AedDeviceRepository aedDeviceRepository;
-  private final UserRepository userRepository;
+    private final AedDeviceRepository aedDeviceRepository;
+    private final UserRepository userRepository;
 
-  public Mono<AedDevice> fetchAedDeviceFromRequest(ServerRequest request) {
-    String deviceId = request.pathVariable("id");
-    return deviceId.trim().equals("") ? Mono.error(badRequest()) : fetchAedDeviceById(deviceId);
-  }
+    public Mono<AedDevice> fetchAedDeviceFromRequest(ServerRequest request) {
+        String deviceId = request.pathVariable("id");
+        return deviceId.trim().equals("") ? Mono.error(badRequest()) : fetchAedDeviceById(deviceId);
+    }
 
-  public Mono<UserRes> fetchUserFromRequest(ServerRequest request) {
-    String userId = request.pathVariable("id");
-    return userId.trim().equals("") ? Mono.error(badRequest()) : userRepository.findFirstById(userId);
-  }
+    public Mono<UserRes> fetchUserFromRequest(ServerRequest request) {
+        String userId = request.pathVariable("id");
+        return userId.trim().equals("") ? Mono.error(badRequest()) : userRepository.findFirstById(userId);
+    }
 
-  public Mono<AedDevice> fetchAedDeviceById(String deviceId) {
-    return aedDeviceRepository
-        .getAedDeviceById(deviceId)
-        .flatMap(
-            aedDevice ->
-                aedDevice.getId() == null
-                    ? Mono.error(badRequest("Device not found"))
-                    : Mono.just(aedDevice));
-  }
+    public Mono<AedDevice> fetchAedDeviceById(String deviceId) {
+        return aedDeviceRepository
+                .getAedDeviceById(deviceId)
+                .flatMap(
+                        aedDevice ->
+                                aedDevice.getId() == null
+                                        ? Mono.error(badRequest("Device not found"))
+                                        : Mono.just(aedDevice));
+    }
 }
