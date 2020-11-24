@@ -37,4 +37,8 @@ public class AedProblems {
 
     private LocalDateTime acceptedTime;
 
+    private LocalDateTime completedTime;
+
+    private String conclusion;
+
 }

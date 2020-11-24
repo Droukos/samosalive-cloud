@@ -41,5 +41,9 @@ public class AedEvent {
 
     private LocalDateTime acceptedTime;
 
+    private LocalDateTime completedTime;
+
+    private String conclusion;
+
     private String callee;
 }

@@ -1,9 +1,10 @@
-package com.droukos.aedservice;
+package com.droukos.aedservice.problems;
 
+import com.droukos.aedservice.RedisUtil;
+import com.droukos.aedservice.TokenUtilTest;
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoIdSearch;
-import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
+import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoTechnicalSub;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 
 @SpringBootTest
-public class AedEventSearchIdTest {
+public class AedProblemsSubTechnicalTest {
     private static RSocketRequester requester;
 
     @BeforeAll
@@ -48,17 +49,15 @@ public class AedEventSearchIdTest {
     }
 
     @Test
-    void findEventId(){
-        String id = "5fa82d99f954c2435a9c1ca9";
-        AedEventDtoIdSearch aedEventDtoIdSearch = new AedEventDtoIdSearch(id);
-        Mono<RequestedPreviewAedEvent> result =
+    void subTechnical(){
+        AedProblemsDtoTechnicalSub aedProblemsDtoTechnicalSub = new AedProblemsDtoTechnicalSub("5fb6bc1682c8a025d194f663", "tommy");
+        Mono<Boolean> result =
                 requester
-                        .route("aed.event.getId")
+                        .route("aed.problems.subTechnical")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
-                        .data(aedEventDtoIdSearch)
-                        .retrieveMono(RequestedPreviewAedEvent.class);
+                        .data(aedProblemsDtoTechnicalSub)
+                        .retrieveMono(Boolean.class);
 
-        result.doOnNext(System.out::println).block();
+        System.out.println(result.block());
     }
 }
-
