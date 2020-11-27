@@ -2,9 +2,9 @@ package com.droukos.userservice.environment.dto.client.user;
 
 import lombok.*;
 
-@Data @ToString
+@ToString
 @NoArgsConstructor @AllArgsConstructor
-@Getter @Setter
+@Getter
 public class UpdateAvailability {
     private Integer status;
 }

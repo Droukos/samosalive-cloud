@@ -23,7 +23,7 @@ public class PasswordService {
 
   @NonNull private final BCryptPasswordEncoder bCryptPasswordEncoder;
   @NonNull private final TokenService tokenService;
-  @NonNull private UserRepository userRepository;
+  @NonNull private final UserRepository userRepository;
 
   public Mono<Tuple4<UpdatePassword, UserRes, NewAccTokenData, NewRefTokenData>>
       setNewAccessTokenIdToRedis(

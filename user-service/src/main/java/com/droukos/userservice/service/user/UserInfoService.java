@@ -3,8 +3,8 @@ package com.droukos.userservice.service.user;
 
 import com.droukos.userservice.environment.constants.PrivacyCodes;
 import com.droukos.userservice.environment.dto.RequesterAccessTokenData;
+import com.droukos.userservice.environment.dto.client.user.UpdateUserPersonal;
 import com.droukos.userservice.environment.dto.server.user.RequestedUsernameOnly;
-import com.droukos.userservice.environment.enums.Regexes;
 import com.droukos.userservice.environment.security.AccessJwtService;
 import com.droukos.userservice.model.user.UserRes;
 import com.droukos.userservice.model.user.privacy.PrivacySettingMap;
@@ -24,10 +24,9 @@ import reactor.util.function.Tuple2;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.function.*;
+
+import static com.droukos.userservice.environment.security.HttpExceptionFactory.badRequest;
 
 @Service
 @Lazy
@@ -60,6 +59,19 @@ public class UserInfoService {
               return Mono.zip(Mono.just(user), Mono.just(buildUserFilters(requesterTokenData, user)));
             });
 
+  }
+
+  public Mono<UpdateUserPersonal> checkRequesterUserIdOrRole(Tuple2<UpdateUserPersonal, SecurityContext> tuple2) {
+
+      RequesterAccessTokenData requesterAccessTokenData = SecurityUtil.getRequesterData(tuple2.getT2());
+      UpdateUserPersonal updateUserPersonal = tuple2.getT1();
+      Function<UpdateUserPersonal, Mono<UpdateUserPersonal>> checkAdminRole = updateUserPersonal1 ->
+              RolesUtil.hasAnyAdminRole(requesterAccessTokenData.getRoles())
+                      ? Mono.just(updateUserPersonal) : Mono.error(badRequest());
+
+      return (!requesterAccessTokenData.getUserId().equals(updateUserPersonal.getUserid()))
+              ? checkAdminRole.apply(updateUserPersonal)
+              : Mono.just(tuple2.getT1());
   }
 
   public Mono<Tuple2<UserRes, Set<String>>> getRequestedUsersFilterOnPrivSettings(Tuple2<UserRes, SecurityContext> tuple2) {

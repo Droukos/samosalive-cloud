@@ -11,6 +11,7 @@ import reactor.util.function.Tuple2;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @ToString
 @NoArgsConstructor
@@ -38,7 +39,7 @@ public class RequestedUserInfo {
     LocalDateTime userCreated;
     boolean online;
     Integer availability;
-    List<RoleModel> roles;
+    List<RoleModel> roleModels;
 
     public static Mono<RequestedUserInfo> buildMono(Tuple2<UserRes, Set<String>> tuple2) {
         return Mono.defer(() -> Mono.just(build(tuple2.getT1(), tuple2.getT2())));
@@ -83,7 +84,9 @@ public class RequestedUserInfo {
                 showAccountCreated? null : user.getAccountCreated(),
                 !showAppStateOn && user.getAppState().isOn(),
                 user.getAppState().getStatus(),
-                user.getAllRoles()
+                user.getAllRoles().stream()
+                        .map(RoleModel::buildRoleModelWithRoleCode)
+                        .collect(Collectors.toList())
         );
     }
 }

@@ -6,9 +6,10 @@ import java.util.List;
 
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class PrivacySetting {
-  private final Integer type;
-  private final List<String> users;
+  private Integer type;
+  private List<String> users;
 
 }

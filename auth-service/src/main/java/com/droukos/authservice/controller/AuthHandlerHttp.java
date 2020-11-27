@@ -3,6 +3,7 @@ package com.droukos.authservice.controller;
 import com.droukos.authservice.service.auth.*;
 import com.droukos.authservice.service.validator.auth.ValidatorFactory;
 import com.droukos.authservice.util.DeviceDetector;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -12,15 +13,15 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 @Controller
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AuthHandlerHttp {
 
-  @NonNull private final TokensService tokensService;
-  @NonNull private final PasswordService passwordService;
-  @NonNull private final RolesService rolesService;
-  @NonNull private final LoginService loginService;
-  @NonNull private final LogoutService logoutService;
-  @NonNull private final AuthServices authServices;
+  private final TokensService tokensService;
+  private final PasswordService passwordService;
+  private final RolesService rolesService;
+  private final LoginService loginService;
+  private final LogoutService logoutService;
+  private final AuthServices authServices;
 
   public Mono<ServerResponse> login(ServerRequest request) {
     String os = DeviceDetector.detectUserDeviceOs(request);

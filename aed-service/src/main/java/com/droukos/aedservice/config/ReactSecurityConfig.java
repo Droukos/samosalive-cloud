@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver;
 import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
 
+import static com.droukos.aedservice.environment.constants.authorities.Roles.GENERAL_ADMIN;
+
 @Configuration
 @EnableWebFluxSecurity
 @EnableRSocketSecurity
@@ -35,12 +37,9 @@ public class ReactSecurityConfig {
         .authorizePayload(
             authorizePayloadsSpec ->
                 authorizePayloadsSpec
-                    .route("auth.signup")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated()
-                    .anyExchange()
-                    .permitAll())
+                        .route("aed.register.device").hasRole(GENERAL_ADMIN)
+                    .anyRequest().authenticated()
+                    .anyExchange().permitAll())
         .build();
   }
 

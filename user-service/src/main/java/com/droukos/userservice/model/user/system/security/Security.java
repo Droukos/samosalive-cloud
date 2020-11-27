@@ -13,9 +13,9 @@ import lombok.*;
 
 import java.util.List;
 
-@Data @ToString
+@ToString
 @NoArgsConstructor @AllArgsConstructor
-@Setter @Getter
+@Getter
 public class Security {
     private AndroidLogins androidLog;
     private IosLogins iosLog;

@@ -1,6 +1,7 @@
 package com.droukos.authservice;
 
 import com.droukos.authservice.environment.dto.client.auth.SignupInfo;
+import com.droukos.authservice.model.user.RoleModel;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

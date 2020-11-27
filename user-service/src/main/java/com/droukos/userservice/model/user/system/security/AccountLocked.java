@@ -4,9 +4,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data @ToString
+@ToString
 @AllArgsConstructor
-@Setter
+@NoArgsConstructor
 @Getter
 public class AccountLocked {
     private boolean accLock;

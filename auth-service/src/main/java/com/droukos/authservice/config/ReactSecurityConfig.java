@@ -93,6 +93,8 @@ public class ReactSecurityConfig {
             .authorizePayload(
                     authorizePayloadsSpec -> authorizePayloadsSpec
                             .route("auth.signup").permitAll()
+                            .route("auth.username.check").permitAll()
+                            .route("auth.email.check").permitAll()
                             .anyRequest().authenticated()
                             .anyExchange().permitAll()
             )

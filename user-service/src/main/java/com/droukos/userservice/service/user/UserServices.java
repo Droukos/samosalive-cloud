@@ -1,5 +1,6 @@
 package com.droukos.userservice.service.user;
 
+import com.droukos.userservice.environment.dto.client.user.UserIdDto;
 import com.droukos.userservice.model.user.UserRes;
 import com.droukos.userservice.repo.UserRepository;
 import lombok.AllArgsConstructor;
@@ -17,5 +18,9 @@ public class UserServices {
   public Mono<UserRes> fetchUserById(String userId) {
     return userRepository.findById(userId)
             .switchIfEmpty(Mono.error(badRequest("User does not exists")));
+  }
+
+  public Mono<UserRes> fetchUserById(UserIdDto userIdDto) {
+    return this.fetchUserById(userIdDto.getUserid());
   }
 }

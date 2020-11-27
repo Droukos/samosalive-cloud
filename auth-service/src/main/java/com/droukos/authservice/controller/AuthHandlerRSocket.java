@@ -1,5 +1,6 @@
 package com.droukos.authservice.controller;
 
+import com.droukos.authservice.environment.dto.client.auth.CheckUniqueness;
 import com.droukos.authservice.environment.dto.client.auth.SignupInfo;
 import com.droukos.authservice.service.auth.SignUpService;
 import com.droukos.authservice.service.validator.auth.ValidatorFactory;
@@ -20,20 +21,21 @@ public class AuthHandlerRSocket {
 
     return Mono.just(signupInfo)
             .doOnNext(ValidatorFactory::validateSignedUpUser)
+            .flatMap(signUpService::checkUsernameEmailUniqueness)
             .flatMap(signUpService::buildUser)
             .flatMap(signUpService::signedUpUser);
   }
 
   @MessageMapping("auth.username.check")
-  public Mono<Boolean> checkUsername() {
+  public Mono<Boolean> checkUsername(CheckUniqueness checkUniqueness) {
 
-    return Mono.empty();
+    return signUpService.checkUsernameUniqueness(checkUniqueness);
   }
 
   @MessageMapping("auth.email.check")
-  public Mono<Boolean> checkEmail() {
+  public Mono<Boolean> checkEmail(CheckUniqueness checkUniqueness) {
 
-    return Mono.empty();
+    return signUpService.checkEmailUniqueness(checkUniqueness);
   }
 
   @MessageMapping("auth.email.change")

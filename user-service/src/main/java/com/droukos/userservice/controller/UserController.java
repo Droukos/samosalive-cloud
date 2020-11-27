@@ -1,10 +1,8 @@
 package com.droukos.userservice.controller;
 
-import com.droukos.userservice.environment.dto.client.user.PreviewUsernameDto;
-import com.droukos.userservice.environment.dto.client.user.UpdateAvailability;
-import com.droukos.userservice.environment.dto.client.user.UpdateUserPersonal;
-import com.droukos.userservice.environment.dto.client.user.UpdateUserPrivacy;
+import com.droukos.userservice.environment.dto.client.user.*;
 import com.droukos.userservice.environment.dto.server.user.RequestedPreviewUser;
+import com.droukos.userservice.environment.dto.server.user.RequestedPrivacySets;
 import com.droukos.userservice.environment.dto.server.user.RequestedUserInfo;
 import com.droukos.userservice.model.factories.user.res.UserFactoryAvailability;
 import com.droukos.userservice.model.factories.user.res.UserFactoryPrivacy;
@@ -30,63 +28,76 @@ public class UserController {
   private final PersonalService personalService;
   private final AvailabilityService availabilityService;
 
-  @MessageMapping("user.filter.by.id.{id}")
-  public Mono<RequestedUserInfo> getUserFilteredById(@DestinationVariable("id") String userId) {
+  @MessageMapping("user.filter.by.id")
+  public Mono<RequestedUserInfo> getUserFilteredById(UserIdDto userIdDto) {
 
     return userServices
-        .fetchUserById(userId)
+        .fetchUserById(userIdDto.getUserid())
         .zipWith(ReactiveSecurityContextHolder.getContext())
         .flatMap(userInfoService::getRequestedUsersFilterOnPrivSettings)
         .flatMap(RequestedUserInfo::buildMono);
   }
 
-  @MessageMapping("user.get.username.like.{username}")
-  public Flux<String> getUsernameLike(@DestinationVariable("username") String username) {
+  @MessageMapping("user.get.username.like")
+  public Flux<String> getUsernameLike(UsernameDto usernameDto) {
 
-    return Flux.just(username)
-        .filter(ValidatorFactory::validateUsername)
+    return Flux.just(usernameDto.getUsername())
+        .flatMap(ValidatorFactory::validateUsername)
         .flatMap(userInfoService::fetchUsernamesLike);
+  }
+
+  @MessageMapping("user.get.privacy.sets")
+  public Mono<RequestedPrivacySets> getUserPrivacySets(UserIdDto userIdDto) {
+
+    return Mono.just(userIdDto)
+            .zipWith(ReactiveSecurityContextHolder.getContext())
+            .flatMap(privacyService::checkRequesterUserIdOrRole)
+            .flatMap(userServices::fetchUserById)
+            .flatMap(RequestedPrivacySets::buildMono);
   }
 
   @MessageMapping("user.get.preview")
   public Flux<RequestedPreviewUser> getUsersPreview(PreviewUsernameDto previewUsernameDto) {
 
     return Flux.just(previewUsernameDto.getUsername())
-        .filter(ValidatorFactory::validateUsername)
+        .flatMap(ValidatorFactory::validateUsername)
         .flatMap(userInfoService::fetchPreviewUsers)
         .flatMap(userInfoService::getRequestedUserFiltersOnPrivacySettings)
         .flatMap(RequestedPreviewUser::buildMono);
   }
 
-  @MessageMapping("user.put.personal.info.{id}")
+  @MessageMapping("user.put.personal.info")
   public Mono<Boolean> putUserInfoPersonal(
-      UpdateUserPersonal updateUserPersonal, @DestinationVariable("id") String userId) {
+      UpdateUserPersonal updateUserPersonal) {
 
     return Mono.just(updateUserPersonal)
         .doOnNext(ValidatorFactory::validateUserPersonal)
-        .zipWith(userServices.fetchUserById(userId))
+        .zipWith(ReactiveSecurityContextHolder.getContext())
+        .flatMap(userInfoService::checkRequesterUserIdOrRole)
+        .zipWith(userServices.fetchUserById(updateUserPersonal.getUserid()))
         .flatMap(personalService::updateUserPersonal);
   }
 
-  @MessageMapping("user.put.privacy.info.{id}")
-  public Mono<Boolean> putUserInfoPrivacySets(
-      UpdateUserPrivacy updateUserPrivacy, @DestinationVariable("id") String userId) {
+  @MessageMapping("user.put.privacy.info")
+  public Mono<Boolean> putUserInfoPrivacySets(UpdateUserPrivacy updateUserPrivacy) {
 
     return Mono.just(updateUserPrivacy)
         .doOnNext(ValidatorFactory::validateUserPrivacy)
-        .zipWith(userServices.fetchUserById(userId))
+        .zipWith(userServices.fetchUserById(updateUserPrivacy.getUserid()))
         .flatMap(UserFactoryPrivacy::buildMonoUpdatePrivacy)
-        .flatMap(privacyService::saveToMongoDb);
+        .flatMap(privacyService::saveToMongoDb)
+        .then(Mono.just(true));
   }
 
   @MessageMapping("user.put.availability.state.{id}")
-  public Mono<Boolean> putStateAvailability(
+  public Mono<Void> putStateAvailability(
       UpdateAvailability updateAvailability, @DestinationVariable("id") String userId) {
 
     return Mono.just(updateAvailability)
         .doOnNext(ValidatorFactory::validateUserAvailability)
         .zipWith(userServices.fetchUserById(userId))
         .flatMap(UserFactoryAvailability::buildMonoUserOnAvailbilityUpdate)
-        .flatMap(availabilityService::saveToMongoDb);
+        .flatMap(availabilityService::saveToMongoDb)
+        .then(Mono.empty());
   }
 }

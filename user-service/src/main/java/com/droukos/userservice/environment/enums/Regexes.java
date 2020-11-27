@@ -8,7 +8,7 @@ public enum Regexes {
     EMAIL("^(.+)@(.+)$");
 
 
-    private String regex;
+    private final String regex;
 
     public String getRegex(){
         return regex;
