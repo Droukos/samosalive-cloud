@@ -1,10 +1,10 @@
 package com.droukos.aedservice.controller;
 
-import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoCreate;
-import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoIdSearch;
-import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoSearch;
-import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoTechnicalSub;
+import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoClose;
+import com.droukos.aedservice.environment.dto.client.aed_problems.*;
 import com.droukos.aedservice.environment.dto.server.aed.aedProblem.RequestedPreviewAedProblems;
+import com.droukos.aedservice.model.factories.aed_event.AedEventFactoryClose;
+import com.droukos.aedservice.model.factories.aed_problems.AedProblemsFactoryClose;
 import com.droukos.aedservice.model.factories.aed_problems.AedProblemsFactorySubTechnical;
 import com.droukos.aedservice.service.aed_problem.AedProblemsCreation;
 import com.droukos.aedservice.service.aed_problem.AedProblemsInfo;
@@ -50,6 +50,16 @@ public class AedProblemsController {
                 .flatMap(aedProblemsInfo::findProblemsId)
                 .zipWith(Mono.just(aedProblemsDtoTechnicalSub))
                 .flatMap(AedProblemsFactorySubTechnical::subTechnicalMono)
+                .flatMap(aedProblemsInfo::saveAedProblems)
+                .then(Mono.just(true));
+    }
+
+    @MessageMapping("aed.problems.close")
+    public Mono<Boolean> closeAedProblems(AedProblemsDtoClose aedProblemsDtoClose){
+        return Mono.just(aedProblemsDtoClose.getId())
+                .flatMap(aedProblemsInfo::findProblemsId)
+                .zipWith(Mono.just(aedProblemsDtoClose))
+                .flatMap(AedProblemsFactoryClose::closeAedProblems)
                 .flatMap(aedProblemsInfo::saveAedProblems)
                 .then(Mono.just(true));
     }

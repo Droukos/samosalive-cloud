@@ -23,6 +23,8 @@ public class AedEventFactoryCreate {
                 aedEventDtoCreate.getStatus(),
                 LocalDateTime.now(),
                 null,
+                null,
+                null,
                 null
         );
     }

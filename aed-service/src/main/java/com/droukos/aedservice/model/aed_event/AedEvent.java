@@ -2,6 +2,7 @@ package com.droukos.aedservice.model.aed_event;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.geo.GeoJson;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,7 +26,7 @@ public class AedEvent {
     @Indexed
     private Integer occurrenceType;
 
-    private GeoJson occurrencePoint;
+    private Point occurrencePoint;
 
     private String address;
 
@@ -40,6 +41,10 @@ public class AedEvent {
     private LocalDateTime requestedTime;
 
     private LocalDateTime acceptedTime;
+
+    private LocalDateTime completedTime;
+
+    private String conclusion;
 
     private String callee;
 }

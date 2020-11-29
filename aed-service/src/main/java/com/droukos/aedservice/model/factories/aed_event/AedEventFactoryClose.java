@@ -1,24 +1,24 @@
 package com.droukos.aedservice.model.factories.aed_event;
 
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoRescuerSub;
+import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoClose;
 import com.droukos.aedservice.model.aed_event.AedEvent;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
 import java.time.LocalDateTime;
 
-import static com.droukos.aedservice.environment.enums.AedEventStatus.ONPROGRESS;
+import static com.droukos.aedservice.environment.enums.AedEventStatus.COMPLETED;
 
-public class AedEventFactorySubRescuer {
+public class AedEventFactoryClose {
 
-    private AedEventFactorySubRescuer() {}
+    private AedEventFactoryClose() {}
 
-    public static Mono<AedEvent> subRescuerMono(Tuple2<AedEvent, AedEventDtoRescuerSub> tuple2){
-        return Mono.just(subRescuer(tuple2));
+    public static Mono<AedEvent> closeAedEvent(Tuple2<AedEvent, AedEventDtoClose> tuple2){
+        return Mono.just(closeEvent(tuple2));
     }
-    public static AedEvent subRescuer(Tuple2<AedEvent, AedEventDtoRescuerSub> tuple2){
+    public static AedEvent closeEvent(Tuple2<AedEvent, AedEventDtoClose> tuple2){
         AedEvent aedEvent = tuple2.getT1();
-        String rescuer = tuple2.getT2().getRescuer();
+        String conclusion = tuple2.getT2().getConclusion();
         return new AedEvent(
                 aedEvent.getId(),
                 aedEvent.getUsername(),
@@ -27,13 +27,13 @@ public class AedEventFactorySubRescuer {
                 aedEvent.getOccurrencePoint(),
                 aedEvent.getAddress(),
                 aedEvent.getComment(),
-                rescuer,
+                aedEvent.getRescuer(),
                 aedEvent.getPhone(),
-                ONPROGRESS.getStatus(),
+                COMPLETED.getStatus(),
                 aedEvent.getRequestedTime(),
+                aedEvent.getAcceptedTime(),
                 LocalDateTime.now(),
-                aedEvent.getCompletedTime(),
-                aedEvent.getConclusion(),
+                conclusion,
                 aedEvent.getCallee()
         );
     }

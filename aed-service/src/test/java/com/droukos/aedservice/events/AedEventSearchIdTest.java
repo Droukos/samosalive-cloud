@@ -1,8 +1,11 @@
-package com.droukos.aedservice;
+package com.droukos.aedservice.events;
 
+import com.droukos.aedservice.RedisUtil;
+import com.droukos.aedservice.TokenUtilTest;
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
-import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoCreate;
+import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoIdSearch;
+import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,9 +19,9 @@ import org.springframework.util.MimeTypeUtils;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.time.LocalDateTime;
+
 @SpringBootTest
-public class AedProblemsCreateTest {
+public class AedEventSearchIdTest {
     private static RSocketRequester requester;
 
     @BeforeAll
@@ -47,17 +50,17 @@ public class AedProblemsCreateTest {
     }
 
     @Test
-    void createAedProblems(){
-        AedProblemsDtoCreate aedProblemsDtoCreate = new AedProblemsDtoCreate("tom","Samos","addre","fwe",1, LocalDateTime.now());
-        Mono<Boolean> result =
+    void findEventId(){
+        String id = "5fa82d99f954c2435a9c1ca9";
+        AedEventDtoIdSearch aedEventDtoIdSearch = new AedEventDtoIdSearch(id);
+        Mono<RequestedPreviewAedEvent> result =
                 requester
-                        .route("aed.problems.post")
+                        .route("aed.event.getId")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
-                        .data(aedProblemsDtoCreate)
-                        .retrieveMono(Boolean.class);
+                        .data(aedEventDtoIdSearch)
+                        .retrieveMono(RequestedPreviewAedEvent.class);
 
-        //System.out.println(result.blockFirst());
-
-        System.out.println(result.block());
+        result.doOnNext(System.out::println).block();
     }
 }
+

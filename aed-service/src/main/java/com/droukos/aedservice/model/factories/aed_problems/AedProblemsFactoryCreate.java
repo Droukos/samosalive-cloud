@@ -19,6 +19,8 @@ public class AedProblemsFactoryCreate {
                 aedProblemsDtoCreate.getStatus(),
                 null,
                 LocalDateTime.now(),
+                null,
+                null,
                 null
         );
     }

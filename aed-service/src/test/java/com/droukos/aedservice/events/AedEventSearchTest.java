@@ -1,8 +1,11 @@
-package com.droukos.aedservice;
+package com.droukos.aedservice.events;
 
+import com.droukos.aedservice.RedisUtil;
+import com.droukos.aedservice.TokenUtilTest;
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoRescuerSub;
+import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoSearch;
+import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -13,12 +16,11 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.MimeTypeUtils;
-import reactor.core.publisher.Mono;
-
+import reactor.core.publisher.Flux;
 import java.net.URI;
 
 @SpringBootTest
-public class AedEventSubRescuerTest {
+public class AedEventSearchTest {
     private static RSocketRequester requester;
 
     @BeforeAll
@@ -47,15 +49,15 @@ public class AedEventSubRescuerTest {
     }
 
     @Test
-    void subRescuer(){
-        AedEventDtoRescuerSub aedEventDtoRescuerSub = new AedEventDtoRescuerSub("5fb57b086730d175277fb50f", "tommy");
-        Mono<Boolean> result =
+    void findAedEvent(){
+        AedEventDtoSearch aedEventDtoSearch= new AedEventDtoSearch(0,1);
+        Flux<RequestedPreviewAedEvent> result =
                 requester
-                        .route("aed.event.subRescuer")
+                        .route("aed.event.get")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
-                        .data(aedEventDtoRescuerSub)
-                        .retrieveMono(Boolean.class);
+                        .data(aedEventDtoSearch)
+                        .retrieveFlux(RequestedPreviewAedEvent.class);
 
-        System.out.println(result.block());
+        result.doOnNext(System.out::println).blockLast();
     }
 }

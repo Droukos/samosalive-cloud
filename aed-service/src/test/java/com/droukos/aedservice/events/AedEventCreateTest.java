@@ -1,9 +1,10 @@
-package com.droukos.aedservice;
+package com.droukos.aedservice.events;
 
+import com.droukos.aedservice.RedisUtil;
+import com.droukos.aedservice.TokenUtilTest;
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoSearch;
-import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
+import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,11 +15,14 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.MimeTypeUtils;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @SpringBootTest
-public class AedEventSearchTest {
+public class AedEventCreateTest {
     private static RSocketRequester requester;
 
     @BeforeAll
@@ -47,15 +51,15 @@ public class AedEventSearchTest {
     }
 
     @Test
-    void findAedEvent(){
-        AedEventDtoSearch aedEventDtoSearch= new AedEventDtoSearch(0,1);
-        Flux<RequestedPreviewAedEvent> result =
+    void createAedEvent(){
+       AedEventDtoCreate aedEventDtoCreate = new AedEventDtoCreate("123","tom",1,"ef","fwe",1, LocalDateTime.now());
+       Mono<Boolean> result =
                 requester
-                        .route("aed.event.get")
+                        .route("aed.event.post")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
-                        .data(aedEventDtoSearch)
-                        .retrieveFlux(RequestedPreviewAedEvent.class);
+                        .data(aedEventDtoCreate)
+                        .retrieveMono(Boolean.class);
 
-        result.doOnNext(System.out::println).blockLast();
+        System.out.println(result.block());
     }
 }

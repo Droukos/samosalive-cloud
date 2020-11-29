@@ -31,7 +31,9 @@ public class AedProblemsFactorySubTechnical {
                 ONPROGRESS.getStatus(),
                 technical,
                 aedProblems.getUploadedTime(),
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                aedProblems.getCompletedTime(),
+                aedProblems.getConclusion()
         );
     }
 }

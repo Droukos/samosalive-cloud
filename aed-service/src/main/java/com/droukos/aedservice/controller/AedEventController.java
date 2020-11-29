@@ -1,10 +1,8 @@
 package com.droukos.aedservice.controller;
 
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoIdSearch;
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoRescuerSub;
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoSearch;
+import com.droukos.aedservice.environment.dto.client.aed_event.*;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
+import com.droukos.aedservice.model.factories.aed_event.AedEventFactoryClose;
 import com.droukos.aedservice.model.factories.aed_event.AedEventFactorySubRescuer;
 import com.droukos.aedservice.service.aed_event.AedEventCreation;
 import com.droukos.aedservice.service.aed_event.AedEventInfo;
@@ -52,6 +50,16 @@ public class AedEventController {
                 .flatMap(aedEventInfo::findEventId)
                 .zipWith(Mono.just(aedEventDtoRescuerSub))
                 .flatMap(AedEventFactorySubRescuer::subRescuerMono)
+                .flatMap(aedEventInfo::saveAedEvent)
+                .then(Mono.just(true));
+    }
+
+    @MessageMapping("aed.event.close")
+    public Mono<Boolean> closeAedEvent(AedEventDtoClose aedEventDtoClose){
+        return Mono.just(aedEventDtoClose.getId())
+                .flatMap(aedEventInfo::findEventId)
+                .zipWith(Mono.just(aedEventDtoClose))
+                .flatMap(AedEventFactoryClose::closeAedEvent)
                 .flatMap(aedEventInfo::saveAedEvent)
                 .then(Mono.just(true));
     }
