@@ -2,7 +2,6 @@ package com.droukos.cdnservice.controller;
 
 import com.droukos.cdnservice.model.factories.AedDevicePicsFactory;
 import com.droukos.cdnservice.model.factories.AvatarForUserFactory;
-import com.droukos.cdnservice.model.user.UserRes;
 import com.droukos.cdnservice.service.cdn.AedDeviceService;
 import com.droukos.cdnservice.service.cdn.AvatarService;
 import com.droukos.cdnservice.service.cdn.CdnService;
@@ -20,7 +19,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -79,6 +77,24 @@ public class CdnHandler {
                 .flatMap(aedDeviceService::validateImgsSize)
                 .flatMap(cloudinaryService::uploadAedDeviceFilePics)
                 .flatMap(AedDevicePicsFactory::updateDevicePicsUrlMono)
-                .flatMap(aedDeviceService::saveAedDeviceImgs);
+                .flatMap(aedDeviceService::saveAedDevice);
+    }
+
+    public Mono<ServerResponse> putNewAedDevicePic(ServerRequest request) {
+        return cdnService.fetchAedDeviceFromRequest(request)
+                .zipWith(aedDeviceService.fetchDevicePicFromMPData(request))
+                .flatMap(aedDeviceService::validateDeviceImgSize)
+                .flatMap(cloudinaryService::uplopadAedDevicePic)
+                .flatMap(AedDevicePicsFactory::updateDevicePicUrlMono)
+                .flatMap(aedDeviceService::saveAedDevice);
+    }
+
+    public Mono<ServerResponse> putNewAedDeviceAddressPic(ServerRequest request) {
+        return cdnService.fetchAedDeviceFromRequest(request)
+                .zipWith(aedDeviceService.fetchAddressPicFromMPData(request))
+                .flatMap(aedDeviceService::validateAddressImgSize)
+                .flatMap(cloudinaryService::uploadAedDeviceAddressPic)
+                .flatMap(AedDevicePicsFactory::updateDeviceAddressPicUrlMono)
+                .flatMap(aedDeviceService::saveAedDevice);
     }
 }

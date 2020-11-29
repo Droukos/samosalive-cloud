@@ -1,6 +1,7 @@
-package com.droukos.aedservice.model.factories;
+package com.droukos.aedservice.model.factories.aed_device;
 
 import com.droukos.aedservice.environment.dto.RequesterAccessTokenData;
+import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceEditDto;
 import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceRegisterDto;
 import com.droukos.aedservice.environment.enums.DeviceAvailability;
 import com.droukos.aedservice.model.aed_device.AedDevice;
@@ -40,6 +41,34 @@ public class AedDeviceFactory {
                 null,
                 null,
                 0
+        );
+    }
+
+    public static Mono<AedDevice> buildEditedDeviceMono(Tuple2<AedDeviceEditDto, AedDevice> tuple2) {
+        return Mono.just(buildEditedDevice(tuple2));
+    }
+
+    public static AedDevice buildEditedDevice(Tuple2<AedDeviceEditDto, AedDevice> tuple2) {
+        AedDevice aedDevice = tuple2.getT2();
+        AedDeviceEditDto aedDeviceEditDto = tuple2.getT1();
+        return new AedDevice(
+                aedDevice.getId(),
+                aedDevice.getUniqNickname(),
+                aedDeviceEditDto.getModelName(),
+                aedDeviceEditDto.getModelDescription(),
+                aedDevice.getAdded(),
+                aedDevice.getAddedBy(),
+                aedDevice.getStatus(),
+                aedDevice.getStatusDesc(),
+                new Point(aedDeviceEditDto.getHomePointX(), aedDeviceEditDto.getHomePointY()),
+                aedDevice.getPicUrl(),
+                aedDevice.getAddrPicUrl(),
+                aedDeviceEditDto.getAddress(),
+                aedDevice.getOnP(),
+                aedDevice.getOnEvId(),
+                aedDevice.getOnUId(),
+                aedDevice.getTakenOn(),
+                aedDevice.getOnEstFin()
         );
     }
 }

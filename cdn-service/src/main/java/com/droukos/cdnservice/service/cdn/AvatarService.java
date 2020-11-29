@@ -34,12 +34,8 @@ public class AvatarService {
     private final UserRepository userRepository;
 
     public Mono<AvatarImgDto> fetchAvatarPicFromMPData(ServerRequest request) {
-        //return request.body(BodyExtractors.toParts())
-        //        .cast(FilePart.class)
         return request.multipartData()
                 .flatMap(parts -> Mono.just(parts.toSingleValueMap()))
-        //return request.body(BodyExtractors.toMultipartData())
-        //        .flatMap(parts -> Mono.just(parts.toSingleValueMap()))
                 .flatMap(AvatarImgDto::buildMonoFromPart);
     }
 
@@ -57,7 +53,7 @@ public class AvatarService {
     public Mono<ServerResponse> saveUserAvatar(UserRes user) {
         return userRepository.save(user)
                 .then(ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue("Updated")));
+                        .body(BodyInserters.fromValue(user.getPrsn().getProf().getAv())));
     }
 
     // public Mono<UpdateAvatar> validateAvatar(UpdateAvatar avatar) {

@@ -3,6 +3,8 @@ package com.droukos.cdnservice.service.cdn;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.droukos.cdnservice.config.CloudinaryConfigProperties;
+import com.droukos.cdnservice.environment.dto.server.AedDeviceImgAddressDto;
+import com.droukos.cdnservice.environment.dto.server.AedDeviceImgDeviceDto;
 import com.droukos.cdnservice.environment.dto.server.AedDeviceImgsDto;
 import com.droukos.cdnservice.environment.dto.server.AvatarImgDto;
 import com.droukos.cdnservice.model.aed_device.AedDevice;
@@ -17,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.droukos.cdnservice.environment.security.HttpExceptionFactory.badRequest;
 
@@ -40,6 +43,47 @@ public class CloudinaryService {
         return Mono.fromCallable(() -> blockingAedDeviceImgsUpload(deviceId, tuple2.getT2()))
                 .publishOn(Schedulers.elastic())
                 .flatMap(urls -> Mono.zip(Mono.just(tuple2.getT1()), Mono.just(urls)));
+    }
+
+    public Mono<Tuple2<AedDevice, String>> uplopadAedDevicePic(Tuple2<AedDevice, AedDeviceImgDeviceDto> tuple2) {
+        String deviceId = tuple2.getT1().getId();
+        return Mono.fromCallable(() ->
+                blockAedDeviceImgUpload(
+                        deviceId,
+                        tuple2.getT2().getDeviceImg(),
+                        cloudinaryConfigProperties.getCloudFolderDevice()
+                ))
+                .publishOn(Schedulers.elastic())
+                .flatMap(urls -> Mono.zip(Mono.just(tuple2.getT1()), Mono.just(urls)));
+    }
+
+    public Mono<Tuple2<AedDevice, String>> uploadAedDeviceAddressPic(Tuple2<AedDevice, AedDeviceImgAddressDto> tuple2) {
+        String deviceId = tuple2.getT1().getId();
+
+        return Mono.fromCallable(() ->
+                blockAedDeviceImgUpload(
+                        deviceId,
+                        tuple2.getT2().getAddressImg(),
+                        cloudinaryConfigProperties.getCloudFolderAddress()
+                ))
+                .publishOn(Schedulers.elastic())
+                .flatMap(urls -> Mono.zip(Mono.just(tuple2.getT1()), Mono.just(urls)));
+    }
+
+    public String blockAedDeviceImgUpload(String deviceId, File img, String folderPath) {
+        try {
+            return cloudinary.uploader().upload(img,
+                    ObjectUtils.asMap(
+                            "public_id", folderPath + deviceId,
+                            "overwrite", true))
+                    .get("url")
+                    .toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw badRequest();
+        } finally {
+            img.delete();
+        }
     }
 
     public List<String> blockingAedDeviceImgsUpload(String deviceId, AedDeviceImgsDto aedDeviceImgsDto) {

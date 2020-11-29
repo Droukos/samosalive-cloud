@@ -1,11 +1,12 @@
 package com.droukos.aedservice.controller;
 
+import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceEditDto;
 import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceIdDto;
 import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceNicknameDto;
 import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceRegisterDto;
 import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDeviceInfoDto;
 import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDeviceInfoPreviewDto;
-import com.droukos.aedservice.model.factories.AedDeviceFactory;
+import com.droukos.aedservice.model.factories.aed_device.AedDeviceFactory;
 import com.droukos.aedservice.service.aed_device.AedDeviceInfo;
 import com.droukos.aedservice.service.aed_device.AedDeviceRegister;
 import lombok.AllArgsConstructor;
@@ -50,9 +51,15 @@ public class AedDeviceController {
                 .flatMap(AedDeviceInfoPreviewDto::buildMono);
     }
 
-    public Mono<Boolean> editDeviceInfo() {
+    @MessageMapping("aed.device.info.edit")
+    public Mono<Boolean> editDeviceInfo(AedDeviceEditDto aedDeviceEditDto) {
 
-        return Mono.empty();
+        return Mono.just(aedDeviceEditDto)
+                .flatMap(aedDeviceInfo::validateAedDeviceEdit)
+                .zipWith(aedDeviceInfo.fetchAedDeviceById(aedDeviceEditDto.getId()))
+                .flatMap(AedDeviceFactory::buildEditedDeviceMono)
+                .flatMap(aedDeviceInfo::saveAedDevice)
+                .then(Mono.just(true));
     }
 
     public Mono<Boolean> updateDeviceStatus() {
@@ -60,6 +67,7 @@ public class AedDeviceController {
         return Mono.empty();
     }
 
+    @MessageMapping("aed.device.fetch.inArea")
     public void fetchDevicesInArea() {
 
     }
