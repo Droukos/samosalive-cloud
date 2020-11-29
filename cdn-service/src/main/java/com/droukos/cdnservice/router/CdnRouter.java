@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static com.droukos.cdnservice.environment.services.AedDeviceServices.PUT_AED_DEVICE_PICS;
+import static com.droukos.cdnservice.environment.services.AedDeviceServices.*;
 import static com.droukos.cdnservice.environment.services.AvatarServices.PUT_AVATAR_PIC;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
@@ -22,6 +22,8 @@ public class CdnRouter {
                 .path("api/cdn/", builder -> builder
                         .PUT(PUT_AED_DEVICE_PICS.getUrl(), accept(APPLICATION_JSON), cdnHandler::putNewAedDevicePics)
                         .PUT(PUT_AVATAR_PIC.getUrl(), accept(APPLICATION_JSON), cdnHandler::putNewAvatarPic)
+                        .PUT(PUT_AED_DEVICE_PIC.getUrl(), accept(APPLICATION_JSON), cdnHandler::putNewAedDevicePic)
+                        .PUT(PUT_AED_DEVICE_ADDRESS_PIC.getUrl(), accept(APPLICATION_JSON), cdnHandler::putNewAedDeviceAddressPic)
                 ).build();
     }
 }

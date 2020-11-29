@@ -1,5 +1,7 @@
 package com.droukos.cdnservice.service.cdn;
 
+import com.droukos.cdnservice.environment.dto.server.AedDeviceImgAddressDto;
+import com.droukos.cdnservice.environment.dto.server.AedDeviceImgDeviceDto;
 import com.droukos.cdnservice.environment.dto.server.AedDeviceImgsDto;
 import com.droukos.cdnservice.model.aed_device.AedDevice;
 import com.droukos.cdnservice.model.user.UserRes;
@@ -37,6 +39,18 @@ public class AedDeviceService {
                 .flatMap(AedDeviceImgsDto::buildMonoFromMapPart);
     }
 
+    public Mono<AedDeviceImgDeviceDto> fetchDevicePicFromMPData(ServerRequest request) {
+        return request.body(BodyExtractors.toMultipartData())
+                .flatMap(parts -> Mono.just(parts.toSingleValueMap()))
+                .flatMap(AedDeviceImgDeviceDto::buildMonoFromMapPart);
+    }
+
+    public Mono<AedDeviceImgAddressDto> fetchAddressPicFromMPData(ServerRequest request) {
+        return request.body(BodyExtractors.toMultipartData())
+                .flatMap(parts -> Mono.just(parts.toSingleValueMap()))
+                .flatMap(AedDeviceImgAddressDto::buildMonoFromMapPart);
+    }
+
     public Mono<Tuple2<AedDevice, AedDeviceImgsDto>> validateImgsSize(Tuple2<AedDevice, AedDeviceImgsDto> tuple2) {
         AedDeviceImgsDto aedDeviceImgsDto = tuple2.getT2();
 
@@ -50,7 +64,29 @@ public class AedDeviceService {
         return Mono.just(tuple2);
     }
 
-    public Mono<ServerResponse> saveAedDeviceImgs(AedDevice aedDevice) {
+    public Mono<Tuple2<AedDevice, AedDeviceImgDeviceDto>> validateDeviceImgSize(Tuple2<AedDevice, AedDeviceImgDeviceDto> tuple2) {
+        AedDeviceImgDeviceDto aedDeviceImgDto = tuple2.getT2();
+
+        long devImgInMegabytes = aedDeviceImgDto.getDeviceImg().length() / 1024 / 1024;
+        if (devImgInMegabytes > 1) {
+            aedDeviceImgDto.getDeviceImg().delete();
+            return Mono.error(badRequest());
+        }
+        return Mono.just(tuple2);
+    }
+
+    public Mono<Tuple2<AedDevice, AedDeviceImgAddressDto>> validateAddressImgSize(Tuple2<AedDevice, AedDeviceImgAddressDto> tuple2) {
+        AedDeviceImgAddressDto aedDeviceImgDto = tuple2.getT2();
+
+        long addrImgInMegabytes = aedDeviceImgDto.getAddressImg().length() / 1024 / 1024;
+        if (addrImgInMegabytes > 1) {
+            aedDeviceImgDto.getAddressImg().delete();
+            return Mono.error(badRequest());
+        }
+        return Mono.just(tuple2);
+    }
+
+    public Mono<ServerResponse> saveAedDevice(AedDevice aedDevice) {
         return aedDeviceRepository.save(aedDevice)
                 .then(ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue("Updated")));
