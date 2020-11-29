@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -29,12 +30,12 @@ public class AedDevice {
     private Integer status;
     private String statusDesc;
 
-    private Point homeP;
+    private GeoJsonPoint homeP;
     private String picUrl;
     private String addrPicUrl;
     private String addr;
 
-    private Point onP;
+    private GeoJsonPoint onP;
     private String onEvId;
     private String onUId;
     private LocalDateTime takenOn;
