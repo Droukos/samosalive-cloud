@@ -1,4 +1,4 @@
-package com.droukos.aedservice.model.aed_device;
+package com.droukos.cdnservice.model.aed_device;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

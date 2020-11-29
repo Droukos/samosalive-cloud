@@ -7,6 +7,7 @@ import com.droukos.aedservice.environment.enums.DeviceAvailability;
 import com.droukos.aedservice.model.aed_device.AedDevice;
 import com.droukos.aedservice.util.SecurityUtil;
 import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.security.core.context.SecurityContext;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
@@ -32,7 +33,7 @@ public class AedDeviceFactory {
                 requesterData.getUserId(),
                 DeviceAvailability.AVAILABLE.getCode(),
                 null,
-                new Point(aedDeviceRegisterDto.getDefaultMapX(), aedDeviceRegisterDto.getDefaultMapY()),
+                new GeoJsonPoint(aedDeviceRegisterDto.getDefaultMapX(), aedDeviceRegisterDto.getDefaultMapY()),
                 null,
                 null,
                 aedDeviceRegisterDto.getAddress(),
@@ -60,7 +61,7 @@ public class AedDeviceFactory {
                 aedDevice.getAddedBy(),
                 aedDevice.getStatus(),
                 aedDevice.getStatusDesc(),
-                new Point(aedDeviceEditDto.getHomePointX(), aedDeviceEditDto.getHomePointY()),
+                new GeoJsonPoint(aedDeviceEditDto.getHomePointX(), aedDeviceEditDto.getHomePointY()),
                 aedDevice.getPicUrl(),
                 aedDevice.getAddrPicUrl(),
                 aedDeviceEditDto.getAddress(),

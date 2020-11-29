@@ -21,7 +21,7 @@ public class AedDeviceRegister {
     public Mono<AedDeviceRegisterDto> validateRegisterDto(AedDeviceRegisterDto dto) {
         return (dto.getDescription().length() <= 500
                 && dto.getUniqueNickname().length() < 40
-                && dto.getAddress().length() < 100
+                && dto.getAddress().length() < 500
                 && dto.getModelName().length() < 40)
                 ? Mono.just(dto) : Mono.error(badRequest());
 
