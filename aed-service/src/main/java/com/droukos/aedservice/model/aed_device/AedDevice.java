@@ -1,5 +1,7 @@
 package com.droukos.aedservice.model.aed_device;
 
+import com.droukos.aedservice.util.GeoJsonDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,11 +32,13 @@ public class AedDevice {
     private Integer status;
     private String statusDesc;
 
+    @JsonDeserialize(using = GeoJsonDeserializer.class)
     private GeoJsonPoint homeP;
     private String picUrl;
     private String addrPicUrl;
     private String addr;
 
+    @JsonDeserialize(using = GeoJsonDeserializer.class)
     private GeoJsonPoint onP;
     private String onEvId;
     private String onUId;
