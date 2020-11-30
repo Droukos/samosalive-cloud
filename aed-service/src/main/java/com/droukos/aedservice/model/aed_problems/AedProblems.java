@@ -29,7 +29,7 @@ public class AedProblems {
 
     private String information;
 
-    private Number status;
+    private Integer status;
 
     private String technical;
 

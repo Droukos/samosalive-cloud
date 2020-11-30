@@ -57,10 +57,10 @@ public class UserController {
   }
 
   @MessageMapping("user.get.preview")
-  public Flux<RequestedPreviewUser> getUsersPreview(PreviewUsernameDto previewUsernameDto) {
+  public Flux<RequestedPreviewUser> getUsersPreview(PreviewUserDto previewUserDto) {
 
-    return Flux.just(previewUsernameDto.getUsername())
-        .flatMap(ValidatorFactory::validateUsername)
+    return Flux.just(previewUserDto)
+        .flatMap(ValidatorFactory::validateSearchUserDto)
         .flatMap(userInfoService::fetchPreviewUsers)
         .flatMap(userInfoService::getRequestedUserFiltersOnPrivacySettings)
         .flatMap(RequestedPreviewUser::buildMono);

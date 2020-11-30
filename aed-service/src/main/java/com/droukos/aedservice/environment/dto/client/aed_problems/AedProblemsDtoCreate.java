@@ -12,6 +12,6 @@ public class AedProblemsDtoCreate {
         private String problemsTitle;
         private String address;
         private String information;
-        private Number status;
+        private Integer status;
         private LocalDateTime uploadedTime;
 }
