@@ -1,5 +1,7 @@
 package com.droukos.aedservice.model.aed_event;
 
+import com.droukos.aedservice.util.GeoJsonDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
@@ -25,6 +27,7 @@ public class AedEvent {
     @Indexed
     private Integer occurrenceType;
 
+    @JsonDeserialize(using = GeoJsonDeserializer.class)
     private GeoJsonPoint occurrencePoint;
 
     private String address;

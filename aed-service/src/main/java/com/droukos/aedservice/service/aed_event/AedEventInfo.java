@@ -46,6 +46,10 @@ public class AedEventInfo {
         return aedEventRepository.save(aedEvent).then(Mono.empty());
     }
 
+    public Mono<AedEvent> saveAndReturnAedEvent(AedEvent aedEvent){
+        return aedEventRepository.save(aedEvent);
+    }
+
     public Mono<RequestedPreviewAedEvent> fetchEventByType(AedEvent aedEvent){
         return Mono.just(RequestedPreviewAedEvent.build(aedEvent));
     }

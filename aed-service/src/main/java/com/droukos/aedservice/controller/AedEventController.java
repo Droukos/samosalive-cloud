@@ -1,6 +1,7 @@
 package com.droukos.aedservice.controller;
 
 import com.droukos.aedservice.environment.dto.client.aed_event.*;
+import com.droukos.aedservice.environment.dto.server.aed.aedEvent.CloseAedEvent;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
 import com.droukos.aedservice.model.factories.aed_event.AedEventFactoryClose;
 import com.droukos.aedservice.model.factories.aed_event.AedEventFactorySubRescuer;
@@ -55,13 +56,13 @@ public class AedEventController {
     }
 
     @MessageMapping("aed.event.close")
-    public Mono<Boolean> closeAedEvent(AedEventDtoClose aedEventDtoClose){
+    public Mono<CloseAedEvent> closeAedEvent(AedEventDtoClose aedEventDtoClose){
         return Mono.just(aedEventDtoClose.getId())
                 .flatMap(aedEventInfo::findEventId)
                 .zipWith(Mono.just(aedEventDtoClose))
                 .flatMap(AedEventFactoryClose::closeAedEvent)
-                .flatMap(aedEventInfo::saveAedEvent)
-                .then(Mono.just(true));
+                .flatMap(aedEventInfo::saveAndReturnAedEvent)
+                .flatMap(CloseAedEvent::buildMono);
     }
 
 
