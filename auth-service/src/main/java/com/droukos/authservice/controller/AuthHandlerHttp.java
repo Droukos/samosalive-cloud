@@ -4,8 +4,6 @@ import com.droukos.authservice.service.auth.*;
 import com.droukos.authservice.service.validator.auth.ValidatorFactory;
 import com.droukos.authservice.util.DeviceDetector;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.reactive.function.server.ServerRequest;

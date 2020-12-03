@@ -1,10 +1,14 @@
 package com.droukos.aedservice.environment.dto.server.aed.aed_device;
 
 import com.droukos.aedservice.model.aed_device.AedDevice;
+import com.droukos.aedservice.util.GeoJsonDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import reactor.core.publisher.Mono;
 
 @ToString
@@ -19,6 +23,8 @@ public class AedDeviceInfoPreviewDto {
     private int status;
     private String picUrl;
     private String address;
+    @JsonDeserialize(using = GeoJsonDeserializer.class)
+    private Point homePoint;
     private String onEventId;
     private String onUserId;
 
@@ -35,6 +41,7 @@ public class AedDeviceInfoPreviewDto {
                 aedDevice.getStatus(),
                 aedDevice.getPicUrl(),
                 aedDevice.getAddr(),
+                aedDevice.getHomeP(),
                 aedDevice.getOnEvId(),
                 aedDevice.getOnUId()
         );

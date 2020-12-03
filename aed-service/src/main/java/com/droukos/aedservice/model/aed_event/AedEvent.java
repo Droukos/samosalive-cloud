@@ -1,14 +1,14 @@
 package com.droukos.aedservice.model.aed_event;
 
+import com.droukos.aedservice.util.GeoJsonDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.geo.Point;
-import org.springframework.data.mongodb.core.geo.GeoJson;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @ToString
 @AllArgsConstructor @NoArgsConstructor
@@ -26,7 +26,10 @@ public class AedEvent {
     @Indexed
     private Integer occurrenceType;
 
-    private Point occurrencePoint;
+    @JsonDeserialize(using = GeoJsonDeserializer.class)
+    private GeoJsonPoint occurrencePoint;
+
+    //private String aedDeviceId;
 
     private String address;
 

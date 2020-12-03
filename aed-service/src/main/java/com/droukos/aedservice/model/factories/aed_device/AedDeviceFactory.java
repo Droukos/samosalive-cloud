@@ -6,7 +6,6 @@ import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceRegiste
 import com.droukos.aedservice.environment.enums.DeviceAvailability;
 import com.droukos.aedservice.model.aed_device.AedDevice;
 import com.droukos.aedservice.util.SecurityUtil;
-import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.security.core.context.SecurityContext;
 import reactor.core.publisher.Mono;
