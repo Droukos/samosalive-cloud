@@ -1,8 +1,11 @@
 package com.droukos.aedservice.model.aed_problems;
 
+import com.droukos.aedservice.util.GeoJsonDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -23,11 +26,14 @@ public class AedProblems {
     private String username_canon;
 
     @Indexed
-    private String problemsTitle;
+    private String title;
+
+    private String body;
+
+    @JsonDeserialize(using = GeoJsonDeserializer.class)
+    private GeoJsonPoint mapPoint;
 
     private String address;
-
-    private String information;
 
     private Integer status;
 

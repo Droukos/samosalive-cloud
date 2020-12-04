@@ -1,6 +1,7 @@
 package com.droukos.aedservice.service.aed_event;
 
 import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoSearch;
+import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedAedEvent;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
 import com.droukos.aedservice.model.aed_event.AedEvent;
 import com.droukos.aedservice.repo.AedEventRepository;
@@ -50,7 +51,11 @@ public class AedEventInfo {
         return aedEventRepository.save(aedEvent);
     }
 
-    public Mono<RequestedPreviewAedEvent> fetchEventByType(AedEvent aedEvent){
+    public Mono<RequestedAedEvent> fetchEventByType(AedEvent aedEvent){
+        return Mono.just(RequestedAedEvent.build(aedEvent));
+    }
+
+    public Mono<RequestedPreviewAedEvent> fetchPreviewEventByType(AedEvent aedEvent){
         return Mono.just(RequestedPreviewAedEvent.build(aedEvent));
     }
 

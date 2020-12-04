@@ -3,8 +3,6 @@ package com.droukos.aedservice;
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
 import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceAreaSearchDto;
-import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceRegisterDto;
-import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
 import com.droukos.aedservice.model.aed_device.AedDevice;
 import com.droukos.aedservice.repo.AedDeviceRepository;
 import org.junit.jupiter.api.AfterAll;

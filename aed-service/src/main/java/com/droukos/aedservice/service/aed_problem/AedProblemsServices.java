@@ -17,7 +17,7 @@ public class AedProblemsServices {
     @NonNull private final AedProblemsRepository aedProblemsRepository;
 
     public Flux<AedProblems> getProblemsByTitle(String title) {
-        return aedProblemsRepository.findAllByProblemsTitleContaining(title);
+        return aedProblemsRepository.findAllByTitleContaining(title);
     }
 
     //public Mono<Problems> validateInfomation (ServerRequest request){

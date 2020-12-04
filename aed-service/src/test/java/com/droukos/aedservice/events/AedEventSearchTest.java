@@ -5,6 +5,7 @@ import com.droukos.aedservice.TokenUtilTest;
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
 import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoSearch;
+import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedAedEvent;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

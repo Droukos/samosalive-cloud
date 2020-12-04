@@ -17,6 +17,4 @@ public class AedEventDtoCreate {
     private double mapY;
     private String address;
     private String comment;
-    private Integer status;
-    private LocalDateTime requestedTime;
 }

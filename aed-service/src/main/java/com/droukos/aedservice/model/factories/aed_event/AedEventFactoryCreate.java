@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import static com.droukos.aedservice.environment.enums.AedEventStatus.PENDING;
+
 public class AedEventFactoryCreate {
 
     private AedEventFactoryCreate(){}
@@ -21,7 +23,7 @@ public class AedEventFactoryCreate {
                 Objects.nonNull(aedEventDtoCreate.getComment())? aedEventDtoCreate.getComment(): "",
                 null,
                 null,
-                aedEventDtoCreate.getStatus(),
+                PENDING.getStatus(),
                 LocalDateTime.now(),
                 null,
                 null,

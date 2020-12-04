@@ -2,6 +2,7 @@ package com.droukos.aedservice.controller;
 
 import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoClose;
 import com.droukos.aedservice.environment.dto.client.aed_problems.*;
+import com.droukos.aedservice.environment.dto.server.aed.aedProblem.RequestedAedProblems;
 import com.droukos.aedservice.environment.dto.server.aed.aedProblem.RequestedPreviewAedProblems;
 import com.droukos.aedservice.model.factories.aed_event.AedEventFactoryClose;
 import com.droukos.aedservice.model.factories.aed_problems.AedProblemsFactoryClose;
@@ -24,6 +25,10 @@ public class AedProblemsController {
     @MessageMapping("aed.problems.post")
     public Mono<Boolean> createProblems(AedProblemsDtoCreate aedProblemsDtoCreate){
         return Mono.just(aedProblemsDtoCreate)
+                .flatMap(dto->{
+                    System.out.println(aedProblemsDtoCreate);
+                    return Mono.just(dto);
+                })
                 .doOnNext(aedProblemsCreation::validateProblems)
                 .flatMap(aedProblemsCreation::createAedProblems)
                 .flatMap((aedProblemsCreation::saveAedProblem));
@@ -34,14 +39,14 @@ public class AedProblemsController {
         return Flux.just(aedProblemsDtoSearch)
                 .doOnNext(aedProblemsInfo::validateTitle)
                 .flatMap(aedProblemsInfo::findProblemsByTitle)
-                .flatMap(aedProblemsInfo::fetchProblemsByTitle);
+                .flatMap(RequestedPreviewAedProblems::buildMono);
     }
 
     @MessageMapping("aed.problems.getId")
-    public Mono<RequestedPreviewAedProblems> findProblemsId(AedProblemsDtoIdSearch aedProblemsDtoIdSearch){
+    public Mono<RequestedAedProblems> findProblemsId(AedProblemsDtoIdSearch aedProblemsDtoIdSearch){
         return Mono.just(aedProblemsDtoIdSearch.getId())
                 .flatMap(aedProblemsInfo::findProblemsId)
-                .flatMap(RequestedPreviewAedProblems::buildMono);
+                .flatMap(RequestedAedProblems::buildMono);
     }
 
     @MessageMapping("aed.problems.subTechnical")

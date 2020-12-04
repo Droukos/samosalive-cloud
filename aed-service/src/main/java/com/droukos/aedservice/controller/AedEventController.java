@@ -2,6 +2,7 @@ package com.droukos.aedservice.controller;
 
 import com.droukos.aedservice.environment.dto.client.aed_event.*;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.CloseAedEvent;
+import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedAedEvent;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
 import com.droukos.aedservice.model.factories.aed_event.AedEventFactoryClose;
 import com.droukos.aedservice.model.factories.aed_event.AedEventFactorySubRescuer;
@@ -36,13 +37,13 @@ public class AedEventController {
         return Flux.just(aedEventDtoSearch)
                 .doOnNext(aedEventInfo::validateType)
                 .flatMap(aedEventInfo::findEventOnFilter)
-                .flatMap(aedEventInfo::fetchEventByType);
+                .flatMap(aedEventInfo::fetchPreviewEventByType);
     }
     @MessageMapping("aed.event.getId")
-    public Mono<RequestedPreviewAedEvent> findEventId(AedEventDtoIdSearch aedEventDtoIdSearch){
+    public Mono<RequestedAedEvent> findEventId(AedEventDtoIdSearch aedEventDtoIdSearch){
         return Mono.just(aedEventDtoIdSearch.getId())
                 .flatMap(aedEventInfo::findEventId)
-                .flatMap(RequestedPreviewAedEvent::buildMono);
+                .flatMap(RequestedAedEvent::buildMono);
     }
 
     @MessageMapping("aed.event.subRescuer")
