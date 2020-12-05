@@ -56,7 +56,7 @@ public class AedEventCreateTest {
         double x = 10.594796841892734;
         double y = 44.608664;
         GeoJsonPoint geo = new GeoJsonPoint(x,y);
-       AedEventDtoCreate aedEventDtoCreate = new AedEventDtoCreate("123","tom",1,x,y,"ef","fwe");
+       AedEventDtoCreate aedEventDtoCreate = new AedEventDtoCreate("tom",1,x,y,"ef","fwe");
        Mono<Boolean> result =
                 requester
                         .route("aed.event.post")
