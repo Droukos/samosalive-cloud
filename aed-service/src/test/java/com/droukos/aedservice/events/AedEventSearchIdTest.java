@@ -5,7 +5,7 @@ import com.droukos.aedservice.TokenUtilTest;
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
 import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoIdSearch;
-import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
+import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedAedEvent;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -51,14 +51,14 @@ public class AedEventSearchIdTest {
 
     @Test
     void findEventId(){
-        String id = "5fa82d99f954c2435a9c1ca9";
+        String id = "5fc7b9af825c4e0121f942c8";
         AedEventDtoIdSearch aedEventDtoIdSearch = new AedEventDtoIdSearch(id);
-        Mono<RequestedPreviewAedEvent> result =
+        Mono<RequestedAedEvent> result =
                 requester
                         .route("aed.event.getId")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
                         .data(aedEventDtoIdSearch)
-                        .retrieveMono(RequestedPreviewAedEvent.class);
+                        .retrieveMono(RequestedAedEvent.class);
 
         result.doOnNext(System.out::println).block();
     }

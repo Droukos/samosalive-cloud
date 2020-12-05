@@ -66,6 +66,6 @@ public class Fields {
     public static final String NEWS_CONTENT = "content";
     public static final String NEWS = "news";
 
-    public static final String PROBLEMS_TITLE = "problemsTitle";
-    public static final String PROBLEMS_INFO = "information";
+    public static final String PROBLEMS_TITLE = "title";
+    public static final String PROBLEMS_INFO = "body";
 }

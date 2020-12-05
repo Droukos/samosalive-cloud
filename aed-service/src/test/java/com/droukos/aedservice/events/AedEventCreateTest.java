@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
@@ -52,25 +53,16 @@ public class AedEventCreateTest {
 
     @Test
     void createAedEvent(){
-       AedEventDtoCreate aedEventDtoCreate = new AedEventDtoCreate("tom",1,"ef","fwe",1, LocalDateTime.now());
+        double x = 10.594796841892734;
+        double y = 44.608664;
+        GeoJsonPoint geo = new GeoJsonPoint(x,y);
+       AedEventDtoCreate aedEventDtoCreate = new AedEventDtoCreate("123","tom",1,x,y,"ef","fwe");
        Mono<Boolean> result =
                 requester
                         .route("aed.event.post")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
                         .data(aedEventDtoCreate)
                         .retrieveMono(Boolean.class);
-
-        System.out.println(result.block());
-    }
-
-    @Test
-    void test1() {
-
-        Mono<Long> result =
-                requester
-                        .route("aed.event.push")
-                        .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
-                        .retrieveMono(Long.class);
 
         System.out.println(result.block());
     }

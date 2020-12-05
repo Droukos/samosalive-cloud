@@ -1,8 +1,6 @@
 package com.droukos.aedservice.model.factories.aed_problems;
 
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoRescuerSub;
 import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoTechnicalSub;
-import com.droukos.aedservice.model.aed_event.AedEvent;
 import com.droukos.aedservice.model.aed_problems.AedProblems;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
@@ -25,9 +23,10 @@ public class AedProblemsFactorySubTechnical {
                 aedProblems.getId(),
                 aedProblems.getUsername(),
                 aedProblems.getUsername_canon(),
-                aedProblems.getProblemsTitle(),
+                aedProblems.getTitle(),
+                aedProblems.getBody(),
+                aedProblems.getMapPoint(),
                 aedProblems.getAddress(),
-                aedProblems.getInformation(),
                 ONPROGRESS.getStatus(),
                 technical,
                 aedProblems.getUploadedTime(),

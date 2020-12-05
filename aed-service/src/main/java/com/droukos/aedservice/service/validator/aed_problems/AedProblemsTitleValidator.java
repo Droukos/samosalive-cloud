@@ -1,8 +1,6 @@
 package com.droukos.aedservice.service.validator.aed_problems;
 
 import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoSearch;
-import com.droukos.aedservice.model.aed_problems.AedProblems;
-import com.droukos.aedservice.model.aed_problems.AedProblems;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -23,7 +21,7 @@ public class AedProblemsTitleValidator implements Validator {
         rejectIfEmptyOrWhitespace(errors, PROBLEMS_TITLE, PROBLEMS_TITLE_EMPTY.getShortWarning());
 
         AedProblemsDtoSearch problems = (AedProblemsDtoSearch) o;
-        if (/*isNumeric(news.getNewsTitle()) || */((AedProblemsDtoSearch) o).getProblemsTitle()==null)
+        if (/*isNumeric(news.getNewsTitle()) || */((AedProblemsDtoSearch) o).getTitle()==null)
             errors.rejectValue(PROBLEMS_TITLE, PROBLEMS_TITLE_INVALID.getShortWarning());
         //if (news.getContent()!=null||news.getContent().length()>MAX_LENGTH)
         //    errors.rejectValue(NEWS_CONTENT, NEWS_CONTENT_LENGTH.getShortWarning());

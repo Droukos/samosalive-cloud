@@ -30,9 +30,6 @@ public class AedCreationValidator implements Validator {
         else{
             errors.rejectValue(OCCURRENCE_TYPE,OCCURRENCE_TYPE_EMPTY.getShortWarning());
         }
-        if(isNumber(event.getStatus())){
-            if(event.getStatus()<1 || event.getStatus()>3)
-                errors.rejectValue(OCCURRENCE_COMMENT, OCCURRENCE_COMMENT_INVALID.getShortWarning());}
     }
 
     public boolean isNumber(Integer strNum) {

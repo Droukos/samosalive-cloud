@@ -1,6 +1,7 @@
 package com.droukos.aedservice.service.aed_problem;
 
 import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoSearch;
+import com.droukos.aedservice.environment.dto.server.aed.aedProblem.RequestedAedProblems;
 import com.droukos.aedservice.environment.dto.server.aed.aedProblem.RequestedPreviewAedProblems;
 import com.droukos.aedservice.model.aed_problems.AedProblems;
 import com.droukos.aedservice.repo.AedProblemsRepository;
@@ -24,7 +25,7 @@ public class AedProblemsInfo {
     }
 
     public Flux<AedProblems> findProblemsByTitle(AedProblemsDtoSearch aedProblemsDtoSearch) {
-        return aedProblemsRepository.findAllByProblemsTitleContaining(aedProblemsDtoSearch.getProblemsTitle());
+        return aedProblemsRepository.findAllByTitleContaining(aedProblemsDtoSearch.getTitle());
     }
     public Mono<RequestedPreviewAedProblems> fetchProblemsByTitle(AedProblems aedProblems){
         return Mono.just(RequestedPreviewAedProblems.build(aedProblems));

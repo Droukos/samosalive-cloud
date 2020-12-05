@@ -12,23 +12,26 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor @AllArgsConstructor
 @Getter
-public class RequestedPreviewAedProblems {
+public class RequestedAedProblems {
     private String id;
     private String username;
     private String title;
     private String body;
     @JsonDeserialize(using = GeoJsonDeserializer.class)
-    private Point mapPoint;
+    private Point point;
     private String address;
     private Number status;
+    private String technical;
     private LocalDateTime uploadedTime;
+    private LocalDateTime completedTime;
+    private String conclusion;
 
-    public static Mono<RequestedPreviewAedProblems> buildMono(AedProblems aedProblems){
+    public static Mono<RequestedAedProblems> buildMono(AedProblems aedProblems){
         return Mono.just(build(aedProblems));
     }
 
-    public static RequestedPreviewAedProblems build(AedProblems aedProblems) {
-        return new RequestedPreviewAedProblems(
+    public static RequestedAedProblems build(AedProblems aedProblems) {
+        return new RequestedAedProblems(
                 aedProblems.getId(),
                 aedProblems.getUsername(),
                 aedProblems.getTitle(),
@@ -36,6 +39,10 @@ public class RequestedPreviewAedProblems {
                 aedProblems.getMapPoint(),
                 aedProblems.getAddress(),
                 aedProblems.getStatus(),
-                aedProblems.getUploadedTime());
+                aedProblems.getTechnical(),
+                aedProblems.getUploadedTime(),
+                aedProblems.getCompletedTime(),
+                aedProblems.getConclusion());
+
     }
 }
