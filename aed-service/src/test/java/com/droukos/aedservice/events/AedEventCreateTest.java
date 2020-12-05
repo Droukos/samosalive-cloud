@@ -52,13 +52,25 @@ public class AedEventCreateTest {
 
     @Test
     void createAedEvent(){
-       AedEventDtoCreate aedEventDtoCreate = new AedEventDtoCreate("123","tom",1,"ef","fwe",1, LocalDateTime.now());
+       AedEventDtoCreate aedEventDtoCreate = new AedEventDtoCreate("tom",1,"ef","fwe",1, LocalDateTime.now());
        Mono<Boolean> result =
                 requester
                         .route("aed.event.post")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
                         .data(aedEventDtoCreate)
                         .retrieveMono(Boolean.class);
+
+        System.out.println(result.block());
+    }
+
+    @Test
+    void test1() {
+
+        Mono<Long> result =
+                requester
+                        .route("aed.event.push")
+                        .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
+                        .retrieveMono(Long.class);
 
         System.out.println(result.block());
     }

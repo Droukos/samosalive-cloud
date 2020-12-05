@@ -12,40 +12,48 @@ import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+
 @Controller
 @AllArgsConstructor
 public class AedEventController {
 
-    //@MessageMapping("aed.event.getAllEvents")
-    //public Flux<AedEvent> getAllEvents(){
-    //}
     private final AedEventCreation aedEventCreation;
     private final AedEventInfo aedEventInfo;
 
     @MessageMapping("aed.event.post")
-    public Mono<Boolean> createEvent(AedEventDtoCreate aedEventDtoCreate){
+    public Mono<Boolean> createEvent(AedEventDtoCreate aedEventDtoCreate) {
         return Mono.just(aedEventDtoCreate)
                 .doOnNext(aedEventCreation::validateEvent)
                 .flatMap(aedEventCreation::createAedEvent)
-                .flatMap(aedEventCreation::saveAedEvent);
+                .flatMap(aedEventCreation::saveAedEvent)
+                .flatMap(aedEventCreation::publishOnRedisChannel)
+                .then(Mono.just(true));
     }
 
     @MessageMapping("aed.event.get")
-    public Flux<RequestedPreviewAedEvent> findEvent(AedEventDtoSearch aedEventDtoSearch){
+    public Flux<RequestedPreviewAedEvent> findEvent(AedEventDtoSearch aedEventDtoSearch) {
         return Flux.just(aedEventDtoSearch)
                 .doOnNext(aedEventInfo::validateType)
                 .flatMap(aedEventInfo::findEventOnFilter)
                 .flatMap(aedEventInfo::fetchEventByType);
     }
+
+    @MessageMapping("aed.event.listen")
+    public Flux<RequestedPreviewAedEvent> liveEvents() {
+        return aedEventInfo
+                .fetchPublishedAedEvents()
+                .flatMap(RequestedPreviewAedEvent::buildMono);
+    }
+
     @MessageMapping("aed.event.getId")
-    public Mono<RequestedPreviewAedEvent> findEventId(AedEventDtoIdSearch aedEventDtoIdSearch){
+    public Mono<RequestedPreviewAedEvent> findEventId(AedEventDtoIdSearch aedEventDtoIdSearch) {
         return Mono.just(aedEventDtoIdSearch.getId())
                 .flatMap(aedEventInfo::findEventId)
                 .flatMap(RequestedPreviewAedEvent::buildMono);
     }
 
     @MessageMapping("aed.event.subRescuer")
-    public Mono<Boolean> setEventRescuer(AedEventDtoRescuerSub aedEventDtoRescuerSub){
+    public Mono<Boolean> setEventRescuer(AedEventDtoRescuerSub aedEventDtoRescuerSub) {
         return Mono.just(aedEventDtoRescuerSub.getId())
                 .flatMap(aedEventInfo::findEventId)
                 .zipWith(Mono.just(aedEventDtoRescuerSub))
@@ -55,7 +63,7 @@ public class AedEventController {
     }
 
     @MessageMapping("aed.event.close")
-    public Mono<Boolean> closeAedEvent(AedEventDtoClose aedEventDtoClose){
+    public Mono<Boolean> closeAedEvent(AedEventDtoClose aedEventDtoClose) {
         return Mono.just(aedEventDtoClose.getId())
                 .flatMap(aedEventInfo::findEventId)
                 .zipWith(Mono.just(aedEventDtoClose))
