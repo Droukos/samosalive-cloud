@@ -32,7 +32,5 @@ public class AedEventCreation {
         return aedEventRepository.save(event);
     }
 
-    public Mono<Long> publishOnRedisChannel(AedEvent aedEvent) {
-        return this.reactiveRedisTemplate.convertAndSend(redisConfigProperties.getAedEventLiveChannel(), aedEvent);
-    }
+
 }

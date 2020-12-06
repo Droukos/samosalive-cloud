@@ -23,13 +23,6 @@ public enum Warnings {
     USERNAME_EMPTY(USERNAME + EMPTY.getShortWarning(), "Username" + EMPTY.getWarning()),
     USERNAME_NULL(USERNAME + NOTNULL.getShortWarning(), "Username" + NOTNULL.getWarning()),
 
-    PASSWORD_INVALID(PASSWORD + INVALID.getShortWarning(), """
-            Password must be over 5 characters length
-            A digit must occur at least once
-            A lower case letter must occur at least once
-            An upper case letter must occur at least once
-            A special character must occur at least once
-            No whitespace allowed in the entire string"""),
     PASSWORD_EMPTY(PASSWORD + EMPTY.getShortWarning(), "Password can't be empty"),
     PASSWORD_INVALID_LENGTH(PASSWORD + INVALID_LENGTH.getShortWarning(), "Password must be under 120 letters"),
     PASSWORD_NULL(PASSWORD + NOTNULL.getShortWarning(), "Password" + NOTNULL.getWarning()),

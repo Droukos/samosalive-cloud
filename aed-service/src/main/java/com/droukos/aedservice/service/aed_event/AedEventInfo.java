@@ -22,50 +22,44 @@ import static com.droukos.aedservice.util.factories.HttpExceptionFactory.badRequ
 @AllArgsConstructor
 public class AedEventInfo {
     private final AedEventRepository aedEventRepository;
-    private final RedisConfigProperties redisConfigProperties;
-    private final ReactiveRedisTemplate<String, AedEvent> reactiveRedisTemplate;
 
-    public void validateType (AedEventDtoSearch aedEventDtoSearch){
+
+    public void validateType(AedEventDtoSearch aedEventDtoSearch) {
         ValidatorUtil.validate(aedEventDtoSearch, new OccurrenceTypeValidator());
     }
 
     public Flux<AedEvent> findEventOnFilter(AedEventDtoSearch aedEventDtoSearch) {
-        if(aedEventDtoSearch.getOccurrenceType()==TDISABLED&&aedEventDtoSearch.getStatus()!=SDISABLED){
+        if (aedEventDtoSearch.getOccurrenceType() == TDISABLED && aedEventDtoSearch.getStatus() != SDISABLED) {
             return aedEventRepository.findAedEventsByStatus(aedEventDtoSearch.getStatus());
-        }
-        else if(aedEventDtoSearch.getOccurrenceType()!=TDISABLED&&aedEventDtoSearch.getStatus()==SDISABLED){
+        } else if (aedEventDtoSearch.getOccurrenceType() != TDISABLED && aedEventDtoSearch.getStatus() == SDISABLED) {
             return aedEventRepository.findAedEventsByOccurrenceType(aedEventDtoSearch.getOccurrenceType());
-        }
-        else{
-            return aedEventRepository.findAedEventsByOccurrenceTypeAndStatus(aedEventDtoSearch.getOccurrenceType(),aedEventDtoSearch.getStatus());
+        } else {
+            return aedEventRepository.findAedEventsByOccurrenceTypeAndStatus(aedEventDtoSearch.getOccurrenceType(), aedEventDtoSearch.getStatus());
         }
     }
+
     public Mono<AedEvent> findEventId(String id) {
         return aedEventRepository.findById(id)
                 .defaultIfEmpty(new AedEvent())
                 .flatMap(aedEvent -> aedEvent.getId() == null ? Mono.error(badRequest("Event not found")) : Mono.just(aedEvent));
     }
 
-    public Mono<Void> saveAedEvent(AedEvent aedEvent){
-        return aedEventRepository.save(aedEvent).then(Mono.empty());
-    }
-
-    public Mono<AedEvent> saveAndReturnAedEvent(AedEvent aedEvent){
+    public Mono<AedEvent> saveAedEvent(AedEvent aedEvent) {
         return aedEventRepository.save(aedEvent);
     }
 
-    public Mono<RequestedAedEvent> fetchEventByType(AedEvent aedEvent){
+    public Mono<AedEvent> saveAndReturnAedEvent(AedEvent aedEvent) {
+        return aedEventRepository.save(aedEvent);
+    }
+
+    public Mono<RequestedAedEvent> fetchEventByType(AedEvent aedEvent) {
         return Mono.just(RequestedAedEvent.build(aedEvent));
     }
 
-    public Mono<RequestedPreviewAedEvent> fetchPreviewEventByType(AedEvent aedEvent){
+    public Mono<RequestedPreviewAedEvent> fetchPreviewEventByType(AedEvent aedEvent) {
         return Mono.just(RequestedPreviewAedEvent.build(aedEvent));
     }
 
-    public Flux<AedEvent> fetchPublishedAedEvents() {
-        return this.reactiveRedisTemplate
-                .listenToChannel(redisConfigProperties.getAedEventLiveChannel())
-                .flatMap(reactiveSubMsg -> Mono.just(reactiveSubMsg.getMessage()));
-    }
+
 
 }

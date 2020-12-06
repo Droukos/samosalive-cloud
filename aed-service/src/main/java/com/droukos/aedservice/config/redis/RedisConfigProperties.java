@@ -7,6 +7,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @Getter
 public class RedisConfigProperties {
-    @Value("${aedevent.redis.live-channel}")
+    @Value("${aed.redis.events.general-live-channel}")
     private String aedEventLiveChannel;
+    @Value("${aed.redis.events.single-live-channel-prefix}")
+    private String aedEventSingleChannelPrefix;
+    @Value("${aed.redis.problems.general-live-channel}")
+    private String aedProblemLiveChannel;
 }

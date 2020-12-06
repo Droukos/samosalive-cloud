@@ -1,6 +1,5 @@
 package com.droukos.aedservice.controller;
 
-import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoClose;
 import com.droukos.aedservice.environment.dto.client.aed_problems.*;
 import com.droukos.aedservice.environment.dto.server.aed.aedProblem.RequestedAedProblems;
 import com.droukos.aedservice.environment.dto.server.aed.aedProblem.RequestedPreviewAedProblems;
@@ -25,15 +24,12 @@ public class AedProblemsController {
     @MessageMapping("aed.problems.post")
     public Mono<Boolean> createProblems(AedProblemsDtoCreate aedProblemsDtoCreate){
         return Mono.just(aedProblemsDtoCreate)
-                .flatMap(dto->{
-                    System.out.println(aedProblemsDtoCreate);
-                    return Mono.just(dto);
-                })
                 .doOnNext(aedProblemsCreation::validateProblems)
                 .flatMap(aedProblemsCreation::createAedProblems)
-                .flatMap((aedProblemsCreation::saveAedProblem));
+                .flatMap(aedProblemsCreation::saveAedProblem)
+                .flatMap(aedProblemsCreation::publishProblemOnRedisChannel)
+                .then(Mono.just(true));
     }
-
 
     @MessageMapping("aed.problems.get")
     public Flux<RequestedPreviewAedProblems> findProblems(AedProblemsDtoSearch aedProblemsDtoSearch) {
@@ -48,6 +44,13 @@ public class AedProblemsController {
         return Mono.just(aedProblemsDtoIdSearch.getId())
                 .flatMap(aedProblemsInfo::findProblemsId)
                 .flatMap(RequestedAedProblems::buildMono);
+    }
+
+    @MessageMapping("aed.problems.listen")
+    public Flux<RequestedPreviewAedProblems> listenProblems() {
+        return aedProblemsInfo
+                .fetchPublishedAedProblems()
+                .flatMap(RequestedPreviewAedProblems::buildMono);
     }
 
     @MessageMapping("aed.problems.subTechnical")

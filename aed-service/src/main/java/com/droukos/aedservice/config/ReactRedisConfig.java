@@ -1,6 +1,7 @@
 package com.droukos.aedservice.config;
 
 import com.droukos.aedservice.model.aed_event.AedEvent;
+import com.droukos.aedservice.model.aed_problems.AedProblems;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,14 +37,14 @@ public class ReactRedisConfig {
     }
 
     @Bean
-    public ReactiveRedisTemplate<String, RecordId> reactiveRedisTemplateAedEventIdRecordId(
+    public ReactiveRedisTemplate<String, AedProblems> reactiveRedisTemplateAedProblems(
             ReactiveRedisConnectionFactory reactiveRedisConnectionFactory) {
         StringRedisSerializer keySerializer = new StringRedisSerializer();
-        Jackson2JsonRedisSerializer<RecordId> valueSerializer =
-                new Jackson2JsonRedisSerializer<>(RecordId.class);
-        RedisSerializationContext.RedisSerializationContextBuilder<String, RecordId> builder =
+        Jackson2JsonRedisSerializer<AedProblems> valueSerializer =
+                new Jackson2JsonRedisSerializer<>(AedProblems.class);
+        RedisSerializationContext.RedisSerializationContextBuilder<String, AedProblems> builder =
                 RedisSerializationContext.newSerializationContext(keySerializer);
-        RedisSerializationContext<String, RecordId> context =
+        RedisSerializationContext<String, AedProblems> context =
                 builder.value(valueSerializer).build();
         return new ReactiveRedisTemplate<>(reactiveRedisConnectionFactory, context);
     }
