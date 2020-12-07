@@ -34,7 +34,8 @@ public class AedEventFactoryClose {
                 aedEvent.getAcceptedTime(),
                 LocalDateTime.now(),
                 conclusion,
-                aedEvent.getCallee()
+                aedEvent.getCallee(),
+                aedEvent.getSubs()
         );
     }
 }

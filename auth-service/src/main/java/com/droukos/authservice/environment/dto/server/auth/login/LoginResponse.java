@@ -18,6 +18,8 @@ public class LoginResponse {
   String avatar;
   String description;
   List<RoleModel> roleModels;
+  List<String> aedEventSubs;
+  List<String> aedProblemSubs;
   boolean online;
   Integer availability;
 
@@ -34,6 +36,8 @@ public class LoginResponse {
         user.getAllRoles().stream()
             .map(RoleModel::buildRoleModelWithRoleCode)
             .collect(Collectors.toList()),
+        user.getChannelSubs().getAedEvSubs(),
+        user.getChannelSubs().getAedPrSubs(),
         user.getAppState().isOn(),
         user.getAppState().getStatus());
   }

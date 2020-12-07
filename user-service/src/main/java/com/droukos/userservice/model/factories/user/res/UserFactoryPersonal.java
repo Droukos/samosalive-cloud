@@ -20,6 +20,7 @@ public class UserFactoryPersonal {
                 Personal.updatePersonalInfo(user, updateUserPersonal),
                 user.getPrivy(),
                 user.getSys(),
+                user.getChannelSubs(),
                 user.getAppState()
         );
     }

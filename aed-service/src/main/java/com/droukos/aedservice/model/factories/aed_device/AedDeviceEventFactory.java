@@ -65,7 +65,8 @@ public class AedDeviceEventFactory {
                 aedEvent.getAcceptedTime(),
                 aedEvent.getCompletedTime(),
                 aedEvent.getConclusion(),
-                aedEvent.getCallee()
+                aedEvent.getCallee(),
+                aedEvent.getSubs()
         );
     }
 

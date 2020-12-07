@@ -34,7 +34,8 @@ public class AedEventFactorySubRescuer {
                 LocalDateTime.now(),
                 aedEvent.getCompletedTime(),
                 aedEvent.getConclusion(),
-                aedEvent.getCallee()
+                aedEvent.getCallee(),
+                aedEvent.getSubs()
         );
     }
 }

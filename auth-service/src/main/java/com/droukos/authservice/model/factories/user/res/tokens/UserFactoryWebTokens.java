@@ -22,6 +22,7 @@ public class UserFactoryWebTokens {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryWebToken.webUpdateOnlyTokens(user, accessTokenData, refreshTokenData),
+                user.getChannelSubs(),
                 user.getAppState()
         );
     }
@@ -39,6 +40,7 @@ public class UserFactoryWebTokens {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryWebToken.updateWebAccessToken(user, accessTokenData),
+                user.getChannelSubs(),
                 user.getAppState()
         );
     }
@@ -56,6 +58,7 @@ public class UserFactoryWebTokens {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryWebToken.updateWebTokensDeleteOthers(user, accessTokenData, refreshTokenData),
+                user.getChannelSubs(),
                 user.getAppState());
     }
 }

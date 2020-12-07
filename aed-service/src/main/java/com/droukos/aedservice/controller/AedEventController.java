@@ -40,6 +40,8 @@ public class AedEventController {
         return aedEventInfo.findEventId(aedEventDtoIdSearch.getId())
                 .zipWith(ReactiveSecurityContextHolder.getContext())
                 .flatMap(aedEventChannel::validateListenerForEvent)
+                .flatMap(aedEventChannel::checkAndInsertUserSubOnDb)
+                .flatMap(aedEventChannel::checkAndInsertAedEventSubOnDb)
                 .flatMapMany(aedEventChannel::fetchPublishedAedEventsFromSingle);
     }
 
@@ -72,6 +74,7 @@ public class AedEventController {
                 .flatMap(AedEventFactorySubRescuer::subRescuerMono)
                 .flatMap(aedEventInfo::saveAedEvent)
                 .flatMap(aedEventChannel::publishEventOnRedisChannel)
+                .flatMap(aedEventChannel::publishEventOnRedisSingleChannel)
                 .then(Mono.just(true));
     }
 
@@ -82,6 +85,8 @@ public class AedEventController {
                 .zipWith(Mono.just(aedEventDtoClose))
                 .flatMap(AedEventFactoryClose::closeAedEvent)
                 .flatMap(aedEventInfo::saveAndReturnAedEvent)
+                .flatMap(aedEventChannel::publishEventOnRedisSingleChannel)
+                .flatMap(aedEventChannel::removeUsersChannelSubFromDb)
                 .flatMap(CloseAedEvent::buildMono);
     }
 }

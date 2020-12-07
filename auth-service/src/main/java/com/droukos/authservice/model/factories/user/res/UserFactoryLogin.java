@@ -28,6 +28,7 @@ public class UserFactoryLogin {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryAndroidLogin.androidLogin(tuple3),
+                user.getChannelSubs(),
                 AppState.isOnline(user));
     }
 
@@ -47,6 +48,7 @@ public class UserFactoryLogin {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryIosLogin.onlyIosLogin(tuple3),
+                user.getChannelSubs(),
                 AppState.isOnline(user));
     }
 
@@ -66,6 +68,7 @@ public class UserFactoryLogin {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryWebLogin.onlyWebLogin(tuple3),
+                user.getChannelSubs(),
                 AppState.isOnline(user));
     }
 }

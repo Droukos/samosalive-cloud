@@ -41,6 +41,7 @@ public class UserRes {
   private Personal prsn;
   private PrivacySettingMap privy;
   private UserSystem sys;
+  private ChannelSubs channelSubs;
   private AppState appState;
 
   public Personal getPersonalModel() {

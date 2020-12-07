@@ -21,6 +21,7 @@ public class UserFactoryAndroidTokens {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryAndroidToken.updateAndroidAccessToken(user, accessTokenData),
+                user.getChannelSubs(),
                 user.getAppState()
         );
     }
@@ -40,6 +41,7 @@ public class UserFactoryAndroidTokens {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryAndroidToken.updateAndroidTokensOnly(user, accessTokenData, refreshTokenData),
+                user.getChannelSubs(),
                 user.getAppState()
         );
     }
@@ -59,6 +61,7 @@ public class UserFactoryAndroidTokens {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryAndroidToken.updateAndroidTokensDeleteOthers(user, accessTokenData, refreshTokenData),
+                user.getChannelSubs(),
                 user.getAppState());
     }
 }

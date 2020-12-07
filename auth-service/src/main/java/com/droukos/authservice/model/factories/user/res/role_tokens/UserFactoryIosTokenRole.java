@@ -21,6 +21,7 @@ public class UserFactoryIosTokenRole {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryIosToken.updateIosAccessTokenDeleteOtherAccessTokens(user, tokenData),
+                user.getChannelSubs(),
                 user.getAppState());
     }
 
@@ -37,6 +38,7 @@ public class UserFactoryIosTokenRole {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryIosToken.updateIosAccessTokenDeleteOtherAccessTokens(user, tokenData),
+                user.getChannelSubs(),
                 user.getAppState());
     }
 }

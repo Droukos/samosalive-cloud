@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @ToString
 @AllArgsConstructor @NoArgsConstructor
@@ -59,4 +60,6 @@ public class AedEvent {
     private String conclusion;
 
     private String callee;
+
+    private List<String> subs;
 }
