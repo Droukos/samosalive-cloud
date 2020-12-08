@@ -26,13 +26,13 @@ public class AedEventController {
     private final AedEventInfo aedEventInfo;
 
     @MessageMapping("aed.event.post")
-    public Mono<Boolean> createEvent(AedEventDtoCreate aedEventDtoCreate) {
+    public Mono<String> createEvent(AedEventDtoCreate aedEventDtoCreate) {
         return Mono.just(aedEventDtoCreate)
                 .doOnNext(aedEventCreation::validateEvent)
                 .flatMap(aedEventCreation::createAedEvent)
                 .flatMap(aedEventCreation::saveAedEvent)
                 .flatMap(aedEventChannel::publishEventOnRedisChannel)
-                .then(Mono.just(true));
+                .flatMap(aedEvent -> Mono.just(aedEvent.getId()));
     }
 
     @MessageMapping("aed.event.listen.sub")
