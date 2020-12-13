@@ -11,5 +11,4 @@ public class NewsDtoCreate {
     private String username;
     private String newsTitle;
     private String content;
-    private LocalDateTime uploadedTime;
 }

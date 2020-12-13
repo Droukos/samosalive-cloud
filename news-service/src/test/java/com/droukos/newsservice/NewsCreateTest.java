@@ -52,7 +52,7 @@ public class NewsCreateTest {
 
     @Test
     void createNews(){
-        NewsDtoCreate newsDtoCreate  = new NewsDtoCreate("tom","Samos","test", LocalDateTime.now());
+        NewsDtoCreate newsDtoCreate  = new NewsDtoCreate("tom","Samos","test");
         Mono<Boolean> result =
                 requester
                         .route("news.post")
