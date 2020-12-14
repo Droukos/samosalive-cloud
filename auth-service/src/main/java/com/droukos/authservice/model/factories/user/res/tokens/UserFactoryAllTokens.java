@@ -19,6 +19,7 @@ public class UserFactoryAllTokens {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryAllToken.deleteAllTokens(user),
+                user.getChannelSubs(),
                 user.getAppState());
     }
 }

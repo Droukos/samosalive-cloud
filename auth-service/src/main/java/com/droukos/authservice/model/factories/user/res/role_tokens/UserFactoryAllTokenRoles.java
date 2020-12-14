@@ -20,6 +20,7 @@ public class UserFactoryAllTokenRoles {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryAllToken.deleteAllAccessTokens(user),
+                user.getChannelSubs(),
                 user.getAppState());
     }
 
@@ -37,6 +38,7 @@ public class UserFactoryAllTokenRoles {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryAllToken.deleteAllAccessTokens(user),
+                user.getChannelSubs(),
                 user.getAppState());
     }
 }

@@ -41,6 +41,7 @@ public class UserRes {
   private Personal prsn;
   private PrivacySettingMap privy;
   private UserSystem sys;
+  private ChannelSubs channelSubs;
   private AppState appState;
 
   /*
@@ -61,6 +62,7 @@ public class UserRes {
         user.prsn,
         user.privy,
         user.sys,
+        user.getChannelSubs(),
         user.appState);
   }
 

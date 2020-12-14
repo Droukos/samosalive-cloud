@@ -21,6 +21,7 @@ public class UserFactoryAndroidTokenRole {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryAndroidToken.updateAndroidAccessTokenDeleteOtherAccessTokens(user, tokenData),
+                user.getChannelSubs(),
                 user.getAppState());
     }
 
@@ -37,6 +38,7 @@ public class UserFactoryAndroidTokenRole {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryAndroidToken.updateAndroidAccessTokenDeleteOtherAccessTokens(user, tokenData),
+                user.getChannelSubs(),
                 user.getAppState());
     }
 }

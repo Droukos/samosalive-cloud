@@ -41,7 +41,7 @@ public class AedDeviceInfo {
     }
 
     public Mono<AedDeviceAreaSearchDto> validateAedDeviceMaxDistance(AedDeviceAreaSearchDto dto) {
-        return dto.getDistance() < 15
+        return dto.getDistance() < 10
                 ? Mono.just(dto)
                 : Mono.error(badRequest("Over max distance was given"));
     }

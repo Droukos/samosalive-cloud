@@ -3,6 +3,9 @@ package com.droukos.aedservice;
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
 import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceAreaSearchDto;
+import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceRegisterDto;
+import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
+import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDeviceInfoPreviewDto;
 import com.droukos.aedservice.model.aed_device.AedDevice;
 import com.droukos.aedservice.repo.AedDeviceRepository;
 import org.junit.jupiter.api.AfterAll;
@@ -71,14 +74,14 @@ public class AedDeviceSearchTest {
 
     @Test
     void searchAedDeviceInAreaController() {
-        double x = 10.594796841892734;
-        double y = 44.608664;
+        double x = 23.7622973;
+        double y = 37.9776525;
 
-        Flux<AedDevice> result = requester
+        Flux<AedDeviceInfoPreviewDto> result = requester
                         .route("aed.device.fetch.inArea")
                 .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
-                .data(new AedDeviceAreaSearchDto(x, y, 10))
-                .retrieveFlux(AedDevice.class);
+                .data(new AedDeviceAreaSearchDto(x, y, 5))
+                .retrieveFlux(AedDeviceInfoPreviewDto.class);
 
         result.doOnNext(System.out::println).blockLast();
     }

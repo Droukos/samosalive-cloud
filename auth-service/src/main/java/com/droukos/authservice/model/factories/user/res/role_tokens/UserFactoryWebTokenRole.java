@@ -21,6 +21,7 @@ public class UserFactoryWebTokenRole {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryWebToken.updateWebAccessTokenDeleteOtherAccessTokens(user, tokenData),
+                user.getChannelSubs(),
                 user.getAppState());
     }
 
@@ -37,6 +38,7 @@ public class UserFactoryWebTokenRole {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryWebToken.updateWebAccessTokenDeleteOtherAccessTokens(user, tokenData),
+                user.getChannelSubs(),
                 user.getAppState());
     }
 }

@@ -3,7 +3,6 @@ package com.droukos.aedservice.controller;
 import com.droukos.aedservice.environment.dto.client.aed_device.*;
 import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDeviceInfoDto;
 import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDeviceInfoPreviewDto;
-import com.droukos.aedservice.model.aed_device.AedDevice;
 import com.droukos.aedservice.model.factories.aed_device.AedDeviceEventFactory;
 import com.droukos.aedservice.model.factories.aed_device.AedDeviceFactory;
 import com.droukos.aedservice.service.aed_device.AedDeviceEvent;
@@ -63,33 +62,48 @@ public class AedDeviceController {
                 .then(Mono.just(true));
     }
 
-    public Mono<Boolean> updateDeviceStatus() {
+    @MessageMapping("aed.device.fetch.inArea")
+    public Flux<AedDeviceInfoPreviewDto> fetchDevicesInArea(AedDeviceAreaSearchDto aedDeviceAreaSearchDto) {
+
+        return Flux.just(aedDeviceAreaSearchDto)
+                .flatMap(aedDeviceInfo::validateAedDeviceMaxDistance)
+                .flatMap(aedDeviceInfo::findAedDeviceInArea)
+                .flatMap(AedDeviceInfoPreviewDto::buildMono);
+    }
+
+    public Mono<Boolean> transferDeviceToNextEvent(AedDeviceTransferToNextEvent dto) {
+
+        return Mono.empty();
+        //return Mono.just(dto)
+        //        .
+    }
+
+    public Mono<Boolean> returnDeviceFromEvent(AedDeviceReturnDto dto) {
+
+        return Mono.empty();
+        //return Mono.just(dto)
+        //        .
+    }
+
+    public Mono<Boolean> returnDeviceFromRepair(AedDeviceRegisterDto dto) {
 
         return Mono.empty();
     }
 
-    @MessageMapping("aed.device.fetch.inArea")
-    public Flux<AedDevice> fetchDevicesInArea(AedDeviceAreaSearchDto aedDeviceAreaSearchDto) {
-
-        return Flux.just(aedDeviceAreaSearchDto)
-                .flatMap(aedDeviceInfo::validateAedDeviceMaxDistance)
-                .flatMap(aedDeviceInfo::findAedDeviceInArea);
-    }
-
-    public void transferDeviceToNextEvent() {
-
-    }
-
     public Mono<Boolean> takeDeviceForEvent(AedDeviceForEventDto dto) {
 
-        return Mono.just(dto)
-                .zipWith(aedDeviceEvent.fetchAedDeviceById(dto))
-                .flatMap(aedDeviceEvent::validateAedDeviceStatus)
-                .flatMap(AedDeviceEventFactory::buildAedDeviceEventMono)
-                .flatMap(aedDeviceEvent::saveAedDeviceOnEvent)
-                .then(Mono.just(true));
+        return Mono.zip(Mono.just(dto), ReactiveSecurityContextHolder.getContext())
+                .flatMap(aedDeviceEvent::validateAdminOrSameUser)
+                .then(Mono.zip(
+                        Mono.just(dto),
+                        aedDeviceEvent.fetchAedDeviceById(dto),
+                        aedDeviceEvent.fetchAedEventById(dto)
+                        )
+                )
+                .flatMap(aedDeviceEvent::validateAedEventDeviceSub)
+                .flatMap(AedDeviceEventFactory::buildZippedAedDeviceAndEvent)
+                .flatMap(aedDeviceEvent::saveAedDeviceAndEvent);
     }
 
-    public void returnDevice() {
-    }
+
 }

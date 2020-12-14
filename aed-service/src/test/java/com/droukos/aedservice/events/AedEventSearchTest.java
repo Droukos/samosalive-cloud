@@ -7,6 +7,8 @@ import com.droukos.aedservice.config.jwt.ClaimsConfig;
 import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoSearch;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedAedEvent;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
+import com.droukos.aedservice.model.user.UserRes;
+import com.droukos.aedservice.repo.UserRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,11 +20,17 @@ import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.MimeTypeUtils;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @SpringBootTest
 public class AedEventSearchTest {
     private static RSocketRequester requester;
+    @Autowired private UserRepository userRepository;
 
     @BeforeAll
     public static void setupOnce(
@@ -60,5 +68,17 @@ public class AedEventSearchTest {
                         .retrieveFlux(RequestedPreviewAedEvent.class);
 
         result.doOnNext(System.out::println).blockLast();
+    }
+
+    @Test
+    void test1() {
+        List<String> usernames = Arrays.asList("kostas", "kostass");
+       userRepository.findAllByUserIn(usernames)
+                .collect(Collectors.toList())
+                .flatMap(list -> {
+                    list.forEach(System.out::println);
+                    return Mono.just(list);
+                })
+                .block();
     }
 }

@@ -4,6 +4,7 @@ import com.droukos.authservice.environment.constants.FieldNames;
 import com.droukos.authservice.environment.dto.client.auth.CheckUniqueness;
 import com.droukos.authservice.environment.dto.client.auth.SignupInfo;
 import com.droukos.authservice.model.user.AppState;
+import com.droukos.authservice.model.user.ChannelSubs;
 import com.droukos.authservice.model.user.RoleModel;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.model.user.personal.AddressModel;
@@ -128,6 +129,7 @@ public class SignUpService {
             generateUserInfoPersonal(signupInfo.getName(), signupInfo.getSurname()),
             generateUserInfoSettingsPrivacy(),
             generateUserInfoSystem(),
+            new ChannelSubs(),
             new AppState(false, OFFLINE.getCode())));
   }
 

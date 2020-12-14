@@ -24,6 +24,7 @@ public class UserFactoryLogout {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryAndroidLogout.androidLogout(user),
+                user.getChannelSubs(),
                 AppState.caseOtherJwtModelsNullAppStateOffline(user, ANDROID)
         );
     }
@@ -41,6 +42,7 @@ public class UserFactoryLogout {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryIosLogout.iosLogout(user),
+                user.getChannelSubs(),
                 AppState.caseOtherJwtModelsNullAppStateOffline(user, IOS)
         );
     }
@@ -58,6 +60,7 @@ public class UserFactoryLogout {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryWebLogout.webLogout(user),
+                user.getChannelSubs(),
                 AppState.caseOtherJwtModelsNullAppStateOffline(user, WEB)
         );
     }

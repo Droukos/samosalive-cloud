@@ -26,6 +26,7 @@ public class UserFactoryPrivacy {
                 user.getPrsn(),
                 PrivacySettingMap.buildUpdatePrivacy(tuple2.getT1()),
                 user.getSys(),
+                user.getChannelSubs(),
                 user.getAppState()
         );
     }

@@ -10,7 +10,6 @@ import java.util.Date;
 @NoArgsConstructor @AllArgsConstructor
 @Getter
 public class AedEventDtoCreate {
-    private String userid;
     private String username;
     private Integer occurrenceType;
     private double mapX;

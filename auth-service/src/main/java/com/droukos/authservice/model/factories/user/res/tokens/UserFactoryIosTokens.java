@@ -23,6 +23,7 @@ public class UserFactoryIosTokens {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryIosToken.iosUpdateOnlyTokens(user, accessTokenData, refreshTokenData),
+                user.getChannelSubs(),
                 user.getAppState()
         );
     }
@@ -40,6 +41,7 @@ public class UserFactoryIosTokens {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryIosToken.updateIosAccessToken(user, accessTokenData),
+                user.getChannelSubs(),
                 user.getAppState()
         );
     }
@@ -59,6 +61,7 @@ public class UserFactoryIosTokens {
                 user.getPrsn(),
                 user.getPrivy(),
                 SystemFactoryIosToken.updateIosTokensDeleteOthers(user, accessTokenData, refreshTokenData),
+                user.getChannelSubs(),
                 user.getAppState());
     }
 }
