@@ -1,62 +1,105 @@
 version: '3.8'
 services:
+
   samosalive-mongodb:
     container_name: samosalive-mongodb
+    image: mongo
+    restart: always
     ports:
       - "27017:27017"
-    image: mongo
+
   samosalive-redis:
     container_name: samosalive-redis
+    image: redis
+    restart: always
     ports:
       - "6379:6379"
-    image: redis
+
+  osrm-data:
+    image: irony/osrm5
+    volumes:
+      - /data
+  osrm:
+    image: irony/osrm5
+    volumes_from:
+      - osrm-data
+    ports:
+      - 5000:5000
+    command: ./start.sh Greece https://download.geofabrik.de/europe/greece-latest.osm.pbf
+  #osrm-server:
+  #  container_name: osrm-server
+  #  image: osrm/osrm-backend:latest
+  #  restart: always
+  #  ports:
+  #    - "5000:5000"
+  #  volumes:
+  #    - /home/me/nominatimdata:/data
+  #  command: "osrm/osrm-backend osrm-routed --algorithm mld /data/greece-latest.osrm"
+
+  #osm-server:
+  #  container_name: osm-server
+  #  ports:
+  #    - "8048:8080"
+  #  image: petervans/nominatim:latest
+
   config-server:
     build: ./config-server
     container_name: config-server
+    image: config-server:latest
+    restart: always
     ports:
       - "8888:8888"
-    image: config-server:latest
+
   auth-service:
     build: ./auth-service
     container_name: auth-service
-    depends_on:
-      - config-server
-      - samosalive-mongodb
-      - samosalive-redis
+    image: auth-service:latest
+    restart: always
     ports:
       - "8089:8089"
       - "8989:8989"
-    image: auth-service:latest
+    depends_on:
+      - config-server
+      - samosalive-mongodb
+      - samosalive-redis
+
   aed-service:
     build: ./aed-service
     container_name: aed-service
-    depends_on:
-      - config-server
-      - samosalive-mongodb
-      - samosalive-redis
+    image: aed-service:latest
+    restart: always
     ports:
       - "8087:8087"
       - "8987:8987"
-    image: aed-service:latest
+    depends_on:
+      - config-server
+      - samosalive-mongodb
+      - samosalive-redis
+
+
+
   user-service:
     build: ./user-service
     container_name: user-service
-    depends_on:
-      - config-server
-      - samosalive-mongodb
-      - samosalive-redis
+    image: user-service:latest
+    restart: always
     ports:
       - "8085:8085"
       - "8985:8985"
-    image: user-service:latest
-  news-service:
-    build: ./news-service
-    container_name: news-service
     depends_on:
       - config-server
       - samosalive-mongodb
       - samosalive-redis
+
+  news-service:
+    build: ./news-service
+    container_name: news-service
+    image: news-service:latest
+    restart: always
     ports:
       - "8086:8086"
       - "8986:8986"
-    image: news-service:latest
+    depends_on:
+      - config-server
+      - samosalive-mongodb
+      - samosalive-redis
