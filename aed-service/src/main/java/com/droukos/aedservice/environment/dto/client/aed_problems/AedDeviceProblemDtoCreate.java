@@ -8,12 +8,12 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor @AllArgsConstructor
 @Getter
-public class AedProblemsDtoCreate {
+public class AedDeviceProblemDtoCreate {
         private String username;
         private String title;
         private String body;
         private double y;
         private double x;
         private String address;
-
+        private String aedDeviceId;
 }

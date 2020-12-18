@@ -1,0 +1,62 @@
+version: '3.8'
+services:
+  samosalive-mongodb:
+    container_name: samosalive-mongodb
+    ports:
+      - "27017:27017"
+    image: mongo
+  samosalive-redis:
+    container_name: samosalive-redis
+    ports:
+      - "6379:6379"
+    image: redis
+  config-server:
+    build: ./config-server
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    image: config-server:latest
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    depends_on:
+      - config-server
+      - samosalive-mongodb
+      - samosalive-redis
+    ports:
+      - "8089:8089"
+      - "8989:8989"
+    image: auth-service:latest
+  aed-service:
+    build: ./aed-service
+    container_name: aed-service
+    depends_on:
+      - config-server
+      - samosalive-mongodb
+      - samosalive-redis
+    ports:
+      - "8087:8087"
+      - "8987:8987"
+    image: aed-service:latest
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    depends_on:
+      - config-server
+      - samosalive-mongodb
+      - samosalive-redis
+    ports:
+      - "8085:8085"
+      - "8985:8985"
+    image: user-service:latest
+  news-service:
+    build: ./news-service
+    container_name: news-service
+    depends_on:
+      - config-server
+      - samosalive-mongodb
+      - samosalive-redis
+    ports:
+      - "8086:8086"
+      - "8986:8986"
+    image: news-service:latest

@@ -3,6 +3,7 @@ package com.droukos.aedservice.model.factories.aed_event;
 import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
 import com.droukos.aedservice.model.aed_event.AedEvent;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -13,12 +14,17 @@ public class AedEventFactoryCreate {
 
     private AedEventFactoryCreate(){}
 
-    public static AedEvent eventCreate(AedEventDtoCreate aedEventDtoCreate){
+    public static Mono<AedEvent> aedEventCreateMono(AedEventDtoCreate dto) {
+        return Mono.just(aedEventCreate(dto));
+    }
+
+    public static AedEvent aedEventCreate(AedEventDtoCreate aedEventDtoCreate){
         return new AedEvent(null,
                 aedEventDtoCreate.getUsername().toLowerCase(),
                 aedEventDtoCreate.getUsername(),
                 aedEventDtoCreate.getOccurrenceType(),
                 new GeoJsonPoint(aedEventDtoCreate.getMapX(), aedEventDtoCreate.getMapY()),
+                null,
                 aedEventDtoCreate.getAddress(),
                 Objects.nonNull(aedEventDtoCreate.getComment())? aedEventDtoCreate.getComment(): "",
                 null,

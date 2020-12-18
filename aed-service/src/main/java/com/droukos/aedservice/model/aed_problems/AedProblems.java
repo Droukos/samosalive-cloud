@@ -25,6 +25,8 @@ public class AedProblems {
 
     private String username_canon;
 
+    private String aedDevId;
+
     @Indexed
     private String title;
 

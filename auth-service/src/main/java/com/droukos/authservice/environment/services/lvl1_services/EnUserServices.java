@@ -3,12 +3,13 @@ package com.droukos.authservice.environment.services.lvl1_services;
 import com.droukos.authservice.environment.services.LvL0_Services;
 import com.droukos.authservice.environment.interfaces.core_services.SecRunByInfo;
 import com.droukos.authservice.environment.interfaces.core_services.ServiceInfo;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import static com.droukos.authservice.environment.services.sec_options.GeneralSecOptions.*;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 public enum EnUserServices implements ServiceInfo {
     FIND_USER_BY_ID                ("find_user/{id}"       ,"0",   ANY_USER,                false, true),
     FIND_USERNAME_LIKE             ("find_username"        ,"1",   ANY_USER,                false, true),
@@ -22,11 +23,11 @@ public enum EnUserServices implements ServiceInfo {
     PUT_STATE_AVAILABILITY         ("availability/{id}"    ,"9",   SAME_USER_OR_ANY_ADMIN,  true, true),
     ;
 
-    @NonNull private final String url;
-    @NonNull private final String serviceCode;
-    @NonNull private final SecRunByInfo runByInfo;
-    @NonNull private final boolean checkAccToken;
-    @NonNull private final boolean runSecurity;
+    private final String url;
+    private final String serviceCode;
+    private final SecRunByInfo runByInfo;
+    private final boolean checkAccToken;
+    private final boolean runSecurity;
 
     public String getFullUrl() {
         return LvL0_Services.AUTH.getUrl() + url;

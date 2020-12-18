@@ -50,7 +50,7 @@ public class AedEventChannel {
                                 || userRes.getChannelSubs().getAedEvSubs() == null
                                 || userRes.getChannelSubs().getAedEvSubs().stream()
                                 .noneMatch(channel -> channel.equals(aedEventChannel))
-                                ? UserAedEventChannelSub.buildUserNewEventSubListMono(userRes, aedEvent.getId())
+                                ? UserAedEventChannelSub.buildUserNewEventSubListMono(userRes, aedEventChannel)
                                 : Mono.empty())
                 .defaultIfEmpty(new UserRes())
                 .flatMap(userRes -> userRes.getUser() != null
@@ -62,7 +62,8 @@ public class AedEventChannel {
     public Mono<AedEvent> checkAndInsertAedEventSubOnDb(Tuple2<AedEvent, String> tuple2) {
         AedEvent aedEvent = tuple2.getT1();
         String username = tuple2.getT2();
-        return aedEvent.getSubs().stream().noneMatch(sub -> sub.equals(username))
+        return aedEvent.getSubs() == null
+                || aedEvent.getSubs().stream().noneMatch(sub -> sub.equals(username))
                 ? aedEventRepository.save(buildAedEventWithListener(tuple2))
                 : Mono.just(aedEvent);
     }

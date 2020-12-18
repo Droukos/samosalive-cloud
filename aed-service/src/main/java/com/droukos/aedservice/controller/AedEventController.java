@@ -1,11 +1,14 @@
 package com.droukos.aedservice.controller;
 
+import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceAreaSearchDto;
 import com.droukos.aedservice.environment.dto.client.aed_event.*;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.CloseAedEvent;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedAedEvent;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
+import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDeviceInfoPreviewDto;
 import com.droukos.aedservice.model.aed_event.AedEvent;
 import com.droukos.aedservice.model.factories.aed_event.AedEventFactoryClose;
+import com.droukos.aedservice.model.factories.aed_event.AedEventFactoryCreate;
 import com.droukos.aedservice.model.factories.aed_event.AedEventFactorySubRescuer;
 import com.droukos.aedservice.service.aed_event.AedEventChannel;
 import com.droukos.aedservice.service.aed_event.AedEventCreation;
@@ -29,7 +32,7 @@ public class AedEventController {
     public Mono<String> createEvent(AedEventDtoCreate aedEventDtoCreate) {
         return Mono.just(aedEventDtoCreate)
                 .doOnNext(aedEventCreation::validateEvent)
-                .flatMap(aedEventCreation::createAedEvent)
+                .flatMap(AedEventFactoryCreate::aedEventCreateMono)
                 .flatMap(aedEventCreation::saveAedEvent)
                 .flatMap(aedEventChannel::publishEventOnRedisChannel)
                 .flatMap(aedEvent -> Mono.just(aedEvent.getId()));
@@ -45,6 +48,12 @@ public class AedEventController {
                 .flatMapMany(aedEventChannel::fetchPublishedAedEventsFromSingle);
     }
 
+    @MessageMapping("aed.event.post.comment")
+    public Mono<Boolean> eventPostComment() {
+
+        return Mono.empty();
+    }
+
     @MessageMapping("aed.event.listen")
     public Flux<RequestedPreviewAedEvent> listenEvents() {
         return aedEventChannel.fetchPublishedAedEvents()
@@ -56,7 +65,13 @@ public class AedEventController {
         return Flux.just(aedEventDtoSearch)
                 .doOnNext(aedEventInfo::validateType)
                 .flatMap(aedEventInfo::findEventOnFilter)
-                .flatMap(aedEventInfo::fetchPreviewEventByType);
+                .flatMap(RequestedPreviewAedEvent::buildMono);
+    }
+
+    @MessageMapping("aed.event.fetch.pending")
+    public Flux<RequestedPreviewAedEvent> findUnassignedEvents() {
+        return (aedEventInfo.findUnassignedEvents())
+                .flatMap(RequestedPreviewAedEvent::buildMono);
     }
 
     @MessageMapping("aed.event.getId")
@@ -66,25 +81,38 @@ public class AedEventController {
                 .flatMap(RequestedAedEvent::buildMono);
     }
 
+    //@MessageMapping("aed.event.fetch.device.inArea")
+    //public Flux<AedDeviceInfoPreviewDto> fetchDevicesInArea(AedEventDtoIdSearch aedEventDtoIdSearch) {
+//
+    //    return Flux.just(aedEventDtoIdSearch.getId())
+    //            .flatMap(aedDeviceInfo::validateAedDeviceMaxDistance)
+    //            .flatMap(aedDeviceInfo::findAedDeviceInArea)
+    //            .flatMap(AedDeviceInfoPreviewDto::buildMono);
+    //}
+
     @MessageMapping("aed.event.subRescuer")
-    public Mono<Boolean> setEventRescuer(AedEventDtoRescuerSub aedEventDtoRescuerSub) {
-        return Mono.just(aedEventDtoRescuerSub.getId())
-                .flatMap(aedEventInfo::findEventId)
+    public Mono<AedEvent> setEventRescuer(AedEventDtoRescuerSub aedEventDtoRescuerSub) {
+        return ReactiveSecurityContextHolder.getContext()
                 .zipWith(Mono.just(aedEventDtoRescuerSub))
-                .flatMap(AedEventFactorySubRescuer::subRescuerMono)
+                .flatMap(aedEventInfo::fetchRescuerFromDtoOrContext)
+                .flatMap(aedEventInfo::findEventByIdForRescuerSub)
+                .flatMap(aedEventInfo::findDeviceByIdForRescuing)
+                .flatMap(aedEventInfo::validateAedDeviceForRescuing)
+                .flatMap(AedEventFactorySubRescuer::subAedRescuerAndDeviceMono)
                 .flatMap(aedEventInfo::saveAedEvent)
+                .flatMap(aedEventInfo::saveAedDevice)
                 .flatMap(aedEventChannel::publishEventOnRedisChannel)
-                .flatMap(aedEventChannel::publishEventOnRedisSingleChannel)
-                .then(Mono.just(true));
+                .flatMap(aedEventChannel::publishEventOnRedisSingleChannel);
     }
 
     @MessageMapping("aed.event.close")
     public Mono<CloseAedEvent> closeAedEvent(AedEventDtoClose aedEventDtoClose) {
-        return Mono.just(aedEventDtoClose.getId())
-                .flatMap(aedEventInfo::findEventId)
+        return aedEventInfo.findEventId(aedEventDtoClose.getId())
                 .zipWith(Mono.just(aedEventDtoClose))
+                .flatMap(aedEventInfo::fetchAedDeviceForClosingEvent)
                 .flatMap(AedEventFactoryClose::closeAedEvent)
-                .flatMap(aedEventInfo::saveAndReturnAedEvent)
+                .flatMap(aedEventInfo::saveAedDevice)
+                .flatMap(aedEventInfo::saveAedEvent)
                 .flatMap(aedEventChannel::publishEventOnRedisSingleChannel)
                 .flatMap(aedEventChannel::removeUsersChannelSubFromDb)
                 .flatMap(CloseAedEvent::buildMono);

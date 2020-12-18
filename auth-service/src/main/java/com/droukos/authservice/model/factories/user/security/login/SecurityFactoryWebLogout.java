@@ -19,7 +19,7 @@ public class SecurityFactoryWebLogout {
                 WebJWT.jwtDeleteTokens(),
                 user.getVerificationModel(),
                 user.getAccountLockedModel(),
-                user.getAccountBannedModel()
+                user.getAccountStatusModel()
         );
     }
 }

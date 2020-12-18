@@ -21,7 +21,7 @@ public class SecurityFactoryAllToken {
                 WebJWT.jwtDeleteAccessToken(user),
                 user.getVerificationModel(),
                 user.getAccountLockedModel(),
-                user.getAccountBannedModel());
+                user.getAccountStatusModel());
     }
 
     public static Security deleteAllTokens(UserRes user) {
@@ -35,6 +35,6 @@ public class SecurityFactoryAllToken {
                 WebJWT.jwtDeleteTokens(),
                 user.getVerificationModel(),
                 user.getAccountLockedModel(),
-                user.getAccountBannedModel());
+                user.getAccountStatusModel());
     }
 }

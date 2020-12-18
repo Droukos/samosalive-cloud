@@ -3,11 +3,14 @@ package com.droukos.aedservice.controller;
 import com.droukos.aedservice.environment.dto.client.aed_problems.*;
 import com.droukos.aedservice.environment.dto.server.aed.aedProblem.RequestedAedProblems;
 import com.droukos.aedservice.environment.dto.server.aed.aedProblem.RequestedPreviewAedProblems;
-import com.droukos.aedservice.model.factories.aed_event.AedEventFactoryClose;
+import com.droukos.aedservice.model.aed_problems.AedProblems;
 import com.droukos.aedservice.model.factories.aed_problems.AedProblemsFactoryClose;
+import com.droukos.aedservice.model.factories.aed_problems.AedDeviceProblemFactoryCreate;
 import com.droukos.aedservice.model.factories.aed_problems.AedProblemsFactorySubTechnical;
+import com.droukos.aedservice.service.aed_problem.AedProblemsChannel;
 import com.droukos.aedservice.service.aed_problem.AedProblemsCreation;
 import com.droukos.aedservice.service.aed_problem.AedProblemsInfo;
+import com.droukos.aedservice.service.aed_problem.AedProblemsServices;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
@@ -19,13 +22,17 @@ import reactor.core.publisher.Mono;
 public class AedProblemsController {
 
     private final AedProblemsCreation aedProblemsCreation;
+    private final AedProblemsServices aedProblemsServices;
+    private final AedProblemsChannel aedProblemsChannel;
     private final AedProblemsInfo aedProblemsInfo;
 
-    @MessageMapping("aed.problems.post")
-    public Mono<Boolean> createProblems(AedProblemsDtoCreate aedProblemsDtoCreate){
-        return Mono.just(aedProblemsDtoCreate)
+    @MessageMapping("aed.problems.device.post")
+    public Mono<Boolean> postAedDeviceProblem(AedDeviceProblemDtoCreate dtoCreate){
+        return Mono.just(dtoCreate)
                 .doOnNext(aedProblemsCreation::validateProblems)
-                .flatMap(aedProblemsCreation::createAedProblems)
+                .zipWith(aedProblemsCreation.getDeviceById(dtoCreate))
+                .flatMap(AedDeviceProblemFactoryCreate::aedDeviceBrokenProblemMono)
+                .flatMap(aedProblemsServices::saveAedDevice)
                 .flatMap(aedProblemsCreation::saveAedProblem)
                 .flatMap(aedProblemsCreation::publishProblemOnRedisChannel)
                 .then(Mono.just(true));
@@ -54,22 +61,25 @@ public class AedProblemsController {
     }
 
     @MessageMapping("aed.problems.subTechnical")
-    public Mono<Boolean> setProblemsTechnical(AedProblemsDtoTechnicalSub aedProblemsDtoTechnicalSub){
+    public Mono<AedProblems> setProblemsTechnical(AedProblemsDtoTechnicalSub aedProblemsDtoTechnicalSub){
         return Mono.just(aedProblemsDtoTechnicalSub.getId())
                 .flatMap(aedProblemsInfo::findProblemsId)
                 .zipWith(Mono.just(aedProblemsDtoTechnicalSub))
                 .flatMap(AedProblemsFactorySubTechnical::subTechnicalMono)
                 .flatMap(aedProblemsInfo::saveAedProblems)
-                .then(Mono.just(true));
+                .flatMap(aedProblemsChannel::publishProblemOnRedisChannel)
+                .flatMap(aedProblemsChannel::publishEventOnRedisSingleChannel);
     }
 
-    @MessageMapping("aed.problems.close")
+    @MessageMapping("aed.problems.device.close")
     public Mono<Boolean> closeAedProblems(AedProblemsDtoClose aedProblemsDtoClose){
-        return Mono.just(aedProblemsDtoClose.getId())
-                .flatMap(aedProblemsInfo::findProblemsId)
+        return aedProblemsInfo.findProblemsId(aedProblemsDtoClose.getId())
                 .zipWith(Mono.just(aedProblemsDtoClose))
-                .flatMap(AedProblemsFactoryClose::closeAedProblems)
+                .flatMap(aedProblemsInfo::fetchDeviceFromProblemModel)
+                .flatMap(AedProblemsFactoryClose::closeAedDeviceProblem)
+                .flatMap(aedProblemsServices::saveAedDevice)
                 .flatMap(aedProblemsInfo::saveAedProblems)
+                .flatMap(aedProblemsChannel::publishEventOnRedisSingleChannel)
                 .then(Mono.just(true));
     }
 }

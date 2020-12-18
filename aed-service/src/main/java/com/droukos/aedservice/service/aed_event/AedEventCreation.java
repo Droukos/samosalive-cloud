@@ -11,18 +11,12 @@ import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import static com.droukos.aedservice.model.factories.aed_event.AedEventFactoryCreate.eventCreate;
-
 @Service
 @AllArgsConstructor
 public class AedEventCreation {
     private final AedEventRepository aedEventRepository;
     private final RedisConfigProperties redisConfigProperties;
     private final ReactiveRedisTemplate<String, AedEvent> reactiveRedisTemplate;
-
-    public Mono<AedEvent> createAedEvent(AedEventDtoCreate aedEventDtoCreate) {
-        return Mono.just(eventCreate(aedEventDtoCreate));
-    }
 
     public void validateEvent(AedEventDtoCreate aedEventDtoCreate) {
         ValidatorUtil.validate(aedEventDtoCreate, new AedCreationValidator());

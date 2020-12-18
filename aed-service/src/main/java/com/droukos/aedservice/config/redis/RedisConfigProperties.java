@@ -13,4 +13,6 @@ public class RedisConfigProperties {
     private String aedEventSingleChannelPrefix;
     @Value("${aed.redis.problems.general-live-channel}")
     private String aedProblemLiveChannel;
+    @Value("${aed.redis.problems.single-live-channel-prefix}")
+    private String aedProblemSingleChannelPrefix;
 }

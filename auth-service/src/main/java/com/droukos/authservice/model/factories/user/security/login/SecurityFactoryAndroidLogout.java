@@ -20,7 +20,7 @@ public class SecurityFactoryAndroidLogout {
                 user.getWebJwtModel(),
                 user.getVerificationModel(),
                 user.getAccountLockedModel(),
-                user.getAccountBannedModel()
+                user.getAccountStatusModel()
         );
     }
 }

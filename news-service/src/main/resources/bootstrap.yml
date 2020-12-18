@@ -1,0 +1,11 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://samosalive-mongodb:27017/dev_samosalive
+  cloud:
+    config:
+      uri: http://config-server:8888
+      username: root
+      password: 6Da7$qAFWAoVaK6^o&!CRGLzCY
+  application:
+    name: news

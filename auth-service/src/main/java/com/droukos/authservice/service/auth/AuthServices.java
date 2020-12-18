@@ -44,6 +44,16 @@ public class AuthServices {
         .switchIfEmpty(Mono.error(badRequest("User does not exist")));
   }
 
+
+
+  public Mono<UserRes> getUserById(String userid) {
+      return userRepository.findFirstById(userid)
+              .defaultIfEmpty(new UserRes())
+              .flatMap(userRes -> userRes.getId() != null
+                      ? Mono.just(userRes)
+                      : Mono.error(badRequest("User not found")));
+  }
+
    public Mono<UserRes> getUserFromSecurityContext(SecurityContext context) {
 
     return userRepository

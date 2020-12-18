@@ -1,0 +1,16 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: config-server
+  security:
+    user:
+      name: root
+      password: 6Da7$qAFWAoVaK6^o&!CRGLzCY
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/droukos2/samosalive-config
+          username: droukos2
+          password: ZaurUeeuuByw3uF

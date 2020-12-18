@@ -19,7 +19,7 @@ public class SecurityFactoryIosLogout {
                 user.getWebJwtModel(),
                 user.getVerificationModel(),
                 user.getAccountLockedModel(),
-                user.getAccountBannedModel()
+                user.getAccountStatusModel()
         );
     }
 }

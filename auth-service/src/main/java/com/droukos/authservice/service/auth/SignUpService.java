@@ -14,6 +14,7 @@ import com.droukos.authservice.model.user.privacy.PrivacySetting;
 import com.droukos.authservice.model.user.privacy.PrivacySettingMap;
 import com.droukos.authservice.model.user.system.UserSystem;
 import com.droukos.authservice.model.user.system.Verification;
+import com.droukos.authservice.model.user.system.security.AccountStatus;
 import com.droukos.authservice.model.user.system.security.Security;
 import com.droukos.authservice.model.user.system.security.logins.AndroidLogins;
 import com.droukos.authservice.model.user.system.security.logins.IosLogins;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 
 import static com.droukos.authservice.environment.constants.authorities.Roles.SYSTEM;
 import static com.droukos.authservice.environment.constants.authorities.Roles.USER;
+import static com.droukos.authservice.environment.enums.AccountStatus.ACTIVE;
 import static com.droukos.authservice.environment.enums.Availability.OFFLINE;
 import static com.droukos.authservice.environment.enums.PrivacySettings.PRIVATE;
 import static com.droukos.authservice.environment.enums.PrivacySettings.PUBLIC;
@@ -73,7 +75,7 @@ public class SignUpService {
             null,
             new Verification(false, null),
             null,
-            null));
+            new AccountStatus(ACTIVE.getCode(), null)));
   }
 
   public Mono<Boolean> signedUpUser(UserRes user) {

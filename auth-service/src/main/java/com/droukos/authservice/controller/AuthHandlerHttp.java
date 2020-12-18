@@ -14,180 +14,181 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class AuthHandlerHttp {
 
-  private final TokensService tokensService;
-  private final PasswordService passwordService;
-  private final RolesService rolesService;
-  private final LoginService loginService;
-  private final LogoutService logoutService;
-  private final AuthServices authServices;
+    private final TokensService tokensService;
+    private final PasswordService passwordService;
+    private final RolesService rolesService;
+    private final LoginService loginService;
+    private final LogoutService logoutService;
+    private final AuthServices authServices;
 
-  public Mono<ServerResponse> login(ServerRequest request) {
-    String os = DeviceDetector.detectUserDeviceOs(request);
+    public Mono<ServerResponse> login(ServerRequest request) {
+        String os = DeviceDetector.detectUserDeviceOs(request);
 
-    return authServices.createLoginReqDto(request)
-        .zipWhen(authServices::getUser)
-        .flatMap(tuple2 ->
-                Mono.zip(
-                    loginService.validatePassword(tuple2),
-                    loginService.createNewAccessToken(tuple2.getT2(), os),
-                    loginService.createNewRefreshToken(tuple2.getT2(), os)
+        return authServices.createLoginReqDto(request)
+                .zipWhen(authServices::getUser)
+                .flatMap(loginService::validateUserStatus)
+                .flatMap(tuple2 ->
+                        Mono.zip(
+                                loginService.validatePassword(tuple2),
+                                loginService.createNewAccessToken(tuple2.getT2(), os),
+                                loginService.createNewRefreshToken(tuple2.getT2(), os)
+                        )
                 )
-        )
-        .flatMap(loginService::saveAccessTokenIdToRedis)
-        .flatMap(loginService::saveThisLastLogin)
-        .flatMap(loginService::loggedInUser);
-  }
+                .flatMap(loginService::saveAccessTokenIdToRedis)
+                .flatMap(loginService::saveThisLastLogin)
+                .flatMap(loginService::loggedInUser);
+    }
 
-  public Mono<ServerResponse> passwordChange(ServerRequest request) {
+    public Mono<ServerResponse> passwordChange(ServerRequest request) {
 
-    return
-            authServices.createUpdatePasswordDto(request)
-            .doOnNext(ValidatorFactory::validatePasswordChange)
-            .zipWith(authServices.getUserByPathVarId(request))
-            .flatMap(passwordService::validateOldPassword)
-            .flatMap(tuple ->
-                    Mono.zip(
-                            Mono.just(tuple.getT1()),
-                            Mono.just(tuple.getT2()),
-                            tokensService.genNewAccTokenToUser(tuple.getT2()),
-                            tokensService.genNewRefTokenToUser(tuple.getT2())
-                    )
-            )
-            .flatMap(passwordService::setNewAccessTokenIdToRedis)
-            .flatMap(passwordService::saveChangedUserPassword)
-            .flatMap(tokensService::setRefTokenOnHttpCookieAndAccessTokenOnBody);
-  }
+        return
+                authServices.createUpdatePasswordDto(request)
+                        .doOnNext(ValidatorFactory::validatePasswordChange)
+                        .zipWith(authServices.getUserByPathVarId(request))
+                        .flatMap(passwordService::validateOldPassword)
+                        .flatMap(tuple ->
+                                Mono.zip(
+                                        Mono.just(tuple.getT1()),
+                                        Mono.just(tuple.getT2()),
+                                        tokensService.genNewAccTokenToUser(tuple.getT2()),
+                                        tokensService.genNewRefTokenToUser(tuple.getT2())
+                                )
+                        )
+                        .flatMap(passwordService::setNewAccessTokenIdToRedis)
+                        .flatMap(passwordService::saveChangedUserPassword)
+                        .flatMap(tokensService::setRefTokenOnHttpCookieAndAccessTokenOnBody);
+    }
 
-  public Mono<ServerResponse> userRoleAdd(ServerRequest request) {
+    public Mono<ServerResponse> userRoleAdd(ServerRequest request) {
 
-    return authServices.createUpdateRoleDto(request)
-            .zipWith(authServices.getUserByPathVarId(request))
-            .doOnNext(rolesService::validateRoleAddUpdate)
-            .flatMap(tuple ->
-                    Mono.zip(
-                            Mono.just(tuple.getT1()),
-                            Mono.just(tuple.getT2()),
-                            ReactiveSecurityContextHolder.getContext(),
-                            tokensService.genNewAccTokenToUser(tuple.getT2())
-                    )
-            )
-            .flatMap(tuple ->
-                    authServices.isSameUserIdAsPathId(tuple.getT3(), request)
-                            ? rolesService.itsSameZipAddedUserRoleAndTokens(tuple)
-                            : rolesService.notSameZipAddedUserRoleAndTokens(tuple)
-            )
-            .flatMap(rolesService::saveUserToMongoDb)
-            .flatMap(tuple ->
-                    authServices.accessTokenDataIsNotEmpty(tuple.getT2())
-                            ? rolesService.saveNewAccessTokenIdToRedis(tuple)
-                            : rolesService.removeAllAccessTokenIdFromRedis(tuple)
-            )
-            .flatMap(accessTokenData ->
-                    authServices.accessTokenDataIsNotEmpty(accessTokenData)
-                            ? rolesService.newAccessTokenResponse(accessTokenData)
-                            : rolesService.justMessageResponse()
-            );
-  }
-
-  public Mono<ServerResponse> userRoleDel(ServerRequest request) {
-    return authServices.createUpdateRoleDto(request)
-            .zipWith(authServices.getUserByPathVarId(request))
-            .doOnNext(rolesService::validateRoleDelUpdate)
-            .flatMap(tuple ->
-                    Mono.zip(
-                            Mono.just(tuple.getT1()),
-                            Mono.just(tuple.getT2()),
-                            ReactiveSecurityContextHolder.getContext(),
-                            tokensService.genNewAccTokenToUser(tuple.getT2())))
-            .flatMap(tuple ->
-                    authServices.isSameUserIdAsPathId(tuple.getT3(), request)
-                            ? rolesService.itsSameZipRemovedUserRoleAndTokens(tuple)
-                            : rolesService.notSameZipRemovedUserRoleAndTokens(tuple))
-            .flatMap(rolesService::saveUserToMongoDb)
-            .flatMap(tuple ->
-                    authServices.accessTokenDataIsNotEmpty(tuple.getT2())
-                            ? rolesService.saveNewAccessTokenIdToRedis(tuple)
-                            : rolesService.removeAllAccessTokenIdFromRedis(tuple))
-            .flatMap(accessTokenData ->
-                    authServices.accessTokenDataIsNotEmpty(accessTokenData)
-                            ? rolesService.newAccessTokenResponse(accessTokenData)
-                            : rolesService.justMessageResponse()
-            );
-  }
-
-  public Mono<ServerResponse> revokeTokens(ServerRequest request) {
-
-    return authServices.getUserByPathVarId(request)
-            .flatMap(user -> Mono.zip(
-                    Mono.just(user),
-                    ReactiveSecurityContextHolder.getContext(),
-                    tokensService.genNewAccTokenToUser(user),
-                    tokensService.genNewRefTokenToUser(user)
-            ))
-            .flatMap(tuple ->
-                    authServices.isSameUserIdAsPathId(tuple.getT2(), request)
-                            ? tokensService.itsSameDeleteAllTokensAndAddNew(tuple)
-                            : tokensService.notSameDeleteAllTokens(tuple)
-            )
-            .flatMap(tokensService::saveUserToMongoDb)
-            .flatMap(tuple ->
-                    authServices.accessTokenDataIsNotEmpty(tuple.getT2())
-                            ? tokensService.saveNewAccessTokenIdToRedis(tuple)
-                            : tokensService.removeAllAccessTokenIdFromRedis(tuple)
-            )
-            .flatMap(tuple ->
-                    authServices.accessTokenDataIsNotEmpty(tuple.getT2())
-                            ? tokensService.setRefTokenOnHttpCookieAndAccessTokenOnBody(tuple)
-                            : tokensService.justMessageRevoked()
-            );
-  }
-
-  public Mono<ServerResponse> logout() {
-
-    return ReactiveSecurityContextHolder.getContext()
-            .flatMap(authServices::getUserFromSecurityContext)
-            .zipWith(ReactiveSecurityContextHolder.getContext())
-            .flatMap(logoutService::updateUser)
-            .flatMap(logoutService::removeAccessTokenIdFromRedis)
-            .flatMap(logoutService::saveUserToMongoDb)
-            .then(logoutService.logoutUser());
-
-  }
-
-  public Mono<ServerResponse> accessToken(ServerRequest request) {
-
-    return authServices.getUserFromHttpCookieRequest(request)
-            .zipWith(authServices.getRequesterRefreshData(request))
-            .flatMap(tokensService::validateUserRefreshToken)
-            .flatMap(tuple2 ->
-                Mono.zip(
-                        Mono.just(tuple2.getT1()),
-                        Mono.just(tuple2.getT2()),
-                        tokensService.genNewAccTokenFromRefToUser(tuple2),
-                        tokensService.genNewRefTokenFromRefToUser(tuple2)
+        return authServices.createUpdateRoleDto(request)
+                .zipWith(authServices.getUserByPathVarId(request))
+                .doOnNext(rolesService::validateRoleAddUpdate)
+                .flatMap(tuple ->
+                        Mono.zip(
+                                Mono.just(tuple.getT1()),
+                                Mono.just(tuple.getT2()),
+                                ReactiveSecurityContextHolder.getContext(),
+                                tokensService.genNewAccTokenToUser(tuple.getT2())
+                        )
                 )
-            )
-            .flatMap(tokensService::checkCaseRefTokenIsExpiring)
-            .flatMap(tokensService::updateUserWithAccTokenAndExpiringRefToken)
-            .flatMap(tokensService::saveNewAccessTokenIdToRedis)
-            .flatMap(tokensService::saveUserToMongoDb)
-            .flatMap(tokensService::newAccessToken);
-  }
+                .flatMap(tuple ->
+                        authServices.isSameUserIdAsPathId(tuple.getT3(), request)
+                                ? rolesService.itsSameZipAddedUserRoleAndTokens(tuple)
+                                : rolesService.notSameZipAddedUserRoleAndTokens(tuple)
+                )
+                .flatMap(rolesService::saveUserToMongoDb)
+                .flatMap(tuple ->
+                        authServices.accessTokenDataIsNotEmpty(tuple.getT2())
+                                ? rolesService.saveNewAccessTokenIdToRedis(tuple)
+                                : rolesService.removeAllAccessTokenIdFromRedis(tuple)
+                )
+                .flatMap(accessTokenData ->
+                        authServices.accessTokenDataIsNotEmpty(accessTokenData)
+                                ? rolesService.newAccessTokenResponse(accessTokenData)
+                                : rolesService.justMessageResponse()
+                );
+    }
 
-  public Mono<ServerResponse> userData(ServerRequest request) {
+    public Mono<ServerResponse> userRoleDel(ServerRequest request) {
+        return authServices.createUpdateRoleDto(request)
+                .zipWith(authServices.getUserByPathVarId(request))
+                .doOnNext(rolesService::validateRoleDelUpdate)
+                .flatMap(tuple ->
+                        Mono.zip(
+                                Mono.just(tuple.getT1()),
+                                Mono.just(tuple.getT2()),
+                                ReactiveSecurityContextHolder.getContext(),
+                                tokensService.genNewAccTokenToUser(tuple.getT2())))
+                .flatMap(tuple ->
+                        authServices.isSameUserIdAsPathId(tuple.getT3(), request)
+                                ? rolesService.itsSameZipRemovedUserRoleAndTokens(tuple)
+                                : rolesService.notSameZipRemovedUserRoleAndTokens(tuple))
+                .flatMap(rolesService::saveUserToMongoDb)
+                .flatMap(tuple ->
+                        authServices.accessTokenDataIsNotEmpty(tuple.getT2())
+                                ? rolesService.saveNewAccessTokenIdToRedis(tuple)
+                                : rolesService.removeAllAccessTokenIdFromRedis(tuple))
+                .flatMap(accessTokenData ->
+                        authServices.accessTokenDataIsNotEmpty(accessTokenData)
+                                ? rolesService.newAccessTokenResponse(accessTokenData)
+                                : rolesService.justMessageResponse()
+                );
+    }
 
-      return authServices.getUserFromHttpCookieRequest(request)
-              .zipWith(authServices.getRequesterRefreshData(request))
-              .flatMap(tokensService::validateUserRefreshToken)
-              .flatMap(tuple ->
-                      Mono.zip(
-                            Mono.just(tuple.getT1()),
-                            tokensService.genNewAccTokenFromRefToUser(tuple)
-                      )
-              )
-              .flatMap(tokensService::updateUserAccessToken)
-              .flatMap(tokensService::saveNewAccessTokenIdToRedis)
-              .flatMap(tokensService::saveUserToMongoDb)
-              .flatMap(tokensService::buildUserData);
-  }
+    public Mono<ServerResponse> revokeTokens(ServerRequest request) {
+
+        return authServices.getUserByPathVarId(request)
+                .flatMap(user -> Mono.zip(
+                        Mono.just(user),
+                        ReactiveSecurityContextHolder.getContext(),
+                        tokensService.genNewAccTokenToUser(user),
+                        tokensService.genNewRefTokenToUser(user)
+                ))
+                .flatMap(tuple ->
+                        authServices.isSameUserIdAsPathId(tuple.getT2(), request)
+                                ? tokensService.itsSameDeleteAllTokensAndAddNew(tuple)
+                                : tokensService.notSameDeleteAllTokens(tuple)
+                )
+                .flatMap(tokensService::saveUserToMongoDb)
+                .flatMap(tuple ->
+                        authServices.accessTokenDataIsNotEmpty(tuple.getT2())
+                                ? tokensService.saveNewAccessTokenIdToRedis(tuple)
+                                : tokensService.removeAllAccessTokenIdFromRedis(tuple)
+                )
+                .flatMap(tuple ->
+                        authServices.accessTokenDataIsNotEmpty(tuple.getT2())
+                                ? tokensService.setRefTokenOnHttpCookieAndAccessTokenOnBody(tuple)
+                                : tokensService.justMessageRevoked()
+                );
+    }
+
+    public Mono<ServerResponse> logout() {
+
+        return ReactiveSecurityContextHolder.getContext()
+                .flatMap(authServices::getUserFromSecurityContext)
+                .zipWith(ReactiveSecurityContextHolder.getContext())
+                .flatMap(logoutService::updateUser)
+                .flatMap(logoutService::removeAccessTokenIdFromRedis)
+                .flatMap(logoutService::saveUserToMongoDb)
+                .then(logoutService.logoutUser());
+
+    }
+
+    public Mono<ServerResponse> accessToken(ServerRequest request) {
+
+        return authServices.getUserFromHttpCookieRequest(request)
+                .zipWith(authServices.getRequesterRefreshData(request))
+                .flatMap(tokensService::validateUserRefreshToken)
+                .flatMap(tuple2 ->
+                        Mono.zip(
+                                Mono.just(tuple2.getT1()),
+                                Mono.just(tuple2.getT2()),
+                                tokensService.genNewAccTokenFromRefToUser(tuple2),
+                                tokensService.genNewRefTokenFromRefToUser(tuple2)
+                        )
+                )
+                .flatMap(tokensService::checkCaseRefTokenIsExpiring)
+                .flatMap(tokensService::updateUserWithAccTokenAndExpiringRefToken)
+                .flatMap(tokensService::saveNewAccessTokenIdToRedis)
+                .flatMap(tokensService::saveUserToMongoDb)
+                .flatMap(tokensService::newAccessToken);
+    }
+
+    public Mono<ServerResponse> userData(ServerRequest request) {
+
+        return authServices.getUserFromHttpCookieRequest(request)
+                .zipWith(authServices.getRequesterRefreshData(request))
+                .flatMap(tokensService::validateUserRefreshToken)
+                .flatMap(tuple ->
+                        Mono.zip(
+                                Mono.just(tuple.getT1()),
+                                tokensService.genNewAccTokenFromRefToUser(tuple)
+                        )
+                )
+                .flatMap(tokensService::updateUserAccessToken)
+                .flatMap(tokensService::saveNewAccessTokenIdToRedis)
+                .flatMap(tokensService::saveUserToMongoDb)
+                .flatMap(tokensService::buildUserData);
+    }
 }

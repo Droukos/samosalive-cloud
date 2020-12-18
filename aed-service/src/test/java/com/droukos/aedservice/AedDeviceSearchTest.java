@@ -73,6 +73,19 @@ public class AedDeviceSearchTest {
     }
 
     @Test
+    void test11() {
+        double x = 10.594796841892734;
+        double y = 44.608664;
+
+        aedDeviceRepository.getAedDevicesByIdAndHomePNear("5fc3daddff29d27fb85263a1", new GeoJsonPoint(x,y), new Distance(4, Metrics.KILOMETERS))
+                .defaultIfEmpty(new AedDevice())
+                .flatMap(tempAedDevice -> {
+                    System.out.println(tempAedDevice);
+                    return Mono.just(tempAedDevice);
+                }).block();
+    }
+
+    @Test
     void searchAedDeviceInAreaController() {
         double x = 23.7622973;
         double y = 37.9776525;

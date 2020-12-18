@@ -11,8 +11,8 @@ import static com.droukos.authservice.environment.constants.Platforms.WEB;
 @Getter
 @ToString
 public class AppState {
-  boolean on;
-  Integer status;
+  private boolean on;
+  private Integer status;
 
   public static AppState isOnline(UserRes user) {
     return new AppState(

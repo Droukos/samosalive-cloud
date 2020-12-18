@@ -1,7 +1,10 @@
 package com.droukos.aedservice.service.aed_problem;
 
+import com.droukos.aedservice.model.aed_device.AedDevice;
 import com.droukos.aedservice.model.aed_problems.AedProblems;
+import com.droukos.aedservice.repo.AedDeviceRepository;
 import com.droukos.aedservice.repo.AedProblemsRepository;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -9,15 +12,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 public class AedProblemsServices {
-    @NonNull private final AedProblemsRepository aedProblemsRepository;
+    private final AedProblemsRepository aedProblemsRepository;
+    private final AedDeviceRepository aedDeviceRepository;
 
     public Flux<AedProblems> getProblemsByTitle(String title) {
         return aedProblemsRepository.findAllByTitleContaining(title);
+    }
+
+    public Mono<AedProblems> saveAedDevice(Tuple2<AedProblems, AedDevice> tuple2) {
+        return aedDeviceRepository.save(tuple2.getT2())
+                .then(Mono.just(tuple2.getT1()));
     }
 
     //public Mono<Problems> validateInfomation (ServerRequest request){

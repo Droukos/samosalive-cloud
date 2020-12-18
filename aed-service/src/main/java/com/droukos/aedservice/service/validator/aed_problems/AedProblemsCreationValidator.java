@@ -1,6 +1,6 @@
 package com.droukos.aedservice.service.validator.aed_problems;
 
-import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoCreate;
+import com.droukos.aedservice.environment.dto.client.aed_problems.AedDeviceProblemDtoCreate;
 import com.droukos.aedservice.service.aed_problem.AedProblemsCreation;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -22,7 +22,7 @@ public class AedProblemsCreationValidator implements Validator {
         rejectIfEmptyOrWhitespace(errors, PROBLEMS_TITLE, PROBLEMS_TITLE_EMPTY.getShortWarning());
         rejectIfEmptyOrWhitespace(errors, PROBLEMS_INFO, PROBLEMS_INFO_EMPTY.getShortWarning());
 
-        AedProblemsDtoCreate aedProblemsDtoCreate = (AedProblemsDtoCreate) o;
+        AedDeviceProblemDtoCreate aedProblemsDtoCreate = (AedDeviceProblemDtoCreate) o;
         if (aedProblemsDtoCreate.getTitle()==null || (isNumeric(aedProblemsDtoCreate.getTitle())) || aedProblemsDtoCreate.getTitle().length()>50)
             errors.rejectValue(PROBLEMS_TITLE, PROBLEMS_TITLE_INVALID.getShortWarning());
         if (aedProblemsDtoCreate.getBody()==null || aedProblemsDtoCreate.getBody().length()>500)

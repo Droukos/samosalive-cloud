@@ -4,6 +4,8 @@ import com.droukos.newsservice.model.news.News;
 import lombok.*;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 @Getter
 @ToString
 @AllArgsConstructor
@@ -13,7 +15,7 @@ public class RequestedNews {
     private String username;
     private String newsTitle;
     private String content;
-    private String uploadedTime;
+    private LocalDateTime uploadedTime;
 
     public static Mono<RequestedNews> buildMono(News news){
         return Mono.just(build(news));

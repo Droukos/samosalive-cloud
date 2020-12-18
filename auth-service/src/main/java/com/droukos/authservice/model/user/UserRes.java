@@ -4,7 +4,7 @@ import com.droukos.authservice.model.user.personal.Personal;
 import com.droukos.authservice.model.user.privacy.PrivacySettingMap;
 import com.droukos.authservice.model.user.system.UserSystem;
 import com.droukos.authservice.model.user.system.Verification;
-import com.droukos.authservice.model.user.system.security.AccountBanned;
+import com.droukos.authservice.model.user.system.security.AccountStatus;
 import com.droukos.authservice.model.user.system.security.AccountLocked;
 import com.droukos.authservice.model.user.system.security.auth.PasswordReset;
 import com.droukos.authservice.model.user.system.security.jwt.platforms.AndroidJWT;
@@ -108,9 +108,15 @@ public class UserRes {
 
   public Verification getVerificationModel() { return this.getSys().getSec().getVerified(); }
 
+  public Double getCredStars() { return this.getSys().getCredStars(); }
+
+  public LocalDateTime getAccountCreated() { return this.getSys().getAccC(); }
+
+  public LocalDateTime getAccountUpdated() { return this.getSys().getAccU(); }
+
   public AccountLocked getAccountLockedModel() { return this.getSys().getSec().getLock(); }
 
-  public AccountBanned getAccountBannedModel() { return this.getSys().getSec().getBan(); }
+  public AccountStatus getAccountStatusModel() { return this.getSys().getSec().getAccStat(); }
 
   public LocalDateTime getAndroidLastLogin() {
     return this.getSys().getSec().getAndroidLog().getLLogin();
