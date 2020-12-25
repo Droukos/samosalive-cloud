@@ -7,8 +7,7 @@ import org.springframework.validation.Validator;
 
 import java.util.regex.Pattern;
 
-import static com.droukos.aedservice.environment.constants.Fields.OCCURRENCE_COMMENT;
-import static com.droukos.aedservice.environment.constants.Fields.OCCURRENCE_TYPE;
+import static com.droukos.aedservice.environment.constants.Fields.*;
 import static com.droukos.aedservice.environment.enums.Warnings.*;
 
 
@@ -22,6 +21,12 @@ public class AedCreationValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         AedEventDtoCreate event = (AedEventDtoCreate) o;
+        if(event.getCallee().length() > 120) {
+            errors.rejectValue(CALLEE, "Invalid calle name");
+        }
+        if(!event.getPhone().matches("^[0-9]{10}$")) {
+            errors.rejectValue(PHONE, "Invalid phone number");
+        }
         if(isNumeric(event.getComment())&&event.getComment().length()>3)
             errors.rejectValue(OCCURRENCE_COMMENT, OCCURRENCE_COMMENT_INVALID.getShortWarning());
         if(isNumber(event.getOccurrenceType())){

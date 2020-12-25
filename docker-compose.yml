@@ -26,6 +26,18 @@ services:
     ports:
       - 5000:5000
     command: ./start.sh Greece https://download.geofabrik.de/europe/greece-latest.osm.pbf
+
+  #nominatim:
+  #  container_name: nominatim
+  #  image: mediagis/nominatim
+  #  restart: always
+  #  ports:
+  #    - "7070:8080"
+  #    - "6432:5432"
+  #  volumes:
+  #    - /home/me/nominatimdata/postgresdata:/var/lib/postgresql/12/main
+  #  command: bash /app/start.sh
+
   #osrm-server:
   #  container_name: osrm-server
   #  image: osrm/osrm-backend:latest
@@ -103,3 +115,7 @@ services:
       - config-server
       - samosalive-mongodb
       - samosalive-redis
+
+volumes:
+  nominatim-database:
+    external: true

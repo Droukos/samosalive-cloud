@@ -13,6 +13,6 @@ import java.time.LocalDateTime;
 @Getter
 public class AedEventComment {
     private String username;
-    private String aedEventId;
+    private String message;
     private LocalDateTime posted;
 }

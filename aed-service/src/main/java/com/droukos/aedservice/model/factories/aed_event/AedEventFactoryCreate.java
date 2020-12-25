@@ -23,18 +23,18 @@ public class AedEventFactoryCreate {
                 aedEventDtoCreate.getUsername().toLowerCase(),
                 aedEventDtoCreate.getUsername(),
                 aedEventDtoCreate.getOccurrenceType(),
-                new GeoJsonPoint(aedEventDtoCreate.getMapX(), aedEventDtoCreate.getMapY()),
+                new GeoJsonPoint(aedEventDtoCreate.getMapLat(), aedEventDtoCreate.getMapLon()),
                 null,
                 aedEventDtoCreate.getAddress(),
                 Objects.nonNull(aedEventDtoCreate.getComment())? aedEventDtoCreate.getComment(): "",
                 null,
-                null,
+                aedEventDtoCreate.getPhone(),
                 PENDING.getStatus(),
                 LocalDateTime.now(),
                 null,
                 null,
                 null,
-                null,
+                aedEventDtoCreate.getCallee(),
                 null
         );
     }

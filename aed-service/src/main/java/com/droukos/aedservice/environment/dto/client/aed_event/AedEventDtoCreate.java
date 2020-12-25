@@ -12,8 +12,10 @@ import java.util.Date;
 public class AedEventDtoCreate {
     private String username;
     private Integer occurrenceType;
-    private double mapX;
-    private double mapY;
+    private double mapLat;
+    private double mapLon;
+    private String callee;
+    private String phone;
     private String address;
     private String comment;
 }

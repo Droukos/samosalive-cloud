@@ -32,7 +32,7 @@ public class AedDeviceFactory {
                 requesterData.getUserId(),
                 DeviceAvailability.AVAILABLE.getCode(),
                 null,
-                new GeoJsonPoint(aedDeviceRegisterDto.getDefaultMapX(), aedDeviceRegisterDto.getDefaultMapY()),
+                new GeoJsonPoint(aedDeviceRegisterDto.getDefaultMapLat(), aedDeviceRegisterDto.getDefaultMapLon()),
                 null,
                 null,
                 aedDeviceRegisterDto.getAddress(),

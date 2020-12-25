@@ -1,5 +1,6 @@
 package com.droukos.newsservice.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
@@ -7,8 +8,13 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 
 @Configuration
 public class ReactRedisConfig {
+    @Value("${samosalive.redis.host}")
+    private String host;
+    @Value("${samosalive.redis.port}")
+    private int port;
+
     @Bean
     public ReactiveRedisConnectionFactory reactiveRedisConnectionFactory() {
-        return new LettuceConnectionFactory("samosalive-redis", 6379);
+        return new LettuceConnectionFactory(host, port);
     }
 }

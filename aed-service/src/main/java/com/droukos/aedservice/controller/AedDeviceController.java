@@ -3,11 +3,13 @@ package com.droukos.aedservice.controller;
 import com.droukos.aedservice.environment.dto.client.aed_device.*;
 import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDeviceInfoDto;
 import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDeviceInfoPreviewDto;
+import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDevicePreviewWithRouteDto;
 import com.droukos.aedservice.model.factories.aed_device.AedDeviceEventFactory;
 import com.droukos.aedservice.model.factories.aed_device.AedDeviceFactory;
 import com.droukos.aedservice.service.aed_device.AedDeviceEvent;
 import com.droukos.aedservice.service.aed_device.AedDeviceInfo;
 import com.droukos.aedservice.service.aed_device.AedDeviceRegister;
+import com.droukos.aedservice.service.osrm.OsrmService;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -22,6 +24,7 @@ public class AedDeviceController {
     private final AedDeviceRegister aedDeviceRegister;
     private final AedDeviceInfo aedDeviceInfo;
     private final AedDeviceEvent aedDeviceEvent;
+    private final OsrmService osrmService;
 
     @MessageMapping("aed.device.register")
     public Mono<String> registerDevice(AedDeviceRegisterDto aedDeviceRegisterDto) {
@@ -69,6 +72,28 @@ public class AedDeviceController {
                 .flatMap(aedDeviceInfo::validateAedDeviceMaxDistance)
                 .flatMap(aedDeviceInfo::findAedDeviceInArea)
                 .flatMap(AedDeviceInfoPreviewDto::buildMono);
+    }
+
+    @MessageMapping("aed.device.fetch.inArea.available")
+    public Flux<AedDeviceInfoPreviewDto> fetchDevicesInAreaAvailable(AedDeviceAreaSearchDto aedDeviceAreaSearchDto) {
+
+        return Flux.just(aedDeviceAreaSearchDto)
+                .flatMap(aedDeviceInfo::validateAedDeviceMaxDistance)
+                .flatMap(aedDeviceInfo::findAedDeviceInArea)
+                .filter(aedDeviceInfo::deviceIsAvailableOrInReturn)
+                .flatMap(AedDeviceInfoPreviewDto::buildMono);
+    }
+
+    @MessageMapping("aed.device.fetch.inArea.available.withRouteInfo")
+    public Flux<AedDevicePreviewWithRouteDto> fetchDevInAreaAvailableNRouteInfo(AedDeviceAreaLookWithRoute dto) {
+
+        return Flux.just(dto)
+                .flatMap(aedDeviceInfo::validateAedDeviceMaxDistance)
+                .flatMap(aedDeviceInfo::findAedDeviceInArea)
+                .filter(aedDeviceInfo::deviceIsAvailableOrInReturn)
+                .flatMap(AedDeviceInfoPreviewDto::buildMono)
+                .flatMap(aedDeviceInfoPreviewDto ->
+                        osrmService.fetchRescuerDeviceEventRoute(aedDeviceInfoPreviewDto, dto));
     }
 
     public Mono<Boolean> transferDeviceToNextEvent(AedDeviceTransferToNextEvent dto) {

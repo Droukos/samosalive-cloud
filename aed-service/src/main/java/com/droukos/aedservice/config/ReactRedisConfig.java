@@ -3,6 +3,7 @@ package com.droukos.aedservice.config;
 import com.droukos.aedservice.model.aed_event.AedEvent;
 import com.droukos.aedservice.model.aed_problems.AedProblems;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
@@ -17,10 +18,14 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @AllArgsConstructor
 public class ReactRedisConfig {
+    //@Value("${samosalive.redis.host}")
+    //private final String host;
+    //@Value("${samosalive.redis.port}")
+    //private final int port;
 
     @Bean
     public ReactiveRedisConnectionFactory reactiveRedisConnectionFactory() {
-        return new LettuceConnectionFactory("samosalive-redis", 6379);
+        return new LettuceConnectionFactory("localhost", 6379);
     }
 
     @Bean

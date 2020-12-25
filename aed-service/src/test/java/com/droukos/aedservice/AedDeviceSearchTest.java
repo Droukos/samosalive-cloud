@@ -21,6 +21,7 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.MimeTypeUtils;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -87,8 +88,8 @@ public class AedDeviceSearchTest {
 
     @Test
     void searchAedDeviceInAreaController() {
-        double x = 23.7622973;
-        double y = 37.9776525;
+        double x = 26.6949725;
+        double y = 37.7935918;
 
         Flux<AedDeviceInfoPreviewDto> result = requester
                         .route("aed.device.fetch.inArea")
@@ -97,5 +98,17 @@ public class AedDeviceSearchTest {
                 .retrieveFlux(AedDeviceInfoPreviewDto.class);
 
         result.doOnNext(System.out::println).blockLast();
+    }
+
+    @Test
+    void test() {
+        Mono<String> result =
+                requester
+                        .route("aed.osm.reverse")
+                        .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
+                        .retrieveMono(String.class);
+
+        //result.flatMap(clientResponse -> clientResponse.)
+        System.out.println(result.block());
     }
 }

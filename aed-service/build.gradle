@@ -62,6 +62,6 @@ dependencyManagement {
 }
 
 test {
-    exclude 'com/droukos/**'
+    //exclude 'com/droukos/**'
     useJUnitPlatform()
 }

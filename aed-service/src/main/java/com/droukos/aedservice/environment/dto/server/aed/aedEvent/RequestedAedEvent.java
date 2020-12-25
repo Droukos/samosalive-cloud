@@ -19,12 +19,15 @@ public class RequestedAedEvent {
     private Integer occurrenceType;
     @JsonDeserialize(using = GeoJsonDeserializer.class)
     private Point occurrencePoint;
+    private String aedDeviceId;
     private String address;
     private String comment;
     private Integer status;
     private LocalDateTime requestedTime;
     private LocalDateTime completedTime;
     private String rescuer;
+    private String phone;
+    private String callee;
     private String conclusion;
 
 
@@ -38,12 +41,15 @@ public class RequestedAedEvent {
                 aedEvent.getUsername(),
                 aedEvent.getOccurrenceType(),
                 aedEvent.getOccurrencePoint(),
+                aedEvent.getAedDeviceId(),
                 aedEvent.getAddress(),
                 aedEvent.getComment(),
                 aedEvent.getStatus(),
                 aedEvent.getRequestedTime(),
                 aedEvent.getCompletedTime(),
                 aedEvent.getRescuer(),
+                aedEvent.getPhone(),
+                aedEvent.getCallee(),
                 aedEvent.getConclusion());
     }
 }
