@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @ToString
 @AllArgsConstructor @NoArgsConstructor
@@ -21,6 +22,8 @@ public class News {
     private String username;
 
     private String username_canon;
+
+    //private List<Integer> types;
 
     @Indexed
     private String newsTitle;

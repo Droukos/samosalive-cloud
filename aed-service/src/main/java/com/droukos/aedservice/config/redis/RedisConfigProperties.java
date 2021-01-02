@@ -15,4 +15,13 @@ public class RedisConfigProperties {
     private String aedProblemLiveChannel;
     @Value("${aed.redis.problems.single-live-channel-prefix}")
     private String aedProblemSingleChannelPrefix;
+
+    @Value("${aed.redis.discussion.single-live-channel-postfix}")
+    private String discussionPostfix;
+    @Value("${aed.redis.user.single-live-channel-postfix}")
+    private String userPostfix;
+    @Value("${aed.redis.device.single-live-channel-postfix}")
+    private String aedDevicePostfix;
+    @Value("${aed.redis.rescuer.single-live-channel-postfix}")
+    private String rescuerPostfix;
 }

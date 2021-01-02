@@ -1,4 +1,4 @@
-package com.droukos.aedservice.controller;
+package com.droukos.aedservice.controller.aed_problems;
 
 import com.droukos.aedservice.environment.dto.client.aed_problems.*;
 import com.droukos.aedservice.environment.dto.server.aed.aedProblem.RequestedAedProblems;

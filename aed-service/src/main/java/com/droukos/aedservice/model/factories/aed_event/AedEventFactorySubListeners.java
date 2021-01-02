@@ -33,7 +33,8 @@ public class AedEventFactorySubListeners {
                 aedEvent.getCallee(),
                 aedEvent.getSubs() != null
                         ? Stream.concat(aedEvent.getSubs().stream(), Stream.of(username)).collect(Collectors.toList())
-                        : Collections.singletonList(username)
+                        : Collections.singletonList(username),
+                aedEvent.getCommsN()
         );
     }
 }

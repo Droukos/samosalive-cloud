@@ -137,6 +137,6 @@ public class SignUpService {
 
   private Personal generateUserInfoPersonal(String name, String surname) {
     return new Personal(
-        name, surname, new Profile(null, null, null), new AddressModel(null, null, null), null);
+        name, surname, new Profile(null, null, null), new AddressModel(null, null, null), new HashMap<>());
   }
 }

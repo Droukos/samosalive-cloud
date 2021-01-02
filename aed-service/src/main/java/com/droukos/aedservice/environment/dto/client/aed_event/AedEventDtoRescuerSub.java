@@ -13,4 +13,5 @@ public class AedEventDtoRescuerSub {
     private String id;
     private String rescuer;
     private String aedDeviceId;
+    private long estimatedFinish;
 }

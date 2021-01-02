@@ -4,9 +4,12 @@ import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
 import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceAreaSearchDto;
 import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceRegisterDto;
+import com.droukos.aedservice.environment.dto.client.aed_event.AedEventCommentDto;
+import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDiscussionDto;
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
 import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDeviceInfoPreviewDto;
 import com.droukos.aedservice.model.aed_device.AedDevice;
+import com.droukos.aedservice.model.aed_event.AedEventComment;
 import com.droukos.aedservice.repo.AedDeviceRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -59,13 +62,13 @@ public class AedDeviceSearchTest {
     }
 
     @Test
-    void searchAedDeviceInArea(){
+    void searchAedDeviceInArea() {
         double x = 10.594796841892734;
         double y = 44.608664;
         //AedDevice aedDevice = new AedDevice(null, "sdsddse", "sdsdds", "sdsdsd", LocalDateTime.now(), "me", 0, "sds", new GeoJsonPoint(x,y), "", "", "", null, "", "", null, 0 );
 //
         //aedDeviceRepository.save(aedDevice).subscribe();
-        aedDeviceRepository.getAedDevicesByHomePNear(new GeoJsonPoint(x,y), new Distance(2, Metrics.KILOMETERS))
+        aedDeviceRepository.getAedDevicesByHomePNear(new GeoJsonPoint(x, y), new Distance(2, Metrics.KILOMETERS))
                 .defaultIfEmpty(new AedDevice())
                 .flatMap(tempAedDevice -> {
                     System.out.println(tempAedDevice);
@@ -78,7 +81,7 @@ public class AedDeviceSearchTest {
         double x = 10.594796841892734;
         double y = 44.608664;
 
-        aedDeviceRepository.getAedDevicesByIdAndHomePNear("5fc3daddff29d27fb85263a1", new GeoJsonPoint(x,y), new Distance(4, Metrics.KILOMETERS))
+        aedDeviceRepository.getAedDevicesByIdAndHomePNear("5fc3daddff29d27fb85263a1", new GeoJsonPoint(x, y), new Distance(4, Metrics.KILOMETERS))
                 .defaultIfEmpty(new AedDevice())
                 .flatMap(tempAedDevice -> {
                     System.out.println(tempAedDevice);
@@ -92,7 +95,7 @@ public class AedDeviceSearchTest {
         double y = 37.7935918;
 
         Flux<AedDeviceInfoPreviewDto> result = requester
-                        .route("aed.device.fetch.inArea")
+                .route("aed.device.fetch.inArea")
                 .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
                 .data(new AedDeviceAreaSearchDto(x, y, 5))
                 .retrieveFlux(AedDeviceInfoPreviewDto.class);
@@ -110,5 +113,28 @@ public class AedDeviceSearchTest {
 
         //result.flatMap(clientResponse -> clientResponse.)
         System.out.println(result.block());
+    }
+
+    @Test
+    void testComment() {
+        AedEventCommentDto dto = new AedEventCommentDto("5fece81f1af66e68287e0921", "hey man");
+        Mono<Boolean> result =
+                requester.route("aed.event.sub.post.comment")
+                        .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
+                        .data(dto)
+                        .retrieveMono(Boolean.class);
+        System.out.println(result.block());
+    }
+
+    @Test
+    void testFetchComments() {
+
+        AedEventDiscussionDto dto = new AedEventDiscussionDto("5fed41d3ce129d5aaa0afaa8", 0);
+        Flux<AedEventComment> result =
+                requester.route("aed.event.sub.fetch.discussion")
+                        .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
+                        .data(dto)
+                        .retrieveFlux(AedEventComment.class);
+        System.out.println(result.blockLast());
     }
 }

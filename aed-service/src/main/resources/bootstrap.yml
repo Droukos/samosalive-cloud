@@ -13,6 +13,8 @@ spring:
     name: aed
 
 samosalive:
+  comments:
+    offset: 50
   redis:
     #host: samosalive-redis
     host: localhost

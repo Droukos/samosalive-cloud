@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.droukos.aedservice.environment.enums.AedEventStatus.PENDING;
@@ -35,7 +36,8 @@ public class AedEventFactoryCreate {
                 null,
                 null,
                 aedEventDtoCreate.getCallee(),
-                null
+                new ArrayList<>(),
+                0
         );
     }
 }

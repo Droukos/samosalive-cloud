@@ -4,6 +4,7 @@ import com.droukos.authservice.model.user.RoleModel;
 import com.droukos.authservice.model.user.UserRes;
 import lombok.Value;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,12 @@ public class LoginResponse {
     Integer availability;
 
     public static LoginResponse build(UserRes user, String accessToken) {
+        ArrayList<String> eventChannels = user.getChannelSubs().getAedPrSubs() != null ?
+                new ArrayList<>(user.getChannelSubs().getAedEvSubs().keySet())
+                : new ArrayList<>();
+        ArrayList<String> problemChannels = user.getChannelSubs().getAedPrSubs() != null ?
+                new ArrayList<>(user.getChannelSubs().getAedPrSubs().keySet())
+                : new ArrayList<>();
         return new LoginResponse(
                 accessToken,
                 user.getId(),
@@ -36,8 +43,8 @@ public class LoginResponse {
                 user.getAllRoles().stream()
                         .map(RoleModel::buildRoleModelWithRoleCode)
                         .collect(Collectors.toList()),
-                user.getChannelSubs() == null ? null : user.getChannelSubs().getAedEvSubs(),
-                user.getChannelSubs() == null ? null : user.getChannelSubs().getAedPrSubs(),
+                user.getChannelSubs() == null ? null : eventChannels,
+                user.getChannelSubs() == null ? null : problemChannels,
                 user.getAppState().isOn(),
                 user.getAppState().getStatus());
     }

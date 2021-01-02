@@ -1,12 +1,10 @@
-package com.droukos.aedservice.controller;
+package com.droukos.aedservice.controller.aed_device;
 
 import com.droukos.aedservice.environment.dto.client.aed_device.*;
 import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDeviceInfoDto;
 import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDeviceInfoPreviewDto;
 import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDevicePreviewWithRouteDto;
-import com.droukos.aedservice.model.factories.aed_device.AedDeviceEventFactory;
 import com.droukos.aedservice.model.factories.aed_device.AedDeviceFactory;
-import com.droukos.aedservice.service.aed_device.AedDeviceEvent;
 import com.droukos.aedservice.service.aed_device.AedDeviceInfo;
 import com.droukos.aedservice.service.aed_device.AedDeviceRegister;
 import com.droukos.aedservice.service.osrm.OsrmService;
@@ -23,7 +21,6 @@ public class AedDeviceController {
 
     private final AedDeviceRegister aedDeviceRegister;
     private final AedDeviceInfo aedDeviceInfo;
-    private final AedDeviceEvent aedDeviceEvent;
     private final OsrmService osrmService;
 
     @MessageMapping("aed.device.register")
@@ -97,7 +94,7 @@ public class AedDeviceController {
     }
 
     public Mono<Boolean> transferDeviceToNextEvent(AedDeviceTransferToNextEvent dto) {
-
+        //TODO remove channel event Id from user
         return Mono.empty();
         //return Mono.just(dto)
         //        .
@@ -105,6 +102,7 @@ public class AedDeviceController {
 
     public Mono<Boolean> returnDeviceFromEvent(AedDeviceReturnDto dto) {
 
+        //TODO remove channel event Id from user
         return Mono.empty();
         //return Mono.just(dto)
         //        .
@@ -112,23 +110,7 @@ public class AedDeviceController {
 
     public Mono<Boolean> returnDeviceFromRepair(AedDeviceRegisterDto dto) {
 
+        //TODO remove channel problem Id from user
         return Mono.empty();
     }
-
-    public Mono<Boolean> takeDeviceForEvent(AedDeviceForEventDto dto) {
-
-        return Mono.zip(Mono.just(dto), ReactiveSecurityContextHolder.getContext())
-                .flatMap(aedDeviceEvent::validateAdminOrSameUser)
-                .then(Mono.zip(
-                        Mono.just(dto),
-                        aedDeviceEvent.fetchAedDeviceById(dto),
-                        aedDeviceEvent.fetchAedEventById(dto)
-                        )
-                )
-                .flatMap(aedDeviceEvent::validateAedEventDeviceSub)
-                .flatMap(AedDeviceEventFactory::buildZippedAedDeviceAndEvent)
-                .flatMap(aedDeviceEvent::saveAedDeviceAndEvent);
-    }
-
-
 }

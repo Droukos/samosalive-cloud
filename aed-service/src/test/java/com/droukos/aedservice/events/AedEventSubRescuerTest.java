@@ -50,7 +50,7 @@ public class AedEventSubRescuerTest {
 
     @Test
     void subRescuer(){
-        AedEventDtoRescuerSub aedEventDtoRescuerSub = new AedEventDtoRescuerSub("5fb57b086730d175277fb50f", "tommy", "");
+        AedEventDtoRescuerSub aedEventDtoRescuerSub = new AedEventDtoRescuerSub("5fb57b086730d175277fb50f", "tommy", "", 0);
         Mono<Boolean> result =
                 requester
                         .route("aed.event.subRescuer")

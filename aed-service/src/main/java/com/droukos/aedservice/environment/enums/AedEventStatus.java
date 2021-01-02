@@ -9,7 +9,8 @@ import lombok.Getter;
 public enum AedEventStatus {
     PENDING(AedStatusCodes.PENDING),
     ONPROGRESS(AedStatusCodes.ONPROGRESS),
-    COMPLETED(AedStatusCodes.COMPLETED);
+    COMPLETED(AedStatusCodes.COMPLETED),
+    CLOSED(AedStatusCodes.CLOSED);
 
     private final int status;
 }

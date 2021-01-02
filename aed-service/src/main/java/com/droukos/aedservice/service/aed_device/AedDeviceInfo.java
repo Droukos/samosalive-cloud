@@ -1,18 +1,24 @@
 package com.droukos.aedservice.service.aed_device;
 
 import com.droukos.aedservice.environment.dto.client.aed_device.*;
+import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDeviceRescuer;
 import com.droukos.aedservice.environment.enums.DeviceAvailability;
 import com.droukos.aedservice.model.aed_device.AedDevice;
+import com.droukos.aedservice.model.user.UserRes;
 import com.droukos.aedservice.repo.AedDeviceRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Metrics;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static com.droukos.aedservice.util.factories.HttpExceptionFactory.badRequest;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Service
 @AllArgsConstructor
