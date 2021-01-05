@@ -5,11 +5,9 @@ import com.droukos.newsservice.environment.dto.client.NewsDtoIdSearch;
 import com.droukos.newsservice.environment.dto.client.NewsDtoSearch;
 import com.droukos.newsservice.environment.dto.server.news.RequestedNews;
 import com.droukos.newsservice.environment.dto.server.news.RequestedPreviewNews;
-import com.droukos.newsservice.model.news.News;
 import com.droukos.newsservice.service.news.NewsCreation;
 import com.droukos.newsservice.service.news.NewsInfo;
 import lombok.AllArgsConstructor;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
@@ -33,13 +31,19 @@ public class NewsController {
     public Flux<RequestedPreviewNews> findNews(NewsDtoSearch newsDtoSearch){
         return Flux.just(newsDtoSearch)
                 .doOnNext(newsInfo::validateTitle)
-                .flatMap(newsInfo::findNewsByTitle)
-                .flatMap(newsInfo::fetchNewsByTitle);
+                .flatMap(newsInfo::findNewsByTitleOrTag)
+                .flatMap(newsInfo::fetchNews);
     }
     @MessageMapping("news.getId")
     public Mono<RequestedNews> findNewsById(NewsDtoIdSearch newsId){
         return Mono.just(newsId.getId())
                 .flatMap(newsInfo::findNewsById)
+                .flatMap(RequestedNews::buildMono);
+    }
+
+    @MessageMapping("news.getAll")
+    public Flux<RequestedNews> findAllNews(){
+        return Flux.from(newsInfo.findNewsByUploadDesc())
                 .flatMap(RequestedNews::buildMono);
     }
 }

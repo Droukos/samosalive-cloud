@@ -15,6 +15,7 @@ public class NewsFactoryCreate {
                 newsDtoCreate.getUsername(),
                 newsDtoCreate.getNewsTitle(),
                 newsDtoCreate.getContent(),
+                newsDtoCreate.getTag(),
                 LocalDateTime.now()
         );
     }

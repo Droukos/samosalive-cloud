@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static com.droukos.newsservice.environment.constants.TagList.IDEAS;
 import static com.droukos.newsservice.util.factories.HttpExceptionFactory.badRequest;
 
 @Service
@@ -26,11 +27,22 @@ public class NewsInfo {
         ValidatorUtil.validate(newsDtoSearch, new NewsTitleValidator());
     }
 
-    public Flux<News> findNewsByTitle(NewsDtoSearch newsDtoSearch) {
-        return newsRepository.findAllByNewsTitleIsContaining(newsDtoSearch.getNewsTitle());
+    public Flux<News> findNewsByTitleOrTag(NewsDtoSearch newsDtoSearch) {
+        if(newsDtoSearch.getNewsTitle()!=""){
+            return newsRepository.findAllByNewsTitleIsContainingAndTagIsNot(newsDtoSearch.getNewsTitle(),0);
+        }
+        else if(newsDtoSearch.getSearchTag()==IDEAS){
+            return newsRepository.findAllByTag(0);
+        }
+        else
+            return newsRepository.findAllByTag(newsDtoSearch.getSearchTag());
     }
 
-    public Mono<RequestedPreviewNews> fetchNewsByTitle(News news) {
+    public Flux<News> findNewsByUploadDesc() {
+        return newsRepository.findAllByOrderByUploadedTimeDesc();
+    }
+
+    public Mono<RequestedPreviewNews> fetchNews(News news) {
         return Mono.just(RequestedPreviewNews.build(news));
     }
 

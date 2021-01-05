@@ -34,7 +34,7 @@ public class NewsService {
     }
 
     public Flux<News> getNewsByNewsTitle(String newsTitle) {
-        return newsRepository.findAllByNewsTitleIsContaining(newsTitle);
+        return newsRepository.findAllByNewsTitleIsContainingAndTagIsNot(newsTitle,0);
     }
     //public Mono<News> findNewsById(String id) {
     //    return newsRepository.findById(id)

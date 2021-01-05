@@ -2,8 +2,7 @@ package com.droukos.newsservice;
 
 import com.droukos.newsservice.config.jwt.AccessTokenConfig;
 import com.droukos.newsservice.config.jwt.ClaimsConfig;
-import com.droukos.newsservice.environment.dto.client.NewsDtoCreate;
-import com.droukos.newsservice.environment.dto.client.NewsDtoSearch;
+import com.droukos.newsservice.environment.dto.server.news.RequestedNews;
 import com.droukos.newsservice.environment.dto.server.news.RequestedPreviewNews;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,7 +20,7 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 
 @SpringBootTest
-public class NewsSearchTest {
+public class NewsFindAllTest {
     private static RSocketRequester requester;
 
     @BeforeAll
@@ -50,14 +49,12 @@ public class NewsSearchTest {
     }
 
     @Test
-    void findNews(){
-        NewsDtoSearch newsDtoSearch  = new NewsDtoSearch("ne",0);
-        Flux<RequestedPreviewNews> result =
+    void findAllNews(){
+        Flux<RequestedNews> result =
                 requester
-                        .route("news.get")
+                        .route("news.getAll")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
-                        .data(newsDtoSearch)
-                        .retrieveFlux(RequestedPreviewNews.class);
+                        .retrieveFlux(RequestedNews.class);
 
         result.doOnNext(System.out::println).blockLast();
     }

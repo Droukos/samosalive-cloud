@@ -24,11 +24,17 @@ public class NewsTitleValidator implements Validator {
 
     @Override
     public void validate(Object o, Errors errors) {
-        rejectIfEmptyOrWhitespace(errors, NEWS_TITLE, NEWS_TITLE_EMPTY.getShortWarning());
+        //rejectIfEmptyOrWhitespace(errors, NEWS_TITLE, NEWS_TITLE_EMPTY.getShortWarning());
 
         NewsDtoSearch newsDtoSearch = (NewsDtoSearch) o;
-        if (/*isNumeric(news.getNewsTitle()) || */((NewsDtoSearch) o).getNewsTitle()==null)
+        if (newsDtoSearch.getNewsTitle().equals("")){
+            if(!(newsDtoSearch.getSearchTag()>=0 && (newsDtoSearch.getSearchTag()<=4))){
+                errors.rejectValue(NEWS_TITLE, NEWS_TITLE_INVALID.getShortWarning());
+            }
+        }
+        if((newsDtoSearch.getSearchTag()<=0 || (newsDtoSearch.getSearchTag()>=4))){
             errors.rejectValue(NEWS_TITLE, NEWS_TITLE_INVALID.getShortWarning());
+        }
         //if (news.getContent()!=null||news.getContent().length()>MAX_LENGTH)
         //    errors.rejectValue(NEWS_CONTENT, NEWS_CONTENT_LENGTH.getShortWarning());
     }
