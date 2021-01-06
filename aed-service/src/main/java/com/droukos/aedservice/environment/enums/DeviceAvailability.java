@@ -10,7 +10,8 @@ public enum DeviceAvailability {
     BROKEN(1),
     STOLEN(2),
     ON_REPAIR(3),
-    BORROWED(4);
+    BORROWED(4),
+    RETURNING(5);
     private final int code;
 
 }

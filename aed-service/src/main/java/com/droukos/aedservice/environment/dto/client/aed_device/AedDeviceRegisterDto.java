@@ -15,7 +15,7 @@ public class AedDeviceRegisterDto {
     private String uniqueNickname;
     private String modelName;
     private String description;
-    private double defaultMapX;
-    private double defaultMapY;
+    private double defaultMapLat;
+    private double defaultMapLon;
     private String address;
 }

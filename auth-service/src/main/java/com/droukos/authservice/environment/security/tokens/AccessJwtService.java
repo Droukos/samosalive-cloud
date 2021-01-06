@@ -11,6 +11,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
@@ -31,52 +32,12 @@ import static com.droukos.authservice.util.factories.HttpExceptionFactory.unauth
 import static java.time.LocalDateTime.now;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AccessJwtService {
 
-  @NonNull private final ReactiveStringRedisTemplate redisTemplate;
-  @NonNull private final ClaimsConfig claimsConfig;
-  @NonNull private final AccessTokenConfig accessTokenConfig;
-
-  private String getAuthHeader(ServerRequest request) {
-    return request
-        .headers()
-        .header("Authorization")
-        .get(0)
-        .replace(accessTokenConfig.getTokenPrefix(), "")
-        .trim();
-  }
-
-  public Mono<Claims> getAllClaimsMono(String token) {
-    return Mono.just(getAllClaims(token));
-  }
-
-  public String getUserIdClaim(ServerRequest request) {
-    return getField(getAuthHeader(request), claimsConfig.getUserId());
-  }
-
-  public String getUserIdClaim(String token) {
-    return getField(token, claimsConfig.getUserId());
-  }
-
-  private String getField(String token, String field) {
-    return getAllClaims(token.replace(accessTokenConfig.getTokenPrefix(), "").trim())
-        .get(field, String.class);
-  }
-
-  public Mono<Claims> fetchClaims(AuthorizationContext context) {
-    return Mono.just(
-            Objects.requireNonNull(
-                    context
-                        .getExchange()
-                        .getRequest()
-                        .getHeaders()
-                        .getFirst(HttpHeaders.AUTHORIZATION))
-                .replace(accessTokenConfig.getTokenPrefix(), "")
-                .trim())
-        .onErrorResume(Exception.class, err -> Mono.error(unauthorized()))
-        .flatMap(this::testToken);
-  }
+  private final ReactiveStringRedisTemplate redisTemplate;
+  private final ClaimsConfig claimsConfig;
+  private final AccessTokenConfig accessTokenConfig;
 
   public Claims getAllClaims(String token) {
     return Jwts.parser()
@@ -118,8 +79,7 @@ public class AccessJwtService {
   private Mono<NewAccTokenData> tokenGenerator(
       UserRes user, Map<String, String> issueInfo, LocalDateTime validityDate) {
 
-    List<String> roles =
-        user.getAllRoles().stream().map(RoleModel::getRole).collect(Collectors.toList());
+    List<String> roles = user.getAllRoles().stream().map(RoleModel::getRole).collect(Collectors.toList());
     String tokenId = issueInfo.get(claimsConfig.getTokenId());
     String platform = issueInfo.get(claimsConfig.getPlatform());
     Date dateToExpire = DateUtils.asDate(validityDate);
@@ -137,7 +97,6 @@ public class AccessJwtService {
             .compact();
 
     return Mono.just(
-        new NewAccTokenData(
-            accessToken, tokenId, user.getId(), user.getUser(), platform, dateToExpire, roles));
+            new NewAccTokenData(accessToken, tokenId, user.getId(), user.getUser(), platform, dateToExpire, roles));
   }
 }

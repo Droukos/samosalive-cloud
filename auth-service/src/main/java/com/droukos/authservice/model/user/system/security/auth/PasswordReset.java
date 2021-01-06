@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @ToString
 public class PasswordReset {
 
-  String ip;
-  LocalDateTime date;
+  private String ip;
+  private LocalDateTime date;
 
   public static PasswordReset newInfo() {
     return new PasswordReset(null, null);

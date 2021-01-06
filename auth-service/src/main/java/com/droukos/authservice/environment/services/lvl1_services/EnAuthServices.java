@@ -3,12 +3,13 @@ package com.droukos.authservice.environment.services.lvl1_services;
 import com.droukos.authservice.environment.services.LvL0_Services;
 import com.droukos.authservice.environment.interfaces.core_services.SecRunByInfo;
 import com.droukos.authservice.environment.interfaces.core_services.ServiceInfo;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import static com.droukos.authservice.environment.services.sec_options.GeneralSecOptions.*;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 public enum EnAuthServices implements ServiceInfo {
     SIGN_UP         ("sign_up"                  ,"0",   NO_RUN_BY_SEC,             false   ,false),
     LOGIN           ("login"                    ,"1",   NO_RUN_BY_SEC,             false  ,false),
@@ -25,11 +26,11 @@ public enum EnAuthServices implements ServiceInfo {
     ACCESS_TOKEN    ("token/access_token"       ,"12",  NO_RUN_BY_SEC,             false   ,false)
     ;
 
-    @NonNull private final String url;
-    @NonNull private final String serviceCode;
-    @NonNull private final SecRunByInfo runByInfo;
-    @NonNull private final boolean checkAccToken;
-    @NonNull private final boolean runSecurity;
+    private final String url;
+    private final String serviceCode;
+    private final SecRunByInfo runByInfo;
+    private final boolean checkAccToken;
+    private final boolean runSecurity;
 
     public String getServiceCode() {
         return LvL0_Services.AUTH.getServiceCode() + serviceCode;

@@ -14,12 +14,14 @@ import com.droukos.authservice.model.user.privacy.PrivacySetting;
 import com.droukos.authservice.model.user.privacy.PrivacySettingMap;
 import com.droukos.authservice.model.user.system.UserSystem;
 import com.droukos.authservice.model.user.system.Verification;
+import com.droukos.authservice.model.user.system.security.AccountStatus;
 import com.droukos.authservice.model.user.system.security.Security;
 import com.droukos.authservice.model.user.system.security.logins.AndroidLogins;
 import com.droukos.authservice.model.user.system.security.logins.IosLogins;
 import com.droukos.authservice.model.user.system.security.logins.WebLogins;
 import com.droukos.authservice.repo.UserRepository;
 import com.droukos.authservice.util.factories.HttpExceptionFactory;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,16 +34,17 @@ import java.util.HashMap;
 
 import static com.droukos.authservice.environment.constants.authorities.Roles.SYSTEM;
 import static com.droukos.authservice.environment.constants.authorities.Roles.USER;
+import static com.droukos.authservice.environment.enums.AccountStatus.ACTIVE;
 import static com.droukos.authservice.environment.enums.Availability.OFFLINE;
 import static com.droukos.authservice.environment.enums.PrivacySettings.PRIVATE;
 import static com.droukos.authservice.environment.enums.PrivacySettings.PUBLIC;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SignUpService {
 
-  @NonNull private final UserRepository userRepository;
-  @NonNull private final BCryptPasswordEncoder passwordEncoder;
+  private final UserRepository userRepository;
+  private final BCryptPasswordEncoder passwordEncoder;
 
   public static PrivacySettingMap generateUserInfoSettingsPrivacy() {
     var map = new HashMap<String, PrivacySetting>();
@@ -73,7 +76,7 @@ public class SignUpService {
             null,
             new Verification(false, null),
             null,
-            null));
+            new AccountStatus(ACTIVE.getCode(), null)));
   }
 
   public Mono<Boolean> signedUpUser(UserRes user) {
@@ -135,6 +138,6 @@ public class SignUpService {
 
   private Personal generateUserInfoPersonal(String name, String surname) {
     return new Personal(
-        name, surname, new Profile(null, null, null), new AddressModel(null, null, null), null);
+        name, surname, new Profile(null, null, null), new AddressModel(null, null, null), new HashMap<>());
   }
 }

@@ -23,7 +23,7 @@ public class SecurityFactoryWebToken {
                 WebJWT.jwtUpdateAccessToken(user, tokenData),
                 user.getVerificationModel(),
                 user.getAccountLockedModel(),
-                user.getAccountBannedModel()
+                user.getAccountStatusModel()
         );
     }
 
@@ -40,7 +40,7 @@ public class SecurityFactoryWebToken {
                 WebJWT.jwtUpdate(accessTokenData, refreshTokenData),
                 user.getVerificationModel(),
                 user.getAccountLockedModel(),
-                user.getAccountBannedModel()
+                user.getAccountStatusModel()
         );
     }
 
@@ -56,7 +56,7 @@ public class SecurityFactoryWebToken {
                 WebJWT.jwtDeleteAccessToken(user),
                 user.getVerificationModel(),
                 user.getAccountLockedModel(),
-                user.getAccountBannedModel()
+                user.getAccountStatusModel()
         );
     }
 
@@ -72,7 +72,7 @@ public class SecurityFactoryWebToken {
                 WebJWT.jwtUpdateAccessToken(user, tokenData),
                 user.getVerificationModel(),
                 user.getAccountLockedModel(),
-                user.getAccountBannedModel()
+                user.getAccountStatusModel()
         );
     }
 
@@ -89,6 +89,6 @@ public class SecurityFactoryWebToken {
                 WebJWT.jwtUpdate(accessTokenData, refreshTokenData),
                 user.getVerificationModel(),
                 user.getAccountLockedModel(),
-                user.getAccountBannedModel());
+                user.getAccountStatusModel());
     }
 }

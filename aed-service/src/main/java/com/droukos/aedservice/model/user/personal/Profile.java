@@ -11,9 +11,9 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Profile {
-  String av;
-  String bk;
-  String desc;
+  private String av;
+  private String bk;
+  private String desc;
 
   public static Profile withAvatarOnly(String avatar) {
     return new Profile(avatar, null, null);

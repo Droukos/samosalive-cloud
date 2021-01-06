@@ -20,7 +20,7 @@ public class TokenUtilTest {
     public static final MimeType mimeType = new MediaType("message", "x.rsocket.authentication.bearer.v0");
     public static String accessToken ;
     public static final String userId = "5f7bd2d847706533411e5e55";
-    public static final String username = "Ko";
+    public static final String username = "kostas";
     public static final List<String> roles = Collections.singletonList("GENERAL_ADMIN");
     public static final String tokenId = "randomId";
     public static final String platform = "platform";

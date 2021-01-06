@@ -7,5 +7,5 @@ import lombok.*;
 @Getter
 @ToString
 public class PhoneModel {
-  String phone;
+  private String phone;
 }

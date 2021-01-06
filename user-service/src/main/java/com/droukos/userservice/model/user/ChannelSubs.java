@@ -6,12 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.Map;
 
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class ChannelSubs {
-    private List<String> aedEvSubs;
-    private List<String> aedPrSubs;
+    private Map<String, EventChannel> aedEvSubs;
+    private Map<String, ProblemChannel> aedPrSubs;
 }

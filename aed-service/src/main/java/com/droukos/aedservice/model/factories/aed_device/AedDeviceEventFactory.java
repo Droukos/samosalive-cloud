@@ -55,7 +55,7 @@ public class AedDeviceEventFactory {
                 aedEvent.getUsername_canon(),
                 aedEvent.getOccurrenceType(),
                 aedEvent.getOccurrencePoint(),
-                //dto.getAedDeviceId(),
+                dto.getAedDeviceId(),
                 aedEvent.getAddress(),
                 aedEvent.getComment(),
                 aedEvent.getRescuer(),
@@ -66,7 +66,8 @@ public class AedDeviceEventFactory {
                 aedEvent.getCompletedTime(),
                 aedEvent.getConclusion(),
                 aedEvent.getCallee(),
-                aedEvent.getSubs()
+                aedEvent.getSubs(),
+                aedEvent.getCommsN()
         );
     }
 

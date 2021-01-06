@@ -14,5 +14,6 @@ public interface AedDeviceRepository  extends ReactiveMongoRepository<AedDevice,
     Mono<AedDevice> getAedDeviceById(String id);
     Mono<AedDevice> getAedDeviceByUniqNickname(String uniqNickname);
     Flux<AedDevice> getAedDevicesByUniqNicknameLike(String uniqNickname);
+    Mono<AedDevice> getAedDevicesByIdAndHomePNear(String id, Point p, Distance d);
     Flux<AedDevice> getAedDevicesByHomePNear(Point p, Distance d);
 }

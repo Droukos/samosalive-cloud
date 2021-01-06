@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Map;
 
 @ToString
-@Document
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

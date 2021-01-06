@@ -33,7 +33,7 @@ public class AedEvent {
     @JsonDeserialize(using = GeoJsonDeserializer.class)
     private GeoJsonPoint occurrencePoint;
 
-    //private String aedDeviceId;
+    private String aedDeviceId;
 
     private String address;
 
@@ -62,4 +62,8 @@ public class AedEvent {
     private String callee;
 
     private List<String> subs;
+
+    private double commsN;
+
+    //private List<AedEventComment> comments;
 }

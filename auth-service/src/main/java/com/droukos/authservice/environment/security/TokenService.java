@@ -128,6 +128,12 @@ public class TokenService {
                     ofMinutes(accessTokenConfig.getValidMinutesAll()));
   }
 
+  public Mono<Boolean> redisSetUserToken(UserRes user, String accTokenId, String platform) {
+    return redisTemplate
+            .opsForValue()
+            .set(redisTokenK(user, platform), accTokenId, ofMinutes(accessTokenConfig.getValidMinutesAll()));
+  }
+
   public Mono<Boolean> redisRemoveUserToken(UserRes userRes, String device) {
     return redisTemplate.opsForValue().delete(redisTokenK(userRes, device));
   }

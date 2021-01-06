@@ -5,10 +5,13 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Value
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class AccountLocked {
-    boolean accLock;
-    LocalDateTime until;
+    private boolean accLock;
+    private LocalDateTime until;
 
     public static AccountLocked noUpdate(UserRes user) {
         return new AccountLocked(

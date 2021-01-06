@@ -23,6 +23,8 @@ public class News {
 
     private String username_canon;
 
+    //private List<Integer> types;
+
     @Indexed
     private String newsTitle;
 

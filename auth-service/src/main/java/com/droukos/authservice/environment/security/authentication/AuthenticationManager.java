@@ -3,8 +3,7 @@ package com.droukos.authservice.environment.security.authentication;
 import com.droukos.authservice.config.jwt.ClaimsConfig;
 import com.droukos.authservice.environment.dto.RequesterAccessTokenData;
 import com.droukos.authservice.environment.security.tokens.AccessJwtService;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,11 +19,11 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AuthenticationManager implements ReactiveAuthenticationManager {
 
-  @NonNull private final AccessJwtService accessJwtService;
-  @NonNull private final ClaimsConfig claimsConfig;
+  private final AccessJwtService accessJwtService;
+  private final ClaimsConfig claimsConfig;
 
   @Override
   @SuppressWarnings("unchecked")

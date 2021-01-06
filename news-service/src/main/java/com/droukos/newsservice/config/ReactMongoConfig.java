@@ -22,14 +22,14 @@ public class ReactMongoConfig {
     @Value("${mongodb.password}")
     private String password;
 
-    public @Bean
-    ReactiveMongoDatabaseFactory reactiveMongoDatabaseFactory() {
-        return new SimpleReactiveMongoDatabaseFactory(MongoClients.create("mongodb://localhost"), database);
-    }
-
-    public @Bean
-    ReactiveMongoTemplate reactiveMongoTemplate() {
-        return new ReactiveMongoTemplate(reactiveMongoDatabaseFactory());
-    }
+    //public @Bean
+    //ReactiveMongoDatabaseFactory reactiveMongoDatabaseFactory() {
+    //    return new SimpleReactiveMongoDatabaseFactory(MongoClients.create("mongodb://localhost"), database);
+    //}
+//
+    //public @Bean
+    //ReactiveMongoTemplate reactiveMongoTemplate() {
+    //    return new ReactiveMongoTemplate(reactiveMongoDatabaseFactory());
+    //}
 
 }

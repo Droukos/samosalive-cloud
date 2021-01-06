@@ -16,24 +16,27 @@ public class RolesUtil {
     public static int rolePower(String role) {
         return switch (clearRole(role)) {
             case GENERAL_ADMIN -> 0;
-            case AREA_ADMIN -> 100;
+            case AREA_ADMIN -> 10;
+            case RESCUER -> 100;
             case USER -> 10000;
             default -> throw unexpectedValue.apply(role);
         };
     }
 
-    public static String genreRole(String genreRole) {
-        return switch (genreRole) {
-            case "ADMINS" -> "0";
-            case "USERS" -> "10000";
-            default -> throw unexpectedValue.apply(genreRole);
-        };
-    }
+    //public static String genreRole(String genreRole) {
+    //    return switch (genreRole) {
+    //        case "ADMINS" -> "0";
+    //        case RESCUER -> "1001000";
+    //        case "USERS" -> "10000";
+    //        default -> throw unexpectedValue.apply(genreRole);
+    //    };
+    //}
 
     public static String roleCode(String role) {
         return switch (clearRole(role)) {
             case GENERAL_ADMIN -> "0.0";
             case AREA_ADMIN -> "0.100";
+            case RESCUER -> "100.100";
             case USER -> "10000.10000";
 
             default -> throw unexpectedValue.apply(role);

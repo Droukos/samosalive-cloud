@@ -1,0 +1,14 @@
+package com.droukos.userservice.model.user;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@ToString
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class EventChannel {
+    private boolean isRescuer;
+}

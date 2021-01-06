@@ -6,8 +6,7 @@ import com.droukos.authservice.environment.dto.client.auth.UpdatePassword;
 import com.droukos.authservice.environment.security.TokenService;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.repo.UserRepository;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -18,12 +17,12 @@ import reactor.util.function.Tuple4;
 import static com.droukos.authservice.util.factories.HttpExceptionFactory.badRequest;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class PasswordService {
 
-  @NonNull private final BCryptPasswordEncoder bCryptPasswordEncoder;
-  @NonNull private final TokenService tokenService;
-  @NonNull private final UserRepository userRepository;
+  private final BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final TokenService tokenService;
+  private final UserRepository userRepository;
 
   public Mono<Tuple4<UpdatePassword, UserRes, NewAccTokenData, NewRefTokenData>>
       setNewAccessTokenIdToRedis(

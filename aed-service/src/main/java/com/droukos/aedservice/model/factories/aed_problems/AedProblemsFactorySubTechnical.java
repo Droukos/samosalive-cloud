@@ -23,6 +23,7 @@ public class AedProblemsFactorySubTechnical {
                 aedProblems.getId(),
                 aedProblems.getUsername(),
                 aedProblems.getUsername_canon(),
+                aedProblems.getAedDevId(),
                 aedProblems.getTitle(),
                 aedProblems.getBody(),
                 aedProblems.getMapPoint(),

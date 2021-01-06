@@ -62,6 +62,9 @@ public class Fields {
     public static final String OCCURRENCE_TYPE = "occurrenceType";
     public static final String OCCURRENCE_COMMENT = "comment";
 
+    public static final String CALLEE = "callee";
+    public static final String PHONE = "phone";
+
     public static final String NEWS_TITLE = "newsTitle";
     public static final String NEWS_CONTENT = "content";
     public static final String NEWS = "news";

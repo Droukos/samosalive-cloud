@@ -7,7 +7,10 @@ public enum  Availability {
     INVISIBLE(2),
     BUSY(3),
     ON_DUTY(4),
-    AWAY(5);
+    AWAY(5),
+    TEMP_BANNED(6),
+    LOCKED(7),
+    PERM_BANNED(8);
 
     private final int code;
 
