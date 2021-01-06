@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @ToString
 public class Verification {
 
-  boolean ver;
-  LocalDateTime verOn;
+  private boolean ver;
+  private LocalDateTime verOn;
 
   public static Verification noUpdate(UserRes user) {
     return new Verification(

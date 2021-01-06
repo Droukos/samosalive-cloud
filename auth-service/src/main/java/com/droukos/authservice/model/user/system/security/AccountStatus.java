@@ -6,10 +6,13 @@ import java.time.LocalDateTime;
 
 import static com.droukos.authservice.environment.enums.AccountStatus.*;
 
-@Value
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class AccountStatus {
-    int stat;
-    LocalDateTime until;
+    private int stat;
+    private LocalDateTime until;
 
     public static AccountStatus permBanUser() {
         return new AccountStatus(

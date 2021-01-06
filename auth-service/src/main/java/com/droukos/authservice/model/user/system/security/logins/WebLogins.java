@@ -10,8 +10,9 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class WebLogins {
-  LocalDateTime lLogin;
-  LocalDateTime lLogout;
+  private LocalDateTime lLogin;
+  private LocalDateTime lLogout;
+
   public static WebLogins noLoginUpdate(UserRes user) {
     return new WebLogins(
             user.getSys().getSec().getWebLog().getLLogin(),

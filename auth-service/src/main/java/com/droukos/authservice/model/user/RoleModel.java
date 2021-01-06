@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 
 @ToString
 @Getter
-@Document
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoleModel {
@@ -33,6 +32,14 @@ public class RoleModel {
     return user.getAllRoles()
             .stream()
             .filter(roleModel -> !roleModel.getRole().equals(removedRole))
+            .collect(Collectors.toList());
+  }
+
+  public static List<RoleModel> changeRole(UserRes user, String oldRole, String newRole, String addedBy) {
+
+    return Stream.concat(
+            user.getAllRoles().stream().filter(roleModel -> !roleModel.getRole().equals(oldRole)),
+            Stream.of(new RoleModel(newRole, null, false, LocalDateTime.now(), addedBy)))
             .collect(Collectors.toList());
   }
 

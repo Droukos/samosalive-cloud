@@ -21,6 +21,7 @@ import com.droukos.authservice.model.user.system.security.logins.IosLogins;
 import com.droukos.authservice.model.user.system.security.logins.WebLogins;
 import com.droukos.authservice.repo.UserRepository;
 import com.droukos.authservice.util.factories.HttpExceptionFactory;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,11 +40,11 @@ import static com.droukos.authservice.environment.enums.PrivacySettings.PRIVATE;
 import static com.droukos.authservice.environment.enums.PrivacySettings.PUBLIC;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SignUpService {
 
-  @NonNull private final UserRepository userRepository;
-  @NonNull private final BCryptPasswordEncoder passwordEncoder;
+  private final UserRepository userRepository;
+  private final BCryptPasswordEncoder passwordEncoder;
 
   public static PrivacySettingMap generateUserInfoSettingsPrivacy() {
     var map = new HashMap<String, PrivacySetting>();

@@ -7,9 +7,9 @@ import lombok.*;
 @Getter
 @ToString
 public class AddressModel {
-  String cIso;
-  String state;
-  String city;
+  private String cIso;
+  private String state;
+  private String city;
 
   public static AddressModel withCountryIso(String countryIso) {
     return new AddressModel(countryIso, null, null);

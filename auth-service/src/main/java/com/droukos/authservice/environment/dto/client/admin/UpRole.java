@@ -1,4 +1,4 @@
-package com.droukos.authservice.environment.dto.client.auth;
+package com.droukos.authservice.environment.dto.client.admin;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class BannedUser {
-    private String userid;
+public class UpRole {
+    private String username;
+    private String role;
 }

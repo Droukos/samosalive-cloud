@@ -129,4 +129,12 @@ public class UserRes {
   public String getAndroidAccessTokenId() {
     return this.getSys().getSec().getAndroidJWT().getAccToken().getId();
   }
+
+  public String getIosAccessTokenId() {
+    return this.getSys().getSec().getIosJWT().getAccToken().getId();
+  }
+
+  public String getWebAccessTokenId() {
+    return this.getSys().getSec().getWebJWT().getAccToken().getId();
+  }
 }

@@ -2,11 +2,16 @@ package com.droukos.authservice.util;
 
 import com.droukos.authservice.environment.dto.RequesterAccessTokenData;
 import org.springframework.security.core.context.SecurityContext;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 public class SecurityUtil {
     private SecurityUtil() {}
+
+    public static Mono<RequesterAccessTokenData> getRequesterDataMono(SecurityContext context) {
+        return Mono.just(getRequesterData(context));
+    }
 
     public static RequesterAccessTokenData getRequesterData(SecurityContext context) {
         return (RequesterAccessTokenData) context.getAuthentication().getPrincipal();

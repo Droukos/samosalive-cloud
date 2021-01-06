@@ -12,25 +12,26 @@ import com.droukos.authservice.environment.security.tokens.RefreshJwtService;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.repo.UserRepository;
 import com.droukos.authservice.util.SecurityUtil;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.droukos.authservice.util.factories.HttpExceptionFactory.badRequest;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AuthServices {
 
-  @NonNull private final UserRepository userRepository;
-  @NonNull private final TokenService tokenService;
-  @NonNull private final RefreshJwtService refreshJwtService;
+  private final UserRepository userRepository;
+  private final TokenService tokenService;
+  private final RefreshJwtService refreshJwtService;
 
   public Mono<UserRes> getUser(LoginRequest loginRequest) {
     Predicate<String> isEmail = userInput -> userInput.matches(Regexes.EMAIL.getRegex());
@@ -52,6 +53,18 @@ public class AuthServices {
               .flatMap(userRes -> userRes.getId() != null
                       ? Mono.just(userRes)
                       : Mono.error(badRequest("User not found")));
+  }
+
+  public Mono<UserRes> getUserByUsername(String username) {
+      return userRepository.findFirstByUser(username)
+              .defaultIfEmpty(new UserRes())
+              .flatMap(userRes -> userRes.getId() != null
+                      ? Mono.just(userRes)
+                      : Mono.error(badRequest("User not found")));
+  }
+
+  public Flux<UserRes> getUsersByUsername(List<String> usernames) {
+      return userRepository.findAllByUserIn(usernames);
   }
 
    public Mono<UserRes> getUserFromSecurityContext(SecurityContext context) {

@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @ToString
 public class UserSystem {
 
-  Double credStars;
-  LocalDateTime accC;
-  LocalDateTime accU;
-  Security sec;
+  private Double credStars;
+  private LocalDateTime accC;
+  private LocalDateTime accU;
+  private Security sec;
 
 }

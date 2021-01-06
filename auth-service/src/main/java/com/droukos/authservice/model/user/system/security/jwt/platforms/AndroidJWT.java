@@ -15,8 +15,8 @@ import java.util.Date;
 @Getter
 @ToString
 public class AndroidJWT implements JwtToken {
-  RefreshToken reToken;
-  AccessToken accToken;
+  private RefreshToken reToken;
+  private AccessToken accToken;
 
   public static AndroidJWT noJwtUpdate(UserRes user) {
     return new AndroidJWT(
@@ -28,6 +28,10 @@ public class AndroidJWT implements JwtToken {
 
     return new AndroidJWT(
         RefreshToken.update(refreshTokenData), AccessToken.update(accessTokenData));
+  }
+
+  public static AndroidJWT jwtAccessTokenUpdate(UserRes user, NewAccTokenData accTokenData) {
+    return new AndroidJWT(user.getAndroidJwtModel().getReToken(), AccessToken.update(accTokenData));
   }
 
   public static AndroidJWT jwtDeleteAccessToken(UserRes user) {

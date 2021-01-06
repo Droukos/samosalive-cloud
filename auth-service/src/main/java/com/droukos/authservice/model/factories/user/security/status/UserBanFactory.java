@@ -1,6 +1,8 @@
 package com.droukos.authservice.model.factories.user.security.status;
 
-import com.droukos.authservice.environment.dto.client.auth.BanUser;
+import com.droukos.authservice.environment.dto.client.admin.BanUser;
+import com.droukos.authservice.environment.enums.Availability;
+import com.droukos.authservice.model.user.AppState;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.model.user.system.UserSystem;
 import com.droukos.authservice.model.user.system.security.AccountStatus;
@@ -23,6 +25,10 @@ public class UserBanFactory {
 
     public static Mono<UserRes> tempBanUserMono(Tuple2<UserRes, BanUser> tuple2) {
         return Mono.just(tempBanUser(tuple2.getT1(), tuple2.getT2().getDuration()));
+    }
+
+    public static Mono<UserRes> tempBanUserMono(UserRes user, long duration) {
+        return Mono.just(tempBanUser(user, duration));
     }
 
     public static Mono<UserRes> unbanUserMono(UserRes user) {
@@ -59,7 +65,10 @@ public class UserBanFactory {
                         )
                 ),
                 user.getChannelSubs(),
-                user.getAppState()
+               new AppState(
+                       false,
+                       Availability.PERM_BANNED.getCode()
+               )
         );
     }
 
@@ -93,7 +102,10 @@ public class UserBanFactory {
                         )
                 ),
                 user.getChannelSubs(),
-                user.getAppState()
+                new AppState(
+                        false,
+                        Availability.TEMP_BANNED.getCode()
+                )
         );
     }
 
@@ -127,7 +139,10 @@ public class UserBanFactory {
                         )
                 ),
                 user.getChannelSubs(),
-                user.getAppState()
+                new AppState(
+                        false,
+                        Availability.INVISIBLE.getCode()
+                )
         );
     }
 }

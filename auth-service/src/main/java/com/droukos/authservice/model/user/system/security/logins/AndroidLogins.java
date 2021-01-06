@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class AndroidLogins {
-  LocalDateTime lLogin;
-  LocalDateTime lLogout;
+  private LocalDateTime lLogin;
+  private LocalDateTime lLogout;
 
   public static AndroidLogins noLoginUpdate (UserRes user) {
     return new AndroidLogins(

@@ -10,8 +10,7 @@ import com.droukos.authservice.model.factories.user.security.status.UserStatusFa
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.model.user.system.security.AccountStatus;
 import com.droukos.authservice.repo.UserRepository;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -30,14 +29,11 @@ import static com.droukos.authservice.util.factories.HttpExceptionFactory.badReq
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class LoginService {
 
-    @NonNull
     private final UserRepository userRepository;
-    @NonNull
     private final TokenService tokenService;
-    @NonNull
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public Mono<UserRes> validatePassword(Tuple2<LoginRequest, UserRes> objects) {

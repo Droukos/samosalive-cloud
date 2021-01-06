@@ -57,6 +57,10 @@ public class IosJWT implements JwtToken {
     );
   }
 
+  public static IosJWT jwtAccessTokenUpdate(UserRes user, NewAccTokenData accTokenData) {
+    return new IosJWT(user.getIosJwtModel().getReToken(), AccessToken.update(accTokenData));
+  }
+
   public static IosJWT jwtDeleteAccessToken(UserRes user) {
     return user.getIosJwtModel() != null && user.getIosJwtModel().getReToken() != null
             ? new IosJWT(user.getIosJwtModel().getReToken(), null)

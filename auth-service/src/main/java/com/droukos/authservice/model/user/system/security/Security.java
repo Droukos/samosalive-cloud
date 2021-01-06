@@ -16,18 +16,21 @@ import reactor.util.function.Tuple3;
 
 import java.util.List;
 
-@Value
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class Security {
-  AndroidLogins androidLog;
-  IosLogins iosLog;
-  WebLogins webLog;
-  List<PasswordReset> passResets;
-  AndroidJWT androidJWT;
-  IosJWT iosJWT;
-  WebJWT webJWT;
-  Verification verified;
-  AccountLocked lock;
-  AccountStatus accStat;
+  private AndroidLogins androidLog;
+  private IosLogins iosLog;
+  private WebLogins webLog;
+  private List<PasswordReset> passResets;
+  private AndroidJWT androidJWT;
+  private IosJWT iosJWT;
+  private WebJWT webJWT;
+  private Verification verified;
+  private AccountLocked lock;
+  private AccountStatus accStat;
 
   public static Security androidLogin(Tuple3<UserRes, NewAccTokenData, NewRefTokenData> tuple3) {
     UserRes user = tuple3.getT1();

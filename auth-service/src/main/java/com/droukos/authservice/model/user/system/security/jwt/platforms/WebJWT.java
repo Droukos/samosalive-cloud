@@ -50,6 +50,10 @@ public class WebJWT implements JwtToken {
         );
     }
 
+    public static WebJWT jwtAccessTokenUpdate(UserRes user, NewAccTokenData accTokenData) {
+        return new WebJWT(user.getWebJwtModel().getReToken(), AccessToken.update(accTokenData));
+    }
+
     public static WebJWT jwtUpdate(NewAccTokenData accessTokenData, NewRefTokenData refreshTokenData) {
         return new WebJWT(
                 RefreshToken.update(refreshTokenData),

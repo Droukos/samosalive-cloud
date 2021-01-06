@@ -5,8 +5,7 @@ import com.droukos.authservice.model.factories.user.res.UserFactoryLogout;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.repo.UserRepository;
 import com.droukos.authservice.util.SecurityUtil;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -19,11 +18,11 @@ import static com.droukos.authservice.util.factories.HttpBodyBuilderFactory.okJs
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class LogoutService {
 
-    @NonNull private final UserRepository userRepository;
-    @NonNull private final TokenService tokenService;
+    private final UserRepository userRepository;
+    private final TokenService tokenService;
 
     public Mono<Tuple2<UserRes, SecurityContext>> updateUser(Tuple2<UserRes, SecurityContext> tuple2) {
         return Mono.zip(

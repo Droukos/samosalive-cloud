@@ -38,8 +38,7 @@ public class NewsController {
     }
     @MessageMapping("news.getId")
     public Mono<RequestedNews> findNewsById(NewsDtoIdSearch newsId){
-        return Mono.just(newsId.getId())
-                .flatMap(newsInfo::findNewsById)
+        return newsInfo.findNewsById(newsId.getId())
                 .flatMap(RequestedNews::buildMono);
     }
 }
