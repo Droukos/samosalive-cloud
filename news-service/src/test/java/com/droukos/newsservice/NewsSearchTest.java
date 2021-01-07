@@ -56,7 +56,6 @@ public class NewsSearchTest {
 
         List<Integer> ideaslist = new ArrayList<>();
         ideaslist.add(-1);
-        System.out.println(ideaslist);
         NewsDtoSearch newsDtoSearch  = new NewsDtoSearch("",ideaslist);
         Flux<RequestedPreviewNews> result =
                 requester

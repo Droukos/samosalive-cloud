@@ -15,6 +15,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.droukos.newsservice.environment.constants.TagList.IDEAS;
@@ -35,15 +36,20 @@ public class NewsInfo {
         List<Integer> ideaslist = new ArrayList<>();
         ideaslist.add(0);
         List<Integer> emptylist = new ArrayList<>();
-        ideaslist.add(-1);
+        emptylist.add(-1);
+        List<Integer> everything = new ArrayList<>();
+        everything.add(1);
+        everything.add(2);
+        everything.add(3);
+        everything.add(4);
+
+        List<Integer>tagList = newsDtoSearch.getSearchTag();
+        Collections.sort(tagList);
+
         if(!newsDtoSearch.getNewsTitle().equals("")){
             return newsRepository.findAllByNewsTitleIsContainingAndTagIsNotIn(newsDtoSearch.getNewsTitle(),ideaslist);
         }
-        //else if(newsDtoSearch.getSearchTag()==ideaslist){
-        //    System.out.println("eimai pano");
-        //    return newsRepository.findAllByTagIn(ideaslist);
-        //} No use
-        else if(newsDtoSearch.getSearchTag().retainAll(emptylist)){
+        else if(emptylist.equals(tagList)){
             return newsRepository.findAllByTagIsNotIn(ideaslist);
         }
         else {
