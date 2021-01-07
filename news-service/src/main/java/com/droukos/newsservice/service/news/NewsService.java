@@ -33,9 +33,9 @@ public class NewsService {
         return newsRepository.save(news);
     }
 
-    public Flux<News> getNewsByNewsTitle(String newsTitle) {
-        return newsRepository.findAllByNewsTitleIsContainingAndTagIsNot(newsTitle,0);
-    }
+    //public Flux<News> getNewsByNewsTitle(String newsTitle) {
+    //    return newsRepository.findAllByNewsTitleIsContainingAndTagIsNot(newsTitle,0);
+    //}
     //public Mono<News> findNewsById(String id) {
     //    return newsRepository.findById(id)
     //            .switchIfEmpty(Mono.error(badRequest("News does not exists")));

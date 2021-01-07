@@ -19,6 +19,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootTest
 public class NewsSearchTest {
@@ -51,7 +53,11 @@ public class NewsSearchTest {
 
     @Test
     void findNews(){
-        NewsDtoSearch newsDtoSearch  = new NewsDtoSearch("ne",0);
+
+        List<Integer> ideaslist = new ArrayList<>();
+        ideaslist.add(-1);
+        System.out.println(ideaslist);
+        NewsDtoSearch newsDtoSearch  = new NewsDtoSearch("",ideaslist);
         Flux<RequestedPreviewNews> result =
                 requester
                         .route("news.get")

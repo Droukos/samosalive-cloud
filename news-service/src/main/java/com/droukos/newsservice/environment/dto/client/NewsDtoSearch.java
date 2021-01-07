@@ -12,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 public class NewsDtoSearch {
     private String newsTitle;
-    private Integer searchTag;
+    private List<Integer> searchTag;
 }

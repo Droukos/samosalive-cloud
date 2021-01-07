@@ -55,8 +55,8 @@ public class NewsCreateTest {
     @Test
     void createNews(){
         List tag = new ArrayList<Integer>();
-        tag.add(1);
-        NewsDtoCreate newsDtoCreate  = new NewsDtoCreate("tom","Kupros","test", tag);
+        tag.add(0);
+        NewsDtoCreate newsDtoCreate  = new NewsDtoCreate("tom","new","test", tag);
         Mono<Boolean> result =
                 requester
                         .route("news.post")

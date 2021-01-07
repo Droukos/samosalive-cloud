@@ -4,8 +4,8 @@ import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoRescue
 import com.droukos.aedservice.model.aed_device.AedDevice;
 import com.droukos.aedservice.repo.AedEventRepository;
 import com.droukos.aedservice.service.aed_event.AedEventInfo;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
+//import com.google.gson.Gson;
+//import com.google.gson.JsonParser;
 import com.mongodb.DBObject;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeAll;

@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.droukos.newsservice.environment.constants.TagList.IDEAS;
 import static com.droukos.newsservice.util.factories.HttpExceptionFactory.badRequest;
 
@@ -28,14 +31,24 @@ public class NewsInfo {
     }
 
     public Flux<News> findNewsByTitleOrTag(NewsDtoSearch newsDtoSearch) {
-        if(newsDtoSearch.getNewsTitle()!=""){
-            return newsRepository.findAllByNewsTitleIsContainingAndTagIsNot(newsDtoSearch.getNewsTitle(),0);
+
+        List<Integer> ideaslist = new ArrayList<>();
+        ideaslist.add(0);
+        List<Integer> emptylist = new ArrayList<>();
+        ideaslist.add(-1);
+        if(!newsDtoSearch.getNewsTitle().equals("")){
+            return newsRepository.findAllByNewsTitleIsContainingAndTagIsNotIn(newsDtoSearch.getNewsTitle(),ideaslist);
         }
-        else if(newsDtoSearch.getSearchTag()==IDEAS){
-            return newsRepository.findAllByTag(0);
+        //else if(newsDtoSearch.getSearchTag()==ideaslist){
+        //    System.out.println("eimai pano");
+        //    return newsRepository.findAllByTagIn(ideaslist);
+        //} No use
+        else if(newsDtoSearch.getSearchTag().retainAll(emptylist)){
+            return newsRepository.findAllByTagIsNotIn(ideaslist);
         }
-        else
-            return newsRepository.findAllByTag(newsDtoSearch.getSearchTag());
+        else {
+            return newsRepository.findAllByTagIn(newsDtoSearch.getSearchTag());
+        }
     }
 
     public Flux<News> findNewsByUploadDesc() {
