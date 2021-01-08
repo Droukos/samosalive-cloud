@@ -2,27 +2,30 @@ package com.droukos.authservice.environment.dto.server.auth.login;
 
 import com.droukos.authservice.model.user.RoleModel;
 import com.droukos.authservice.model.user.UserRes;
-import lombok.Value;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Value
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class LoginResponse {
-    String accessToken;
-    String userid;
-    String username;
-    String name;
-    String surname;
-    String email;
-    String avatar;
-    String description;
-    List<RoleModel> roleModels;
-    List<String> aedEventSubs;
-    List<String> aedProblemSubs;
-    boolean online;
-    Integer availability;
+    private String accessToken;
+    private String userid;
+    private String username;
+    private String name;
+    private String surname;
+    private String email;
+    private String avatar;
+    private String description;
+    private List<RoleModel> roleModels;
+    private List<String> aedEventSubs;
+    private List<String> aedProblemSubs;
+    private boolean online;
+    private Integer availability;
 
     public static LoginResponse build(UserRes user, String accessToken) {
         ArrayList<String> eventChannels = user.getChannelSubs().getAedPrSubs() != null ?

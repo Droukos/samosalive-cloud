@@ -30,6 +30,8 @@ public class RequestedPreviewRescuer {
     private int status;
     private List<String> roles;
 
+
+
     public static RequestedPreviewRescuer build(UserRes user) {
         Map<String, PhoneModel> phones = user.getPrsn().getPhones();
 
@@ -40,7 +42,7 @@ public class RequestedPreviewRescuer {
                 user.getSurname(),
                 user.getEmail(),
                 user.getAvatar(),
-                phones == null ? null : Collections.singletonList(phones.get(PH_RESCUER_KEY).getPhone()),
+                phones.get(PH_RESCUER_KEY) == null ? null : Collections.singletonList(phones.get(PH_RESCUER_KEY).getPhone()),
                 user.getAppState().getStatus() != Availability.INVISIBLE.getCode() && user.getAppState().isOn(),
                 user.getAppState().getStatus(),
                 user.getAllRoles().stream().map(RoleModel::getRole).collect(Collectors.toList())

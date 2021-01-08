@@ -33,13 +33,14 @@ public class AdminController {
 
     @MessageMapping("auth.admin.ban.users")
     public Mono<Boolean> permBanUsers(BanUsers banUsers) {
+        if(banUsers.getBanUsers() == null) return Mono.error(badRequest());
         Map<String, Long> banUserMap = banUsers.getBanUsers()
                 .stream()
                 .collect(Collectors.toMap(BanUser::getUsername, BanUser::getDuration));
 
         return authServices.getUsersByUsername(new ArrayList<>(banUserMap.keySet()))
                 .flatMap(user->
-                    banUserMap.get(user.getUser()) == 0
+                    banUserMap.get(user.getUser()) == -1
                         ? UserBanFactory.permBanUserMono(user)
                         : UserBanFactory.tempBanUserMono(user, banUserMap.get(user.getUser())))
                 .collectList()

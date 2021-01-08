@@ -1,11 +1,11 @@
 package com.droukos.authservice.service.admin;
 
 import com.droukos.authservice.config.redis.RedisConfigProperties;
-import com.droukos.authservice.environment.constants.Platforms;
 import com.droukos.authservice.environment.dto.RequesterAccessTokenData;
 import com.droukos.authservice.environment.dto.server.auth.login.LoginResponse;
 import com.droukos.authservice.model.user.UserRes;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -15,6 +15,7 @@ import static com.droukos.authservice.environment.constants.Platforms.ANDROID;
 import static com.droukos.authservice.environment.constants.Platforms.IOS;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class AdminChannelService {
     private final RedisConfigProperties redisConfig;
@@ -27,6 +28,7 @@ public class AdminChannelService {
             case IOS -> userCh + redisConfig.getAuthChIosPostfix();
             default -> userCh + redisConfig.getAuthChWebPostfix();
         };
+        log.info("User: "+requesterData.getUsername()+" listens to: "+authChannel);
 
         return this.reactiveRedisTemplateAuth
                 .listenToChannel(authChannel)
@@ -42,6 +44,7 @@ public class AdminChannelService {
         Mono<Long> androidAuthChannel = Mono.empty();
         Mono<Long> iosAuthChannel = Mono.empty();
         Mono<Long> webAuthChannel = Mono.empty();
+
         if (user.getAndroidJwtModel() != null) {
             androidAuthChannel = this.reactiveRedisTemplateAuth.convertAndSend(userAndroidCh, userInfo);
         }
