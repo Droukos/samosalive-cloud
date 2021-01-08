@@ -42,13 +42,13 @@ public class NewsInfo {
         Collections.sort(tagList);
 
         if(!newsDtoSearch.getNewsTitle().equals("")){
-            return newsRepository.findAllByNewsTitleIsContainingAndTagIsNotIn(newsDtoSearch.getNewsTitle(),ideaslist);
+            return newsRepository.findAllByNewsTitleIsContainingAndTagIsNotInOrderByUploadedTimeDesc(newsDtoSearch.getNewsTitle(),ideaslist);
         }
         else if(emptylist.equals(tagList)){
-            return newsRepository.findAllByTagIsNotIn(ideaslist);
+            return newsRepository.findAllByTagIsNotInOrderByUploadedTimeDesc(ideaslist);
         }
         else {
-            return newsRepository.findAllByTagIn(newsDtoSearch.getSearchTag());
+            return newsRepository.findAllByTagInOrderByUploadedTimeDesc(newsDtoSearch.getSearchTag());
         }
     }
 
