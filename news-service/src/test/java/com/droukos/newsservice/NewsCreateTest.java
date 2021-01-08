@@ -19,7 +19,9 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @SpringBootTest
 public class NewsCreateTest {
@@ -52,7 +54,9 @@ public class NewsCreateTest {
 
     @Test
     void createNews(){
-        NewsDtoCreate newsDtoCreate  = new NewsDtoCreate("tom","Samos","test", LocalDateTime.now());
+        List tag = new ArrayList<Integer>();
+        tag.add(0);
+        NewsDtoCreate newsDtoCreate  = new NewsDtoCreate("tom","new","test", tag);
         Mono<Boolean> result =
                 requester
                         .route("news.post")

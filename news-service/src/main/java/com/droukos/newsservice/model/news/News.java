@@ -30,5 +30,7 @@ public class News {
 
     private String content;
 
+    private List<Integer> tag;
+
     private LocalDateTime uploadedTime;
 }

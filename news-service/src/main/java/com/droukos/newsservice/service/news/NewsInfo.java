@@ -14,6 +14,11 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static com.droukos.newsservice.environment.constants.TagList.IDEAS;
 import static com.droukos.newsservice.util.factories.HttpExceptionFactory.badRequest;
 
 @Service
@@ -26,11 +31,32 @@ public class NewsInfo {
         ValidatorUtil.validate(newsDtoSearch, new NewsTitleValidator());
     }
 
-    public Flux<News> findNewsByTitle(NewsDtoSearch newsDtoSearch) {
-        return newsRepository.findAllByNewsTitleIsContaining(newsDtoSearch.getNewsTitle());
+    public Flux<News> findNewsByTitleOrTag(NewsDtoSearch newsDtoSearch) {
+
+        List<Integer> ideaslist = new ArrayList<>();
+        ideaslist.add(0);
+        List<Integer> emptylist = new ArrayList<>();
+        emptylist.add(-1);
+
+        List<Integer>tagList = newsDtoSearch.getSearchTag();
+        Collections.sort(tagList);
+
+        if(!newsDtoSearch.getNewsTitle().equals("")){
+            return newsRepository.findAllByNewsTitleIsContainingAndTagIsNotInOrderByUploadedTimeDesc(newsDtoSearch.getNewsTitle(),ideaslist);
+        }
+        else if(emptylist.equals(tagList)){
+            return newsRepository.findAllByTagIsNotInOrderByUploadedTimeDesc(ideaslist);
+        }
+        else {
+            return newsRepository.findAllByTagInOrderByUploadedTimeDesc(newsDtoSearch.getSearchTag());
+        }
     }
 
-    public Mono<RequestedPreviewNews> fetchNewsByTitle(News news) {
+    public Flux<News> findNewsByUploadDesc() {
+        return newsRepository.findAllByOrderByUploadedTimeDesc();
+    }
+
+    public Mono<RequestedPreviewNews> fetchNews(News news) {
         return Mono.just(RequestedPreviewNews.build(news));
     }
 

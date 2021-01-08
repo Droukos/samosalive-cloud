@@ -4,6 +4,7 @@ import com.droukos.newsservice.model.news.News;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @ToString
 @NoArgsConstructor @AllArgsConstructor
@@ -14,6 +15,7 @@ public class RequestedPreviewNews {
     private String user;
     private String title;
     private String content;
+    private List<Integer> tag;
     private LocalDateTime uploadedTime;
 
     public static RequestedPreviewNews build(News news) {
@@ -22,6 +24,7 @@ public class RequestedPreviewNews {
                 news.getUsername(),
                 news.getNewsTitle(),
                 news.getContent(),
+                news.getTag(),
                 news.getUploadedTime()
     );
     }

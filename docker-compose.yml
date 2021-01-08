@@ -116,6 +116,6 @@ services:
       - samosalive-mongodb
       - samosalive-redis
 
-volumes:
-  nominatim-database:
-    external: true
+#volumes:
+#  nominatim-database:
+#    external: true

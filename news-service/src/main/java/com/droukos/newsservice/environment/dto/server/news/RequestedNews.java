@@ -5,6 +5,7 @@ import lombok.*;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @ToString
@@ -15,6 +16,7 @@ public class RequestedNews {
     private String username;
     private String newsTitle;
     private String content;
+    private List<Integer> tag;
     private LocalDateTime uploadedTime;
 
     public static Mono<RequestedNews> buildMono(News news){
@@ -27,6 +29,7 @@ public class RequestedNews {
                 news.getUsername(),
                 news.getNewsTitle(),
                 news.getContent(),
+                news.getTag(),
                 news.getUploadedTime()
         );
     }
