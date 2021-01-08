@@ -37,11 +37,6 @@ public class NewsInfo {
         ideaslist.add(0);
         List<Integer> emptylist = new ArrayList<>();
         emptylist.add(-1);
-        List<Integer> everything = new ArrayList<>();
-        everything.add(1);
-        everything.add(2);
-        everything.add(3);
-        everything.add(4);
 
         List<Integer>tagList = newsDtoSearch.getSearchTag();
         Collections.sort(tagList);
