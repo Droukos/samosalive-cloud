@@ -4,7 +4,6 @@ import com.droukos.aedservice.environment.enums.Availability;
 import com.droukos.aedservice.model.user.RoleModel;
 import com.droukos.aedservice.model.user.UserRes;
 import com.droukos.aedservice.model.user.personal.PhoneModel;
-import com.droukos.aedservice.util.RolesUtil;
 import lombok.*;
 
 import java.util.Collections;
@@ -42,7 +41,7 @@ public class RequestedPreviewRescuer {
                 user.getSurname(),
                 user.getEmail(),
                 user.getAvatar(),
-                phones.get(PH_RESCUER_KEY) == null ? null : Collections.singletonList(phones.get(PH_RESCUER_KEY).getPhone()),
+                phones == null || phones.get(PH_RESCUER_KEY) == null ? null : Collections.singletonList(phones.get(PH_RESCUER_KEY).getPhone()),
                 user.getAppState().getStatus() != Availability.INVISIBLE.getCode() && user.getAppState().isOn(),
                 user.getAppState().getStatus(),
                 user.getAllRoles().stream().map(RoleModel::getRole).collect(Collectors.toList())
