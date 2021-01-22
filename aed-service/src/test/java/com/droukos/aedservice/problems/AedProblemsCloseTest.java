@@ -51,7 +51,7 @@ public class AedProblemsCloseTest {
 
     @Test
     void closeAedEvent(){
-        AedProblemsDtoClose aedProblemsDtoClose= new AedProblemsDtoClose("5fb6bc1682c8a025d194f663", "everything was ok");
+        AedProblemsDtoClose aedProblemsDtoClose= new AedProblemsDtoClose("60096bf9a3721902aa29a89d", "everything was ok");
         Mono<Boolean> result =
                 requester
                         .route("aed.problems.close")

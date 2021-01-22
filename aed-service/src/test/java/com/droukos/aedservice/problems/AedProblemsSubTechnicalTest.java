@@ -4,7 +4,9 @@ import com.droukos.aedservice.RedisUtil;
 import com.droukos.aedservice.TokenUtilTest;
 import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
+import com.droukos.aedservice.environment.constants.AedProblemsCodes;
 import com.droukos.aedservice.environment.dto.client.aed_problems.AedProblemsDtoTechnicalSub;
+import com.droukos.aedservice.model.aed_problems.AedProblems;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -50,13 +52,13 @@ public class AedProblemsSubTechnicalTest {
 
     @Test
     void subTechnical(){
-        AedProblemsDtoTechnicalSub aedProblemsDtoTechnicalSub = new AedProblemsDtoTechnicalSub("5fb6bc1682c8a025d194f663", "tommy");
-        Mono<Boolean> result =
+        AedProblemsDtoTechnicalSub aedProblemsDtoTechnicalSub = new AedProblemsDtoTechnicalSub("60096bf9a3721902aa29a89d", "tom");
+        Mono<AedProblems> result =
                 requester
                         .route("aed.problems.subTechnical")
                         .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
                         .data(aedProblemsDtoTechnicalSub)
-                        .retrieveMono(Boolean.class);
+                        .retrieveMono(AedProblems.class);
 
         System.out.println(result.block());
     }

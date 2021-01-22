@@ -26,7 +26,7 @@ public class AedProblemsController {
     private final AedProblemsChannel aedProblemsChannel;
     private final AedProblemsInfo aedProblemsInfo;
 
-    @MessageMapping("aed.problems.device.post")
+    @MessageMapping("aed.problems.post")
     public Mono<Boolean> postAedDeviceProblem(AedDeviceProblemDtoCreate dtoCreate){
         return Mono.just(dtoCreate)
                 .doOnNext(aedProblemsCreation::validateProblems)
@@ -67,11 +67,11 @@ public class AedProblemsController {
                 .zipWith(Mono.just(aedProblemsDtoTechnicalSub))
                 .flatMap(AedProblemsFactorySubTechnical::subTechnicalMono)
                 .flatMap(aedProblemsInfo::saveAedProblems)
-                .flatMap(aedProblemsChannel::publishProblemOnRedisChannel)
-                .flatMap(aedProblemsChannel::publishEventOnRedisSingleChannel);
+                .flatMap(aedProblemsChannel::publishProblemOnRedisChannel);
+                //.flatMap(aedProblemsChannel::publishEventOnRedisSingleChannel);
     }
 
-    @MessageMapping("aed.problems.device.close")
+    @MessageMapping("aed.problems.close")
     public Mono<Boolean> closeAedProblems(AedProblemsDtoClose aedProblemsDtoClose){
         return aedProblemsInfo.findProblemsId(aedProblemsDtoClose.getId())
                 .zipWith(Mono.just(aedProblemsDtoClose))
@@ -79,7 +79,7 @@ public class AedProblemsController {
                 .flatMap(AedProblemsFactoryClose::closeAedDeviceProblem)
                 .flatMap(aedProblemsServices::saveAedDevice)
                 .flatMap(aedProblemsInfo::saveAedProblems)
-                .flatMap(aedProblemsChannel::publishEventOnRedisSingleChannel)
+                //.flatMap(aedProblemsChannel::publishEventOnRedisSingleChannel)
                 .then(Mono.just(true));
     }
 }

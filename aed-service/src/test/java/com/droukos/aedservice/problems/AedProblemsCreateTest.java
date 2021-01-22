@@ -52,10 +52,7 @@ public class AedProblemsCreateTest {
     @Test
     void createAedProblems(){
 
-        double x = 10.594796841892734;
-        double y = 44.608664;
-        GeoJsonPoint geo = new GeoJsonPoint(x,y);
-        AedDeviceProblemDtoCreate aedProblemsDtoCreate = new AedDeviceProblemDtoCreate("tom","Samos","body",y,x,"address", "");
+        AedDeviceProblemDtoCreate aedProblemsDtoCreate = new AedDeviceProblemDtoCreate("tom",2,"test","600569aba1a7543b37a6173f");
         Mono<Boolean> result =
                 requester
                         .route("aed.problems.post")

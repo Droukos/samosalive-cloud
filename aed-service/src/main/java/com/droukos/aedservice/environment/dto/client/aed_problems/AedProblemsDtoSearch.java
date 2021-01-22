@@ -9,5 +9,5 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AedProblemsDtoSearch {
-    private String title;
+    private Integer title;
 }
