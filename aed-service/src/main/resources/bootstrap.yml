@@ -11,6 +11,9 @@ spring:
       password: 6Da7$qAFWAoVaK6^o&!CRGLzCY
   application:
     name: aed
+server:
+  http2:
+    enabled: true
 
 samosalive:
   comments:

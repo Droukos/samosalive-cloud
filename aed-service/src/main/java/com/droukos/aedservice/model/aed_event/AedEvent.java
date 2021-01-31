@@ -64,6 +64,4 @@ public class AedEvent {
     private List<String> subs;
 
     private double commsN;
-
-    //private List<AedEventComment> comments;
 }

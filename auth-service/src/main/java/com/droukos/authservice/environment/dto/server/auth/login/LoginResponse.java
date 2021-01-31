@@ -28,7 +28,7 @@ public class LoginResponse {
     private Integer availability;
 
     public static LoginResponse build(UserRes user, String accessToken) {
-        ArrayList<String> eventChannels = user.getChannelSubs().getAedPrSubs() != null ?
+        ArrayList<String> eventChannels = user.getChannelSubs().getAedEvSubs() != null ?
                 new ArrayList<>(user.getChannelSubs().getAedEvSubs().keySet())
                 : new ArrayList<>();
         ArrayList<String> problemChannels = user.getChannelSubs().getAedPrSubs() != null ?

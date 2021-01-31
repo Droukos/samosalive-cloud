@@ -132,7 +132,8 @@ public class AedEventChannel {
 
     public Mono<AedEvent> publishEventOnRedisChannel(AedEvent aedEvent) {
 
-        return this.reactiveRedisTemplate.convertAndSend(redisConfigProperties.getAedEventLiveChannel(), aedEvent)
+        return this.reactiveRedisTemplate
+                .convertAndSend(redisConfigProperties.getAedEventLiveChannel(), aedEvent)
                 .then(Mono.just(aedEvent));
     }
 

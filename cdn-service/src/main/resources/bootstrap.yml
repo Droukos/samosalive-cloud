@@ -11,3 +11,7 @@ spring:
       password: 6Da7$qAFWAoVaK6^o&!CRGLzCY
   application:
     name: cdn
+
+server:
+  http2:
+    enabled: true

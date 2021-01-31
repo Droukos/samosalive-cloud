@@ -12,6 +12,9 @@ spring:
   application:
     name: news
 
+server:
+  http2:
+    enabled: true
 samosalive:
   redis:
     #host: samosalive-redis

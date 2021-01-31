@@ -6,6 +6,7 @@ import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedAedEv
 import com.droukos.aedservice.environment.dto.server.aed.aedEvent.RequestedPreviewAedEvent;
 import com.droukos.aedservice.environment.dto.server.aed.aed_device.AedDeviceRescuer;
 import com.droukos.aedservice.model.factories.aed_event.AedEventFactoryCreate;
+import com.droukos.aedservice.model.factories.sub.UserSubAedFactory;
 import com.droukos.aedservice.service.aed_event.AedEventChannel;
 import com.droukos.aedservice.service.aed_event.AedEventCreation;
 import com.droukos.aedservice.service.aed_event.AedEventInfo;
@@ -29,7 +30,8 @@ public class AedEventController {
         return Mono.just(aedEventDtoCreate)
                 .doOnNext(aedEventCreation::validateEvent)
                 .flatMap(AedEventFactoryCreate::aedEventCreateMono)
-                .flatMap(aedEventCreation::saveAedEvent)
+                .flatMap(UserSubAedFactory::userSubsAedCreateZipMono)
+                .flatMap(aedEventCreation::saveAedEventAndSub)
                 .flatMap(aedEventChannel::publishEventOnRedisChannel)
                 .flatMap(aedEvent -> Mono.just(aedEvent.getId()));
     }
@@ -50,6 +52,7 @@ public class AedEventController {
 
     @MessageMapping("aed.event.getId")
     public Mono<RequestedAedEvent> findEventId(AedEventDtoIdSearch aedEventDtoIdSearch) {
+        if(aedEventDtoIdSearch.getId() == null) return Mono.empty();
         return Mono.just(aedEventDtoIdSearch.getId())
                 .flatMap(aedEventInfo::findEventById)
                 .flatMap(RequestedAedEvent::buildMono);
