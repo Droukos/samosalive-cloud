@@ -37,7 +37,7 @@ public class AedProblemsInfo {
     }
 
     public Flux<AedProblems> findProblemsByTitle(AedProblemsDtoSearch aedProblemsDtoSearch) {
-        return aedProblemsRepository.findAllByTitleContaining(aedProblemsDtoSearch.getTitle());
+        return aedProblemsRepository.findAllByTitleIs(aedProblemsDtoSearch.getTitle());
     }
     public Mono<RequestedPreviewAedProblems> fetchProblemsByTitle(AedProblems aedProblems){
         return Mono.just(RequestedPreviewAedProblems.build(aedProblems));

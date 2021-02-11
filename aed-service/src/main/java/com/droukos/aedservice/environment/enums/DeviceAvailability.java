@@ -7,11 +7,12 @@ import lombok.Getter;
 @Getter
 public enum DeviceAvailability {
     AVAILABLE(0),
-    BROKEN(1),
-    STOLEN(2),
-    ON_REPAIR(3),
-    BORROWED(4),
-    RETURNING(5);
+    UNAVAILABLE(1),
+    //BROKEN(2),
+    //STOLEN(3),
+    //ON_REPAIR(4),
+    BORROWED(2),
+    RETURNING(3);
     private final int code;
 
 }

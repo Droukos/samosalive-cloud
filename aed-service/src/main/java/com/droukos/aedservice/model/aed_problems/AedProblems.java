@@ -28,7 +28,7 @@ public class AedProblems {
     private String aedDevId;
 
     @Indexed
-    private String title;
+    private Integer title;
 
     private String body;
 

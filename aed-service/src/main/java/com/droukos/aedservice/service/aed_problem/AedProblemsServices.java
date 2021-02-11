@@ -21,8 +21,8 @@ public class AedProblemsServices {
     private final AedProblemsRepository aedProblemsRepository;
     private final AedDeviceRepository aedDeviceRepository;
 
-    public Flux<AedProblems> getProblemsByTitle(String title) {
-        return aedProblemsRepository.findAllByTitleContaining(title);
+    public Flux<AedProblems> getProblemsByTitle(Integer title) {
+        return aedProblemsRepository.findAllByTitleIs(title);
     }
 
     public Mono<AedProblems> saveAedDevice(Tuple2<AedProblems, AedDevice> tuple2) {

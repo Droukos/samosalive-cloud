@@ -21,7 +21,7 @@ public class AedProblemsTitleValidator implements Validator {
         rejectIfEmptyOrWhitespace(errors, PROBLEMS_TITLE, PROBLEMS_TITLE_EMPTY.getShortWarning());
 
         AedProblemsDtoSearch problems = (AedProblemsDtoSearch) o;
-        if (/*isNumeric(news.getNewsTitle()) || */((AedProblemsDtoSearch) o).getTitle()==null)
+        if (problems.getTitle()==null || problems.getTitle()<0 || problems.getTitle()>3)
             errors.rejectValue(PROBLEMS_TITLE, PROBLEMS_TITLE_INVALID.getShortWarning());
         //if (news.getContent()!=null||news.getContent().length()>MAX_LENGTH)
         //    errors.rejectValue(NEWS_CONTENT, NEWS_CONTENT_LENGTH.getShortWarning());

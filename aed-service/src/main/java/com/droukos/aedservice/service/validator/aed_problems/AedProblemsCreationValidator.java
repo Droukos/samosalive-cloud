@@ -20,15 +20,15 @@ public class AedProblemsCreationValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         rejectIfEmptyOrWhitespace(errors, PROBLEMS_TITLE, PROBLEMS_TITLE_EMPTY.getShortWarning());
-        rejectIfEmptyOrWhitespace(errors, PROBLEMS_INFO, PROBLEMS_INFO_EMPTY.getShortWarning());
+        //rejectIfEmptyOrWhitespace(errors, PROBLEMS_INFO, PROBLEMS_INFO_EMPTY.getShortWarning());
 
         AedDeviceProblemDtoCreate aedProblemsDtoCreate = (AedDeviceProblemDtoCreate) o;
-        if (aedProblemsDtoCreate.getTitle()==null || (isNumeric(aedProblemsDtoCreate.getTitle())) || aedProblemsDtoCreate.getTitle().length()>50)
+        if (aedProblemsDtoCreate.getTitle()==null || (aedProblemsDtoCreate.getTitle()>3 || aedProblemsDtoCreate.getTitle()<0))
             errors.rejectValue(PROBLEMS_TITLE, PROBLEMS_TITLE_INVALID.getShortWarning());
         if (aedProblemsDtoCreate.getBody()==null || aedProblemsDtoCreate.getBody().length()>500)
             errors.rejectValue(PROBLEMS_INFO, PROBLEMS_INFO_LENGTH.getShortWarning());
-        if (isNumeric(aedProblemsDtoCreate.getBody()))//||isSpecials(news.getContent()))
-            errors.rejectValue(PROBLEMS_INFO, PROBLEMS_INFO_INVALID.getShortWarning());
+        //if (isNumeric(aedProblemsDtoCreate.getBody()))//||isSpecials(news.getContent()))
+        //    errors.rejectValue(PROBLEMS_INFO, PROBLEMS_INFO_INVALID.getShortWarning());
     }
 
     public boolean isNumeric(String strNum) {

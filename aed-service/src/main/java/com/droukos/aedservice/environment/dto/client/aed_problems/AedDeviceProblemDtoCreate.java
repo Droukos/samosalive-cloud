@@ -10,10 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 public class AedDeviceProblemDtoCreate {
         private String username;
-        private String title;
+        private Integer title;
         private String body;
-        private double y;
-        private double x;
-        private String address;
         private String aedDeviceId;
 }

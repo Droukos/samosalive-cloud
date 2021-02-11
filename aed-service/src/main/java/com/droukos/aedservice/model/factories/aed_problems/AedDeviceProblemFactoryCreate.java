@@ -22,14 +22,15 @@ public class AedDeviceProblemFactoryCreate {
 
     public static AedProblems problemsCreate(Tuple2<AedDeviceProblemDtoCreate, AedDevice> tuple2){
         AedDeviceProblemDtoCreate dto = tuple2.getT1();
+        AedDevice aedDevice = tuple2.getT2();
         return new AedProblems(null,
                 dto.getUsername().toLowerCase(),
                 dto.getUsername(),
                 dto.getAedDeviceId(),
                 dto.getTitle(),
                 dto.getBody(),
-                new GeoJsonPoint(dto.getX(), dto.getY()),
-                dto.getAddress(),
+                aedDevice.getHomeP(),
+                aedDevice.getAddr(),
                 PENDING.getStatus(),
                 null,
                 LocalDateTime.now(),
@@ -48,7 +49,7 @@ public class AedDeviceProblemFactoryCreate {
                 aedDevice.getDesc(),
                 aedDevice.getAdded(),
                 aedDevice.getAddedBy(),
-                DeviceAvailability.BROKEN.getCode(),
+                DeviceAvailability.UNAVAILABLE.getCode(),
                 tuple2.getT1().getBody(),
                 aedDevice.getHomeP(),
                 aedDevice.getPicUrl(),

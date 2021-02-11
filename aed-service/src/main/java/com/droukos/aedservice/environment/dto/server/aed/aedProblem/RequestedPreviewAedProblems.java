@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class RequestedPreviewAedProblems {
     private String id;
     private String username;
-    private String title;
+    private Integer title;
     private String body;
     @JsonDeserialize(using = GeoJsonDeserializer.class)
     private Point mapPoint;
