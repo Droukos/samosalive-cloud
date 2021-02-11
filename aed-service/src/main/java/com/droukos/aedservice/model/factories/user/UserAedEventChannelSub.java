@@ -70,11 +70,13 @@ public class UserAedEventChannelSub {
     }
 
     public static UserRes buildUserNewEventSubList(UserRes user, String channel) {
-        Map<String, EventChannel> dbMap = user.getChannelSubs().getAedEvSubs();
-        if(user.getChannelSubs() == null || dbMap == null) {
+        Map<String, EventChannel> dbMap;
+        if(user.getChannelSubs() == null || user.getChannelSubs().getAedEvSubs() == null) {
             dbMap = new HashMap<>();
+        }else {
+            dbMap = user.getChannelSubs().getAedEvSubs();
+            dbMap.put(channel, new EventChannel(false));
         }
-        dbMap.put(channel, new EventChannel(false));
 
         return new UserRes(
                 user.getId(),

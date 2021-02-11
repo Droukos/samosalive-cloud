@@ -6,16 +6,12 @@ import com.droukos.userservice.environment.dto.RequesterAccessTokenData;
 import com.droukos.userservice.environment.dto.client.user.PreviewUserDto;
 import com.droukos.userservice.environment.dto.client.user.UpdateUserPersonal;
 import com.droukos.userservice.environment.dto.server.user.RequestedUsernameOnly;
-import com.droukos.userservice.environment.enums.Roles;
-import com.droukos.userservice.environment.security.AccessJwtService;
 import com.droukos.userservice.model.user.UserRes;
 import com.droukos.userservice.model.user.privacy.PrivacySettingMap;
 import com.droukos.userservice.repo.UserRepository;
 import com.droukos.userservice.util.RolesUtil;
 import com.droukos.userservice.util.SecurityUtil;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
@@ -23,7 +19,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,32 +27,25 @@ import java.util.function.*;
 import static com.droukos.userservice.environment.security.HttpExceptionFactory.badRequest;
 
 @Service
-@Lazy
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserInfoService {
 
-    @NonNull
     private final UserRepository userRepository;
-    @NonNull
-    private final AccessJwtService accessJwtService;
 
     private final BiPredicate<RequesterAccessTokenData, UserRes> hasSameUserId = (requesterData, requestedUser) ->
             requesterData.getUserId().equals(requestedUser.getId());
     private final Predicate<RequesterAccessTokenData> isAnyValidAdmin = requesterData ->
             RolesUtil.hasAnyAdminRole(requesterData.getRoles());
 
-
     public Mono<Tuple2<UserRes, Set<String>>> getRequestedUserFiltersOnPrivacySettings(UserRes user) {
 
         return ReactiveSecurityContextHolder.getContext()
-                .flatMap(context -> {
-                    RequesterAccessTokenData requesterTokenData = SecurityUtil.getRequesterData(context);
-
-                    if (hasSameUserId.test(requesterTokenData, user) || (isAnyValidAdmin).test(requesterTokenData)) {
-                        return Mono.zip(Mono.just(user), Mono.just(Set.of()));
-                    }
-                    return Mono.zip(Mono.just(user), Mono.just(buildUserFilters(requesterTokenData, user)));
-                });
+                .flatMap(context -> Mono.just(SecurityUtil.getRequesterData(context)))
+                .flatMap(requesterTokenData->
+                        (hasSameUserId.test(requesterTokenData, user) || (isAnyValidAdmin).test(requesterTokenData))
+                                ? Mono.zip(Mono.just(user), Mono.just(Set.of()))
+                                : Mono.zip(Mono.just(user), Mono.just(buildUserFilters(requesterTokenData, user)))
+                );
 
     }
 
@@ -69,7 +57,7 @@ public class UserInfoService {
                 RolesUtil.hasAnyAdminRole(requesterAccessTokenData.getRoles())
                         ? Mono.just(updateUserPersonal) : Mono.error(badRequest());
 
-        return (!requesterAccessTokenData.getUserId().equals(updateUserPersonal.getUserid()))
+        return !requesterAccessTokenData.getUserId().equals(updateUserPersonal.getUserid())
                 ? checkAdminRole.apply(updateUserPersonal)
                 : Mono.just(tuple2.getT1());
     }
@@ -78,10 +66,9 @@ public class UserInfoService {
         UserRes requestedUser = tuple2.getT1();
         RequesterAccessTokenData requesterTokenData = SecurityUtil.getRequesterData(tuple2.getT2());
 
-        if (hasSameUserId.test(requesterTokenData, requestedUser) || (isAnyValidAdmin).test(requesterTokenData)) {
-            return Mono.zip(Mono.just(requestedUser), Mono.just(Set.of()));
-        }
-        return Mono.zip(Mono.just(requestedUser), Mono.just(buildUserFilters(requesterTokenData, requestedUser)));
+        return hasSameUserId.test(requesterTokenData, requestedUser) || (isAnyValidAdmin).test(requesterTokenData)
+                ? Mono.zip(Mono.just(requestedUser), Mono.just(Set.of()))
+                : Mono.zip(Mono.just(requestedUser), Mono.just(buildUserFilters(requesterTokenData, requestedUser)));
     }
 
     private Set<String> buildUserFilters(RequesterAccessTokenData requesterTokenData, UserRes requestedUser) {

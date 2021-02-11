@@ -19,30 +19,30 @@ import java.util.stream.Collectors;
 @Getter
 public class RequestedUserInfo {
 
-    String userid;
-    String username;
-    String name;
-    String surname;
-    String email;
-    String avatar;
-    String description;
-    String countryCode;
-    String province;
-    String city;
-    Map<String, PhoneModel> phones;
-    LocalDateTime lastLoginAndroid;
-    LocalDateTime lastLoginIos;
-    LocalDateTime lastLoginWeb;
-    LocalDateTime lastLogoutAndroid;
-    LocalDateTime lastLogoutIos;
-    LocalDateTime lastLogoutWeb;
-    LocalDateTime userCreated;
-    boolean online;
-    Integer availability;
-    List<RoleModel> roleModels;
+    private String userid;
+    private String username;
+    private String name;
+    private String surname;
+    private String email;
+    private String avatar;
+    private String description;
+    private String countryCode;
+    private String province;
+    private String city;
+    private Map<String, PhoneModel> phones;
+    private LocalDateTime lastLoginAndroid;
+    private LocalDateTime lastLoginIos;
+    private LocalDateTime lastLoginWeb;
+    private LocalDateTime lastLogoutAndroid;
+    private LocalDateTime lastLogoutIos;
+    private LocalDateTime lastLogoutWeb;
+    private LocalDateTime userCreated;
+    private boolean online;
+    private Integer availability;
+    private List<RoleModel> roleModels;
 
     public static Mono<RequestedUserInfo> buildMono(Tuple2<UserRes, Set<String>> tuple2) {
-        return Mono.defer(() -> Mono.just(build(tuple2.getT1(), tuple2.getT2())));
+        return Mono.just(build(tuple2.getT1(), tuple2.getT2()));
     }
 
     public static RequestedUserInfo build(UserRes user, Set<String> fieldsToNullify) {

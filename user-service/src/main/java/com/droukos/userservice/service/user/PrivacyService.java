@@ -10,6 +10,7 @@ import com.droukos.userservice.model.user.privacy.PrivacySettingMap;
 import com.droukos.userservice.repo.UserRepository;
 import com.droukos.userservice.util.RolesUtil;
 import com.droukos.userservice.util.SecurityUtil;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
@@ -24,11 +25,10 @@ import java.util.function.Function;
 import static com.droukos.userservice.environment.security.HttpExceptionFactory.badRequest;
 
 @Service
-@Lazy
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class PrivacyService {
 
-  @NonNull private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
   public Mono<Boolean> saveToMongoDb(UserRes user) {
     return userRepository.save(user).then(Mono.just(true));

@@ -1,7 +1,5 @@
 package com.droukos.userservice.util;
 
-import org.springframework.security.core.parameters.P;
-
 import java.util.List;
 
 import static com.droukos.userservice.environment.constants.authorities.Roles.*;
@@ -41,6 +39,8 @@ public class RolesUtil {
       return switch (clearRole(role)) {
           case GENERAL_ADMIN -> "0.0";
           case AREA_ADMIN -> "0.100";
+          case RESCUER -> "100.100";
+          case TECHNICIAN -> "110.100";
           case USER -> "10000.10000";
 
           default -> throw new IllegalStateException("Unexpected value: " + role);

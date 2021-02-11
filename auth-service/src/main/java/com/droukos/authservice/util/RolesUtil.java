@@ -35,6 +35,7 @@ public class RolesUtil {
             case GENERAL_ADMIN -> "0.0";
             case AREA_ADMIN -> "0.100";
             case RESCUER -> "100.100";
+            case TECHNICIAN -> "110.100";
             case USER -> "10000.10000";
 
             default -> throw unexpectedValue.apply(role);
@@ -43,7 +44,7 @@ public class RolesUtil {
 
     public static boolean doesRoleNotExist(String role) {
         return switch (clearRole(role)) {
-            case GENERAL_ADMIN, AREA_ADMIN, USER, RESCUER -> false;
+            case GENERAL_ADMIN, AREA_ADMIN, USER, RESCUER, TECHNICIAN  -> false;
             default -> true;
         };
     }

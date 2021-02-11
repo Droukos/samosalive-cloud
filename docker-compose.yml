@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
 
   samosalive-mongodb:
@@ -12,6 +13,8 @@ services:
     container_name: samosalive-redis
     image: redis
     restart: always
+    #expose:
+    #  - 6379
     ports:
       - "6379:6379"
 
@@ -61,12 +64,29 @@ services:
     restart: always
     ports:
       - "8888:8888"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 90M
+        reservations:
+          cpus: '0.25'
+          memory: 20M
 
   auth-service:
     build: ./auth-service
     container_name: auth-service
     image: auth-service:latest
     restart: always
+    #mem_limit:  128M
+    #deploy:
+    #  resources:
+    #    limits:
+    #      cpus: '0.50'
+    #      memory: 90M
+    #    reservations:
+    #      cpus: '0.25'
+    #      memory: 20M
     ports:
       - "8089:8089"
       - "8989:8989"
@@ -87,8 +107,6 @@ services:
       - config-server
       - samosalive-mongodb
       - samosalive-redis
-
-
 
   user-service:
     build: ./user-service

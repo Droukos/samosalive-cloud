@@ -28,12 +28,7 @@ public class LoginResponse {
     private Integer availability;
 
     public static LoginResponse build(UserRes user, String accessToken) {
-        ArrayList<String> eventChannels = user.getChannelSubs().getAedEvSubs() != null ?
-                new ArrayList<>(user.getChannelSubs().getAedEvSubs().keySet())
-                : new ArrayList<>();
-        ArrayList<String> problemChannels = user.getChannelSubs().getAedPrSubs() != null ?
-                new ArrayList<>(user.getChannelSubs().getAedPrSubs().keySet())
-                : new ArrayList<>();
+
         return new LoginResponse(
                 accessToken,
                 user.getId(),
@@ -46,8 +41,12 @@ public class LoginResponse {
                 user.getAllRoles().stream()
                         .map(RoleModel::buildRoleModelWithRoleCode)
                         .collect(Collectors.toList()),
-                user.getChannelSubs() == null ? null : eventChannels,
-                user.getChannelSubs() == null ? null : problemChannels,
+                user.getChannelSubs() == null ? null : user.getChannelSubs().getAedEvSubs() != null
+                        ? new ArrayList<>(user.getChannelSubs().getAedEvSubs().keySet())
+                        : new ArrayList<>(),
+                user.getChannelSubs() == null ? null : user.getChannelSubs().getAedPrSubs() != null
+                        ? new ArrayList<>(user.getChannelSubs().getAedPrSubs().keySet())
+                        : new ArrayList<>(),
                 user.getAppState().isOn(),
                 user.getAppState().getStatus());
     }
