@@ -44,7 +44,7 @@ public class RequestedPreviewUser2 {
                 showFullname ? null : user.getName(),
                 showFullname ? null : user.getSurname(),
                 avatar,
-                !showAppStateOn && user.getAppState().isOn(),
+                !showAppStateOn && user.getAppState().isOnline(),
                 user.getAppState().getStatus(),
                 user.getAllRoles().stream().map(RoleModel::getRole).collect(Collectors.toList()));
     }

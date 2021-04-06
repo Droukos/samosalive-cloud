@@ -1,19 +1,19 @@
 package com.droukos.authservice.model.user.system.security.jwt.tokens;
 
 import com.droukos.authservice.environment.dto.NewRefTokenData;
-import lombok.*;
+import lombok.Value;
 
 import java.util.Date;
 
 @Value
 public class RefreshToken {
-  String id;
+  String rid;
   String ip;
   Date exp;
 
   public static RefreshToken noUpdate(RefreshToken refreshToken) {
     return new RefreshToken(
-            refreshToken.id,
+            refreshToken.rid,
             refreshToken.ip,
             refreshToken.exp
     );

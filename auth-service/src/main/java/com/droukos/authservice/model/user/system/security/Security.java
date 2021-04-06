@@ -11,7 +11,10 @@ import com.droukos.authservice.model.user.system.security.jwt.platforms.WebJWT;
 import com.droukos.authservice.model.user.system.security.logins.AndroidLogins;
 import com.droukos.authservice.model.user.system.security.logins.IosLogins;
 import com.droukos.authservice.model.user.system.security.logins.WebLogins;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import reactor.util.function.Tuple3;
 
 import java.util.List;

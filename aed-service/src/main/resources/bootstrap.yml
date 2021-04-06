@@ -16,6 +16,10 @@ server:
     enabled: true
 
 samosalive:
+  #osm: http://nominatim:7000
+  osm: http://localhost:7070
+  #osrm: http://samosalive-cloud_osrm_1:5000
+  osrm: http://localhost:5000
   comments:
     offset: 50
   redis:

@@ -64,29 +64,12 @@ services:
     restart: always
     ports:
       - "8888:8888"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 90M
-        reservations:
-          cpus: '0.25'
-          memory: 20M
 
   auth-service:
     build: ./auth-service
     container_name: auth-service
     image: auth-service:latest
     restart: always
-    #mem_limit:  128M
-    #deploy:
-    #  resources:
-    #    limits:
-    #      cpus: '0.50'
-    #      memory: 90M
-    #    reservations:
-    #      cpus: '0.25'
-    #      memory: 20M
     ports:
       - "8089:8089"
       - "8989:8989"
@@ -94,6 +77,16 @@ services:
       - config-server
       - samosalive-mongodb
       - samosalive-redis
+
+  edge-service:
+    build: ./edge-service
+    container_name: edge-service
+    image: edge-service:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - auth-service
 
   aed-service:
     build: ./aed-service

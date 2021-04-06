@@ -28,7 +28,7 @@ public class UserFactoryAvailability {
                 user.getPrivy(),
                 user.getSys(),
                 user.getChannelSubs(),
-                new AppState(user.getAppState().isOn(), tuple2.getT1().getStatus())
+                new AppState(user.getAppState().isOnline(), tuple2.getT1().getStatus())
         );
     }
 }

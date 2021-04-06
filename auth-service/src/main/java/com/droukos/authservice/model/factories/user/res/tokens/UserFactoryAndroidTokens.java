@@ -2,8 +2,8 @@ package com.droukos.authservice.model.factories.user.res.tokens;
 
 import com.droukos.authservice.environment.dto.NewAccTokenData;
 import com.droukos.authservice.environment.dto.NewRefTokenData;
-import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.model.factories.user.system.token.SystemFactoryAndroidToken;
+import com.droukos.authservice.model.user.UserRes;
 
 public class UserFactoryAndroidTokens {
     private UserFactoryAndroidTokens() {}

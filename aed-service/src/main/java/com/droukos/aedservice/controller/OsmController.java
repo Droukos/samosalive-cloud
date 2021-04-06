@@ -8,6 +8,7 @@ import com.droukos.aedservice.environment.dto.server.aed.osrm.RouteInfoDto;
 import com.droukos.aedservice.service.osrm.OsrmService;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,8 +20,10 @@ import java.util.Arrays;
 @Controller
 @AllArgsConstructor
 public class OsmController {
+    //@Value("${samosalive.osm}")
+    //private final String osmHost;
     private final WebClient clientOsm = WebClient.create("http://localhost:7070");
-    //private final WebClient clientOsrm = WebClient.create("http://localhost:5000");
+    private final WebClient clientOsrm = WebClient.create("http://localhost:5000");
     private final OsrmService osrmService;
 
     @MessageMapping("aed.osm.search")

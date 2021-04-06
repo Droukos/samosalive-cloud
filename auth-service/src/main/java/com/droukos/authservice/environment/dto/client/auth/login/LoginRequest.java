@@ -1,6 +1,9 @@
 package com.droukos.authservice.environment.dto.client.auth.login;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @ToString

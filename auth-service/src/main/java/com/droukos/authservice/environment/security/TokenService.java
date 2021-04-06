@@ -31,11 +31,13 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.function.*;
+import java.util.function.Function;
+import java.util.function.IntPredicate;
+import java.util.function.Supplier;
 
 import static com.droukos.authservice.environment.constants.Platforms.*;
-import static com.droukos.authservice.util.factories.HttpExceptionFactory.unauthorized;
 import static com.droukos.authservice.util.RedisUtil.redisTokenK;
+import static com.droukos.authservice.util.factories.HttpExceptionFactory.unauthorized;
 import static java.time.Duration.ofMinutes;
 
 @Service

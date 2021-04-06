@@ -4,15 +4,12 @@ import com.droukos.authservice.environment.interfaces.core_services.SecRunByInfo
 import com.droukos.authservice.environment.interfaces.core_services.ServiceInfo;
 import com.droukos.authservice.environment.services.LvL0_Services;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 import static com.droukos.authservice.environment.services.sec_options.GeneralSecOptions.ONLY_GENERAL_ADMIN;
 
 @AllArgsConstructor
 public enum EnSysAdminServices implements ServiceInfo {
     GET_ROLES         ("get_roles"                  ,"0",   ONLY_GENERAL_ADMIN,       false,       false),
-
     ;
 
     private final String url;
@@ -21,6 +18,7 @@ public enum EnSysAdminServices implements ServiceInfo {
     private final boolean checkAccToken;
     private final boolean runSecurity;
 
+    @Override
     public String getServiceCode() {
         return LvL0_Services.AUTH.getServiceCode() + serviceCode;
     }
@@ -33,11 +31,12 @@ public enum EnSysAdminServices implements ServiceInfo {
         return url;
     }
 
+    @Override
     public String getServiceUrl() {
-        if(url.contains("/")) return url.split("/")[0];
-        else return url;
+        return url.contains("/")? url.split("/")[0] : url;
     }
 
+    @Override
     public SecRunByInfo getRunByInfo() {
         return runByInfo;
     }
@@ -47,6 +46,7 @@ public enum EnSysAdminServices implements ServiceInfo {
         return checkAccToken;
     }
 
+    @Override
     public boolean runSecurity() {
         return runSecurity;
     }

@@ -4,6 +4,9 @@ import com.droukos.aedservice.config.jwt.AccessTokenConfig;
 import com.droukos.aedservice.config.jwt.ClaimsConfig;
 import com.droukos.aedservice.environment.dto.client.aed_device.AedDeviceRegisterDto;
 import com.droukos.aedservice.environment.dto.client.aed_event.AedEventDtoCreate;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.TextCodec;
+import io.jsonwebtoken.impl.crypto.MacProvider;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,6 +19,7 @@ import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.MimeTypeUtils;
 import reactor.core.publisher.Mono;
 
+import javax.crypto.SecretKey;
 import java.net.URI;
 
 @SpringBootTest
@@ -49,14 +53,20 @@ public class AedDeviceCreateTest {
 
     @Test
     void createAedDevice(){
-        AedDeviceRegisterDto aedDeviceRegisterDto = new AedDeviceRegisterDto("123","tom","1",23.44,27.666,"pending");
-        Mono<String> result =
-                requester
-                        .route("aed.register.device")
-                        .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
-                        .data(aedDeviceRegisterDto)
-                        .retrieveMono(String.class);
-
-        System.out.println(result.block());
+        System.out.println(TokenUtilTest.accessToken);
+        //System.out.println("hey");
+        //SecretKey key = MacProvider.generateKey(SignatureAlgorithm.HS256);
+        //System.out.println(key);
+        //String base64Encoded = TextCodec.BASE64.encode(key.getEncoded());
+        //System.out.println(base64Encoded);
+        //AedDeviceRegisterDto aedDeviceRegisterDto = new AedDeviceRegisterDto("123","tom","1",23.44,27.666,"pending");
+        //Mono<String> result =
+        //        requester
+        //                .route("aed.register.device")
+        //                .metadata(TokenUtilTest.accessToken, TokenUtilTest.mimeType)
+        //                .data(aedDeviceRegisterDto)
+        //                .retrieveMono(String.class);
+//
+        //System.out.println(result.block());
     }
 }

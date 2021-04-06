@@ -16,8 +16,8 @@ import org.springframework.security.config.annotation.rsocket.RSocketSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
 import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver;
+import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
 
@@ -93,6 +93,7 @@ public class ReactSecurityConfig {
             .authorizePayload(
                     authorizePayloadsSpec -> authorizePayloadsSpec
                             .route("auth.signup").permitAll()
+                            .route("auth.hey").permitAll()
                             .route("auth.username.check").permitAll()
                             .route("auth.email.check").permitAll()
                             .anyRequest().authenticated()

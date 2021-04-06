@@ -10,7 +10,6 @@ import com.droukos.authservice.model.factories.user.res.tokens.UserFactoryAllTok
 import com.droukos.authservice.model.factories.user.res.tokens.UserFactoryAndroidTokens;
 import com.droukos.authservice.model.factories.user.res.tokens.UserFactoryIosTokens;
 import com.droukos.authservice.model.factories.user.res.tokens.UserFactoryWebTokens;
-import com.droukos.authservice.model.factories.user.security.status.UserStatusFactory;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.model.user.system.security.AccountStatus;
 import com.droukos.authservice.repo.UserRepository;
@@ -72,11 +71,9 @@ public class TokensService {
                 (accountStatus.getStat() == PERM_BANNED.getCode()
                         || (accountStatus.getStat() == TEMP_BANNED.getCode()
                         && accountStatus.getUntil().isAfter(LocalDateTime.now()))))
-                ?
-                Mono.error(badRequest("You are banned"))
-                :tokenService.validateRefreshToken(tuple2).then(Mono.zip(
-                        Mono.just(tuple2.getT1()),
-                        Mono.just(tuple2.getT2())
+                ? Mono.error(badRequest("You are banned"))
+                : tokenService.validateRefreshToken(tuple2).then(
+                        Mono.zip(Mono.just(tuple2.getT1()), Mono.just(tuple2.getT2())
                 ));
     }
 

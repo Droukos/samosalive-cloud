@@ -82,7 +82,7 @@ public class RequestedUserInfo {
                 showLastLogout? null: user.getIosLastLogout(),
                 showLastLogout? null : user.getWebLastLogout(),
                 showAccountCreated? null : user.getAccountCreated(),
-                !showAppStateOn && user.getAppState().isOn(),
+                !showAppStateOn && user.getAppState().isOnline(),
                 user.getAppState().getStatus(),
                 user.getAllRoles().stream()
                         .map(RoleModel::buildRoleModelWithRoleCode)

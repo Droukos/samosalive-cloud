@@ -6,7 +6,10 @@ import com.droukos.authservice.environment.interfaces.JwtToken;
 import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.model.user.system.security.jwt.tokens.AccessToken;
 import com.droukos.authservice.model.user.system.security.jwt.tokens.RefreshToken;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 
@@ -30,12 +33,12 @@ public class IosJWT implements JwtToken {
 
   @Override
   public String getAccessTokenId() {
-    return accToken.getId();
+    return accToken.getAid();
   }
 
   @Override
   public String getRefreshTokenId() {
-    return reToken.getId();
+    return reToken.getRid();
   }
 
   @Override

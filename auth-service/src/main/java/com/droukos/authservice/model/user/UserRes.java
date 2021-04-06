@@ -4,8 +4,8 @@ import com.droukos.authservice.model.user.personal.Personal;
 import com.droukos.authservice.model.user.privacy.PrivacySettingMap;
 import com.droukos.authservice.model.user.system.UserSystem;
 import com.droukos.authservice.model.user.system.Verification;
-import com.droukos.authservice.model.user.system.security.AccountStatus;
 import com.droukos.authservice.model.user.system.security.AccountLocked;
+import com.droukos.authservice.model.user.system.security.AccountStatus;
 import com.droukos.authservice.model.user.system.security.auth.PasswordReset;
 import com.droukos.authservice.model.user.system.security.jwt.platforms.AndroidJWT;
 import com.droukos.authservice.model.user.system.security.jwt.platforms.IosJWT;
@@ -127,14 +127,14 @@ public class UserRes {
   }
 
   public String getAndroidAccessTokenId() {
-    return this.getSys().getSec().getAndroidJWT().getAccToken().getId();
+    return this.getSys().getSec().getAndroidJWT().getAccToken().getAid();
   }
 
   public String getIosAccessTokenId() {
-    return this.getSys().getSec().getIosJWT().getAccToken().getId();
+    return this.getSys().getSec().getIosJWT().getAccToken().getAid();
   }
 
   public String getWebAccessTokenId() {
-    return this.getSys().getSec().getWebJWT().getAccToken().getId();
+    return this.getSys().getSec().getWebJWT().getAccToken().getAid();
   }
 }

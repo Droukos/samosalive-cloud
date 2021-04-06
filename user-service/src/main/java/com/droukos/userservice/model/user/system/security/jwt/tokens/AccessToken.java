@@ -7,5 +7,5 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 public class AccessToken {
-  private String id;
+  private String aid;
 }

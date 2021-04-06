@@ -105,6 +105,6 @@ public class UserRes {
   }
 
   public String getAndroidAccessTokenId() {
-    return this.getSys().getSec().getAndroidJWT().getAccToken().getId();
+    return this.getSys().getSec().getAndroidJWT().getAccToken().getAid();
   }
 }

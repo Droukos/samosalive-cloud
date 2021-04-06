@@ -2,8 +2,8 @@ package com.droukos.authservice.model.factories.user.system.token;
 
 import com.droukos.authservice.environment.dto.NewAccTokenData;
 import com.droukos.authservice.environment.dto.NewRefTokenData;
-import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.model.factories.user.security.token.SecurityFactoryWebToken;
+import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.model.user.system.UserSystem;
 
 public class SystemFactoryWebToken {

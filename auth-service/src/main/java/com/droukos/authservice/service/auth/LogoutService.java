@@ -12,7 +12,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
-
 import static com.droukos.authservice.environment.constants.Platforms.*;
 import static com.droukos.authservice.util.factories.HttpBodyBuilderFactory.okJson;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;

@@ -14,7 +14,7 @@ import static com.droukos.aedservice.environment.constants.Platforms.WEB;
 @Getter
 @ToString
 public class AppState {
-  private boolean on;
+  private boolean online;
   private Integer status;
 
   public static AppState isOnline(UserRes user) {

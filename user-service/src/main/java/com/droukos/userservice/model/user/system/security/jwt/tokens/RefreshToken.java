@@ -9,7 +9,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 public class RefreshToken {
-  private String id;
+  private String rid;
   private String ip;
   private Date exp;
 }

@@ -2,7 +2,10 @@ package com.droukos.authservice.environment.dto.server.auth.login;
 
 import com.droukos.authservice.model.user.RoleModel;
 import com.droukos.authservice.model.user.UserRes;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +50,7 @@ public class LoginResponse {
                 user.getChannelSubs() == null ? null : user.getChannelSubs().getAedPrSubs() != null
                         ? new ArrayList<>(user.getChannelSubs().getAedPrSubs().keySet())
                         : new ArrayList<>(),
-                user.getAppState().isOn(),
+                user.getAppState().isOnline(),
                 user.getAppState().getStatus());
     }
 }

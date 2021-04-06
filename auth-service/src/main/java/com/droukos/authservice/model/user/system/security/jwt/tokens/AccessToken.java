@@ -1,15 +1,15 @@
 package com.droukos.authservice.model.user.system.security.jwt.tokens;
 
 import com.droukos.authservice.environment.dto.NewAccTokenData;
-import lombok.*;
+import lombok.Value;
 
 @Value
 public class AccessToken {
-  String id;
+  String aid;
 
   public static AccessToken noUpdate(AccessToken accessToken) {
     return new AccessToken(
-            accessToken.id
+            accessToken.aid
     );
   }
 

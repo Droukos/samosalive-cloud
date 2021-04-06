@@ -1,13 +1,15 @@
 package com.droukos.authservice.environment.services.lvl1_services;
 
-import com.droukos.authservice.environment.services.LvL0_Services;
 import com.droukos.authservice.environment.interfaces.core_services.SecRunByInfo;
 import com.droukos.authservice.environment.interfaces.core_services.ServiceInfo;
+import com.droukos.authservice.environment.services.LvL0_Services;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 import static com.droukos.authservice.environment.services.sec_options.GeneralSecOptions.*;
+
+/**
+ * @author Kostas
+ */
 
 @AllArgsConstructor
 public enum EnAuthServices implements ServiceInfo {
@@ -32,6 +34,7 @@ public enum EnAuthServices implements ServiceInfo {
     private final boolean checkAccToken;
     private final boolean runSecurity;
 
+    @Override
     public String getServiceCode() {
         return LvL0_Services.AUTH.getServiceCode() + serviceCode;
     }
@@ -53,15 +56,17 @@ public enum EnAuthServices implements ServiceInfo {
         return checkAccToken;
     }
 
+    @Override
     public String getServiceUrl() {
-        if(url.contains("/{id}")) return url.replace("/{id}", "");
-        else return url;
+        return url.contains("/{id}")? url.replace("/{id}", ""): url;
     }
 
+    @Override
     public SecRunByInfo getRunByInfo() {
         return runByInfo;
     }
 
+    @Override
     public boolean runSecurity() {
         return runSecurity;
     }

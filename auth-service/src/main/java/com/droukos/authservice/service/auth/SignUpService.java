@@ -22,8 +22,6 @@ import com.droukos.authservice.model.user.system.security.logins.WebLogins;
 import com.droukos.authservice.repo.UserRepository;
 import com.droukos.authservice.util.factories.HttpExceptionFactory;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

@@ -1,6 +1,6 @@
 package com.droukos.authservice.environment.dto;
 
-import lombok.*;
+import lombok.Value;
 
 import java.util.Date;
 import java.util.List;

@@ -59,12 +59,12 @@ public class AndroidJWT implements JwtToken {
 
   @Override
   public String getAccessTokenId() {
-    return accToken.getId();
+    return accToken.getAid();
   }
 
   @Override
   public String getRefreshTokenId() {
-    return reToken.getId();
+    return reToken.getRid();
   }
 
   @Override

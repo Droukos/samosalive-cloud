@@ -1,9 +1,9 @@
 package com.droukos.authservice.model.factories.user.res.role_tokens;
 
 import com.droukos.authservice.environment.dto.NewAccTokenData;
+import com.droukos.authservice.model.factories.user.system.token.SystemFactoryAllToken;
 import com.droukos.authservice.model.user.RoleModel;
 import com.droukos.authservice.model.user.UserRes;
-import com.droukos.authservice.model.factories.user.system.token.SystemFactoryAllToken;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple4;
 

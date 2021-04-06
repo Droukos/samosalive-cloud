@@ -15,7 +15,6 @@ public class RedisConfigProperties {
     private String aedProblemLiveChannel;
     @Value("${aed.redis.problems.single-live-channel-prefix}")
     private String aedProblemSingleChannelPrefix;
-
     @Value("${aed.redis.discussion.single-live-channel-postfix}")
     private String discussionPostfix;
     @Value("${aed.redis.user.single-live-channel-postfix}")

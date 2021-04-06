@@ -1,7 +1,10 @@
 package com.droukos.authservice.model.user;
 
 import com.droukos.authservice.environment.enums.Availability;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import static com.droukos.authservice.environment.constants.Platforms.IOS;
 import static com.droukos.authservice.environment.constants.Platforms.WEB;
@@ -11,7 +14,7 @@ import static com.droukos.authservice.environment.constants.Platforms.WEB;
 @Getter
 @ToString
 public class AppState {
-  private boolean on;
+  private boolean online;
   private Integer status;
 
   public static AppState isOnline(UserRes user) {

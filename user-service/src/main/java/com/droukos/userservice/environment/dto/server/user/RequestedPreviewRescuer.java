@@ -44,7 +44,7 @@ public class RequestedPreviewRescuer {
                 user.getEmail(),
                 user.getAvatar(),
                 phones == null ? null : Collections.singletonList(phones.get(PH_RESCUER_KEY).getPhone()),
-                user.getAppState().getStatus() != Availability.INVISIBLE.getCode() && user.getAppState().isOn(),
+                user.getAppState().getStatus() != Availability.INVISIBLE.getCode() && user.getAppState().isOnline(),
                 user.getAppState().getStatus(),
                 user.getAllRoles().stream().map(RoleModel::getRole).collect(Collectors.toList())
         );

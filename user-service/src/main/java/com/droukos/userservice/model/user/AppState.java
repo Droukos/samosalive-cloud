@@ -7,6 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 public class AppState {
-  private boolean on;
+  private boolean online;
   private Integer status;
 }

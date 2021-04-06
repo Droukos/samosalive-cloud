@@ -1,10 +1,9 @@
 package com.droukos.authservice.model.factories.user.system.token;
 
 import com.droukos.authservice.environment.dto.NewAccTokenData;
-import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.model.factories.user.security.token.SecurityFactoryAllToken;
+import com.droukos.authservice.model.user.UserRes;
 import com.droukos.authservice.model.user.system.UserSystem;
-import reactor.util.function.Tuple3;
 import reactor.util.function.Tuple4;
 
 public class SystemFactoryAllToken {

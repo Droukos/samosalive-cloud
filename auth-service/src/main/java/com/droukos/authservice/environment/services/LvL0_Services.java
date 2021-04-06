@@ -1,10 +1,10 @@
 package com.droukos.authservice.environment.services;
 
+import com.droukos.authservice.environment.interfaces.core_services.Service0Info;
+import com.droukos.authservice.environment.interfaces.core_services.ServiceInfo;
 import com.droukos.authservice.environment.services.lvl1_services.EnAuthServices;
 import com.droukos.authservice.environment.services.lvl1_services.EnSysAdminServices;
 import com.droukos.authservice.environment.services.lvl1_services.EnUserServices;
-import com.droukos.authservice.environment.interfaces.core_services.Service0Info;
-import com.droukos.authservice.environment.interfaces.core_services.ServiceInfo;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 

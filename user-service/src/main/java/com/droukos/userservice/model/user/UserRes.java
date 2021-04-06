@@ -149,15 +149,15 @@ public class UserRes {
   }
 
   public String getAndroidRefreshTokenId() {
-    return this.sys.getSec().getAndroidJWT().getReToken().getId();
+    return this.sys.getSec().getAndroidJWT().getReToken().getRid();
   }
 
   public String getIosRefreshTokenId() {
-    return this.sys.getSec().getIosJWT().getReToken().getId();
+    return this.sys.getSec().getIosJWT().getReToken().getRid();
   }
 
   public String getWebRefreshTokenId() {
-    return this.sys.getSec().getWebJWT().getReToken().getId();
+    return this.sys.getSec().getWebJWT().getReToken().getRid();
   }
 
   public Date getAndroidRefreshTokenExp() {
@@ -185,14 +185,14 @@ public class UserRes {
   }
 
   public String getAndroidAccessTokenId() {
-    return this.sys.getSec().getAndroidJWT().getAccToken().getId();
+    return this.sys.getSec().getAndroidJWT().getAccToken().getAid();
   }
 
   public String getIosAccessTokenId() {
-    return this.sys.getSec().getIosJWT().getAccToken().getId();
+    return this.sys.getSec().getIosJWT().getAccToken().getAid();
   }
 
   public String getWebAccessTokenId() {
-    return this.sys.getSec().getWebJWT().getAccToken().getId();
+    return this.sys.getSec().getWebJWT().getAccToken().getAid();
   }
 }

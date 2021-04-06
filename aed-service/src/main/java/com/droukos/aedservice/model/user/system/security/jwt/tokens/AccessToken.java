@@ -5,11 +5,11 @@ import lombok.Value;
 
 @Value
 public class AccessToken {
-  String id;
+  String aid;
 
   public static AccessToken noUpdate(AccessToken accessToken) {
     return new AccessToken(
-            accessToken.id
+            accessToken.aid
     );
   }
 

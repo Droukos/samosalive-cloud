@@ -31,9 +31,16 @@ public class AdminController {
     private final BanServices banServices;
     private final RolesService rolesService;
 
+    @MessageMapping("auth.hey")
+    public Mono<String> dd() {
+        return Mono.just("heyy");
+    }
+
     @MessageMapping("auth.admin.ban.users")
     public Mono<Boolean> permBanUsers(BanUsers banUsers) {
-        if(banUsers.getBanUsers() == null) return Mono.error(badRequest());
+        if(banUsers.getBanUsers() == null) {
+            return Mono.error(badRequest());
+        }
         Map<String, Long> banUserMap = banUsers.getBanUsers()
                 .stream()
                 .collect(Collectors.toMap(BanUser::getUsername, BanUser::getDuration));
@@ -65,7 +72,9 @@ public class AdminController {
     @MessageMapping("auth.admin.users.role.change")
     public Mono<Boolean> usersRoleChange(ChangeRoles changeRoles) {
 
-        if(changeRoles.getChangeRoles().size() > 20) return Mono.error(badRequest());
+        if(changeRoles.getChangeRoles().size() > 20) {
+            return Mono.error(badRequest());
+        }
         Map<String, ChangeRole> changeRoleMap = changeRoles.getChangeRoles()
                 .stream()
                 .collect(Collectors.toMap(ChangeRole::getUsername, Function.identity()));
